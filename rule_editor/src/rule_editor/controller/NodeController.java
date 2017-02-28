@@ -1,9 +1,10 @@
 package rule_editor.controller;
 
-import rule_editor.model.Edge;
-import rule_editor.model.Node;
+
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import model.Edge;
+import model.Node;
 
 import java.util.ArrayList;
 

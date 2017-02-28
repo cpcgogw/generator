@@ -1,7 +1,8 @@
 package rule_editor.controller;
 
-import rule_editor.model.Edge;
-import rule_editor.model.Node;
+
+import model.Edge;
+import model.Node;
 
 /**
  * Created by vilddjur on 1/25/17.

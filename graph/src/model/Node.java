@@ -1,4 +1,4 @@
-package rule_editor.model;
+package model;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;

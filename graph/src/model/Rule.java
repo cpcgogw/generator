@@ -1,4 +1,4 @@
-package rule_editor.model;
+package model;
 
 import javafx.util.Pair;
 

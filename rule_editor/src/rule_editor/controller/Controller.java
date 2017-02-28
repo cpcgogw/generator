@@ -12,21 +12,20 @@ import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+import model.Edge;
+import model.Node;
+import model.Pattern;
+import model.Rule;
 import rule_editor.FileHandler;
-import rule_editor.Log;
-import rule_editor.model.Edge;
-import rule_editor.model.Node;
-import rule_editor.model.Node.NodeType;
-import rule_editor.model.Pattern;
-import rule_editor.model.Rule;
+import utils.Log;
 
 import javax.swing.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static model.Node.DEFAULT_RADIUS;
 import static rule_editor.controller.Controller.tools.*;
-import static rule_editor.model.Node.DEFAULT_RADIUS;
 
 public class Controller {
     /**
@@ -105,7 +104,7 @@ public class Controller {
     public TextField active_node_id_field;
     @FXML
     private Button active_node_save_button;
-    public  Node activeNode;
+    public Node activeNode;
 
     private HashMap<Pane, Pattern> scenarios;
     private Pattern matchingPattern;
@@ -121,7 +120,7 @@ public class Controller {
         return activeTool;
     }
 
-    public NodeType getActiveType(){
+    public Node.NodeType getActiveType(){
         return activeType;
     }
     private GraphController graphController;
@@ -141,7 +140,7 @@ public class Controller {
     }
     private FileChooser fileChooser = new FileChooser();
     public static tools activeTool;
-    public static NodeType activeType;
+    public static Node.NodeType activeType;
 
     public static Pane activeCanvas;
 
@@ -149,7 +148,7 @@ public class Controller {
     public void initialize(){
         GraphController graphController = new GraphController();
         scenarios = new HashMap<Pane, Pattern>();
-        activeType = NodeType.START;
+        activeType = Node.NodeType.START;
         activeTool = NODE;
         activeCanvas = rule_canvas;
         currentLevel = new Pattern();
@@ -160,11 +159,11 @@ public class Controller {
         move_button.setOnMouseClicked(mouseEvent -> activeTool = MOVE);
         select_node_button.setOnMouseClicked(mouseEvent -> activeTool = SELECT);
         // init node buttons
-        start_node_button.setOnMouseClicked(mouseEvent -> activateType(NodeType.START));
-        end_node_button.setOnMouseClicked(mouseEvent -> activateType(NodeType.END));
-        key_node_button.setOnMouseClicked(mouseEvent -> activateType(NodeType.KEY));
-        lock_node_button.setOnMouseClicked(mouseEvent -> activateType(NodeType.LOCK));
-        room_node_button.setOnMouseClicked(mouseEvent -> activateType(NodeType.ROOM));
+        start_node_button.setOnMouseClicked(mouseEvent -> activateType(Node.NodeType.START));
+        end_node_button.setOnMouseClicked(mouseEvent -> activateType(Node.NodeType.END));
+        key_node_button.setOnMouseClicked(mouseEvent -> activateType(Node.NodeType.KEY));
+        lock_node_button.setOnMouseClicked(mouseEvent -> activateType(Node.NodeType.LOCK));
+        room_node_button.setOnMouseClicked(mouseEvent -> activateType(Node.NodeType.ROOM));
         // init top menu
         save_button.setOnAction(actionEvent -> PrepareSave());
         load_level_button.setOnAction(actionEvent -> PrepareLoadLevel());
@@ -270,7 +269,7 @@ public class Controller {
         activeCanvas = canvas;
     }
 
-    private void activateType(NodeType type) {
+    private void activateType(Node.NodeType type) {
         activeType = type;
         activeTool = NODE;
     }

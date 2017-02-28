@@ -1,11 +1,11 @@
 package graph_generator;
 
 import javafx.util.Pair;
-import rule_editor.Log;
-import rule_editor.model.Edge;
-import rule_editor.model.Node;
-import rule_editor.model.Pattern;
-import rule_editor.model.Rule;
+import model.Edge;
+import model.Node;
+import model.Pattern;
+import model.Rule;
+import utils.Log;
 
 import java.util.ArrayList;
 import java.util.Random;

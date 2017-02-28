@@ -1,10 +1,8 @@
-package rule_editor.model;
+package model;
 
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
-
-import static rule_editor.model.Node.DEFAULT_RADIUS;
 
 /**
  * Created by vilddjur on 1/24/17.
@@ -64,12 +62,12 @@ public class Edge extends Line{
         double deltaY = (startNode.getCenterY() - endNode.getCenterY());
         double deltaX = (startNode.getCenterX() - endNode.getCenterX());
         double angle = Math.atan2(deltaY,deltaX);
-        double x = endNode.getCenterX() + Math.cos(angle)*DEFAULT_RADIUS;
-        double y = endNode.getCenterY() + Math.sin(angle)*DEFAULT_RADIUS;
+        double x = endNode.getCenterX() + Math.cos(angle)* Node.DEFAULT_RADIUS;
+        double y = endNode.getCenterY() + Math.sin(angle)* Node.DEFAULT_RADIUS;
         arrowHead.getElements().clear();
         arrowHead.getElements().add(new MoveTo(x, y));
-        arrowHead.getElements().add(new LineTo(x + Math.cos(angle+Math.toRadians(45))*(DEFAULT_RADIUS/2),y + Math.sin(angle+Math.toRadians(45))*(DEFAULT_RADIUS/2)));
-        arrowHead.getElements().add(new LineTo(x + Math.cos(angle+Math.toRadians(-45))*(DEFAULT_RADIUS/2),y + Math.sin(angle+Math.toRadians(-45))*(DEFAULT_RADIUS/2)));
+        arrowHead.getElements().add(new LineTo(x + Math.cos(angle+Math.toRadians(45))*(Node.DEFAULT_RADIUS/2),y + Math.sin(angle+Math.toRadians(45))*(Node.DEFAULT_RADIUS/2)));
+        arrowHead.getElements().add(new LineTo(x + Math.cos(angle+Math.toRadians(-45))*(Node.DEFAULT_RADIUS/2),y + Math.sin(angle+Math.toRadians(-45))*(Node.DEFAULT_RADIUS/2)));
         arrowHead.getElements().add(new LineTo(x,y));
         return arrowHead;
     }

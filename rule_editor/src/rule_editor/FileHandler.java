@@ -1,13 +1,16 @@
 package rule_editor;
 
-import rule_editor.model.*;
 import javafx.scene.paint.Color;
 import javafx.util.Pair;
+import model.Edge;
+import model.Pattern;
+import model.Rule;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+import utils.Log;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -32,7 +35,7 @@ import java.util.HashMap;
 
 public class FileHandler {
 
-    public static void SaveNodes(ArrayList<rule_editor.model.Node> nodes, String path) {
+    public static void SaveNodes(ArrayList<model.Node> nodes, String path) {
 
         try {
 
@@ -50,7 +53,7 @@ public class FileHandler {
 
 
 
-            for (rule_editor.model.Node node : nodes) {
+            for (model.Node node : nodes) {
                 Element elemNode = doc.createElement("Node");
                 elemNodes.appendChild(elemNode);
 
@@ -114,8 +117,8 @@ public class FileHandler {
             System.out.println("Error building document");
         }
     }
-    public static Pair<ArrayList<rule_editor.model.Node>,ArrayList<Edge>> LoadNodes(File file){
-        HashMap<Integer,rule_editor.model.Node> nodeMap = new HashMap<>();
+    public static Pair<ArrayList<model.Node>,ArrayList<Edge>> LoadNodes(File file){
+        HashMap<Integer,model.Node> nodeMap = new HashMap<>();
         ArrayList<Edge> edges = new ArrayList<>();
 
         try {
@@ -155,7 +158,7 @@ public class FileHandler {
         return pair;
     }
 
-    private static HashMap<Integer, ArrayList<Integer>> extractEdges(NodeList xnodeList, HashMap<Integer, rule_editor.model.Node> nodeMap, ArrayList<Edge> edges) {
+    private static HashMap<Integer, ArrayList<Integer>> extractEdges(NodeList xnodeList, HashMap<Integer, model.Node> nodeMap, ArrayList<Edge> edges) {
         HashMap<Integer,ArrayList<Integer>> edgeMap = new HashMap<>(); //HashMap used for easy fix of duplicate edges.
         for(int i = 0; i < xnodeList.getLength(); i++){
             Node xNode = xnodeList.item(i);
@@ -171,10 +174,10 @@ public class FileHandler {
                 }
                 if (!edgeMap.get(startID).contains(endID)) {
                     //Store the extracted Edge
-                    rule_editor.model.Node startNode = nodeMap.get(startID);
-                    rule_editor.model.Node endNode = nodeMap.get(endID);
+                    model.Node startNode = nodeMap.get(startID);
+                    model.Node endNode = nodeMap.get(endID);
 
-                    edges.add(new rule_editor.model.Edge(startNode, endNode));
+                    edges.add(new model.Edge(startNode, endNode));
 
                     edgeMap.get(startID).add(endID);
                 }
@@ -204,12 +207,12 @@ public class FileHandler {
 
                     //Extract elements of node
                     int id = Integer.parseInt(element.getElementsByTagName("ID").item(0).getTextContent());
-                    rule_editor.model.Node.NodeType type = rule_editor.model.Node.NodeType.valueOf(element.getElementsByTagName("Tag").item(0).getTextContent());
+                    model.Node.NodeType type = model.Node.NodeType.valueOf(element.getElementsByTagName("Tag").item(0).getTextContent());
                     double x = Double.parseDouble(element.getElementsByTagName("X").item(0).getTextContent());
                     double y = Double.parseDouble(element.getElementsByTagName("Y").item(0).getTextContent());
                     //Store the extracted Node
 
-                    rule_editor.model.Node node = new rule_editor.model.Node(id, x, y, rule_editor.model.Node.DEFAULT_RADIUS, Color.RED, type);
+                    model.Node node = new model.Node(id, x, y, model.Node.DEFAULT_RADIUS, Color.RED, type);
 
                 }
 
@@ -272,8 +275,8 @@ public class FileHandler {
         catch (Exception e){e.printStackTrace();}
     }
 
-    public static ArrayList<Pair<ArrayList<rule_editor.model.Node>, ArrayList<Edge>>> LoadTranslations(File file) {
-        ArrayList<Pair<ArrayList<rule_editor.model.Node>, ArrayList<Edge>>> translations = new ArrayList<>();
+    public static ArrayList<Pair<ArrayList<model.Node>, ArrayList<Edge>>> LoadTranslations(File file) {
+        ArrayList<Pair<ArrayList<model.Node>, ArrayList<Edge>>> translations = new ArrayList<>();
         try {
 
             DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -286,7 +289,7 @@ public class FileHandler {
             //foreach translation
             for (NodeList list : translationNodes) {
                 //insert into translations
-                HashMap<Integer,rule_editor.model.Node> nodeMap = new HashMap<>();
+                HashMap<Integer,model.Node> nodeMap = new HashMap<>();
                 ArrayList<Edge> edges = new ArrayList<>();
 
 
@@ -324,8 +327,8 @@ public class FileHandler {
         return nodeListList;
     }
 
-    public static Pair<ArrayList<rule_editor.model.Node>, ArrayList<Edge>> LoadMatchingPattern(File file) {
-        HashMap<Integer,rule_editor.model.Node> nodeMap = new HashMap<>();
+    public static Pair<ArrayList<model.Node>, ArrayList<Edge>> LoadMatchingPattern(File file) {
+        HashMap<Integer,model.Node> nodeMap = new HashMap<>();
         ArrayList<Edge> edges = new ArrayList<>();
 
         try {
@@ -366,8 +369,8 @@ public class FileHandler {
         return pair;
     }
 
-    private static HashMap<Integer, rule_editor.model.Node> extractNodes(NodeList xnodeList) {
-        HashMap<Integer,rule_editor.model.Node> nodeMap = new HashMap<>();
+    private static HashMap<Integer, model.Node> extractNodes(NodeList xnodeList) {
+        HashMap<Integer,model.Node> nodeMap = new HashMap<>();
         for(int i = 0; i < xnodeList.getLength(); i++){
             Node xNode = xnodeList.item(i);
 
@@ -378,12 +381,12 @@ public class FileHandler {
 
                 //Extract elements of node
                 int id = Integer.parseInt(element.getElementsByTagName("ID").item(0).getTextContent());
-                rule_editor.model.Node.NodeType type = rule_editor.model.Node.NodeType.valueOf(element.getElementsByTagName("Tag").item(0).getTextContent());
+                model.Node.NodeType type = model.Node.NodeType.valueOf(element.getElementsByTagName("Tag").item(0).getTextContent());
                 double x = Double.parseDouble(element.getElementsByTagName("X").item(0).getTextContent());
                 double y = Double.parseDouble(element.getElementsByTagName("Y").item(0).getTextContent());
                 //Store the extracted Node
 
-                rule_editor.model.Node node = new rule_editor.model.Node(id,x,y, rule_editor.model.Node.DEFAULT_RADIUS, Color.RED,type);
+                model.Node node = new model.Node(id,x,y, model.Node.DEFAULT_RADIUS, Color.RED,type);
                 nodeMap.put(id,node);
             }
         }
@@ -449,9 +452,9 @@ public class FileHandler {
         }
     }
 
-    private static void insertNodesInto(ArrayList<rule_editor.model.Node> nodes, Element elemNodes, Document doc) {
+    private static void insertNodesInto(ArrayList<model.Node> nodes, Element elemNodes, Document doc) {
         //<Node><ID>id</ID><Tag>tag</Tag><X>x</X><Y>y</Y></Node>
-        for (rule_editor.model.Node node : nodes) {
+        for (model.Node node : nodes) {
             Element elemNode = doc.createElement("Node");
             elemNodes.appendChild(elemNode);
 

@@ -1,7 +1,7 @@
-package rule_editor;
+package utils;
 
 /**
- * rule_editor.Log class for printing out information during execution.
+ * utils.Log class for printing out information during execution.
  *
  * Created by time on 2/22/17.
  */
