@@ -46,20 +46,20 @@ public class Controller {
     @FXML
     private Button gen_button;
 
+
     @FXML
     private Button start_node_button;
-
     @FXML
     private Button end_node_button;
-
     @FXML
     private Button key_node_button;
-
     @FXML
     private Button lock_node_button;
-
     @FXML
     private Button room_node_button;
+    @FXML
+    private Button any_node_button;
+
 
     @FXML
     private Pane canvas;
@@ -164,6 +164,7 @@ public class Controller {
         key_node_button.setOnMouseClicked(mouseEvent -> activateType(Node.NodeType.KEY));
         lock_node_button.setOnMouseClicked(mouseEvent -> activateType(Node.NodeType.LOCK));
         room_node_button.setOnMouseClicked(mouseEvent -> activateType(Node.NodeType.ROOM));
+        any_node_button.setOnMouseClicked(mouseEvent -> activateType(Node.NodeType.ANY));
         // init top menu
         save_button.setOnAction(actionEvent -> PrepareSave());
         load_level_button.setOnAction(actionEvent -> PrepareLoadLevel());

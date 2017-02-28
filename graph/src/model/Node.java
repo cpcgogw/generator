@@ -15,7 +15,7 @@ public class Node extends Circle {
     public static final int DEFAULT_RADIUS = 40;
 
     public enum NodeType{
-        START, END, LOCK, KEY, ROOM
+        START, END, LOCK, KEY, ROOM, ANY
     }
     private String type;
 
@@ -119,6 +119,9 @@ public class Node extends Circle {
             case "START":
                 this.setFill(Color.DEEPSKYBLUE);
                 break;
+            case "ANY":
+                this.setFill(Color.DARKKHAKI);
+                break;
         }
     }
 
@@ -139,6 +142,23 @@ public class Node extends Circle {
 
     public void addEdge(Edge e){
         edges.add(e);
+    }
+
+    public void removeEdgesToNodesWithType(String type) {
+        ArrayList<Edge> newEdges = new ArrayList<>();
+        for (Edge e :
+                edges) {
+            if (e.getStartNode() == this){
+                if(!e.getEndNode().getType().equals(type)){
+                    newEdges.add(e);
+                }
+            }else if(e.getEndNode() == this){
+                if(!e.getStartNode().getType().equals(type)){
+                    newEdges.add(e);
+                }
+            }
+        }
+        this.setEdges(newEdges);
     }
 
     public int getNodeId() {

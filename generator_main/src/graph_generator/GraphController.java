@@ -97,6 +97,7 @@ public class GraphController {
             if(n != null){
                 Log.print("replace: found corresponding node; "+ info(n), Log.LEVEL.INFO);
                 n.addAllEdges(outsideEdges);
+                n.removeEdgesToNodesWithType("ANY");
                 for (Edge e :
                         n.getEdges()) {
                     e.replaceNode(n, node);
@@ -127,8 +128,9 @@ public class GraphController {
                     contains = true;
                 }
             }
-            if(!contains){
+            if(!contains && !node.getType().equals("ANY")){
                 Log.print("addAllNotIn: adding node; " + info(node), Log.LEVEL.DEBUG);
+
                 p.nodes.add(node);
             }
         }
@@ -156,7 +158,7 @@ public class GraphController {
         }
         for (Node n : rule.matchingPattern.nodes) {
             // find node in matching pattern with same type.
-            if(node.getType().equals(n.getType())) {
+            if(node.getType().equals(n.getType()) || n.getType().equals("ANY")) {
                 checkedNodes.add(node);
                 Log.print("nodeContainsSubPattern: found matching type", Log.LEVEL.DEBUG);
                 /**
@@ -190,7 +192,7 @@ public class GraphController {
                 if(e.getStartNode() == n){ // if n is start node then we check end node
                     if(gE.getStartNode() == node){ // if node is start node in its edge
                         nooneChecked = false;
-                        if(!gE.getEndNode().getType().equals(e.getEndNode().getType())){
+                        if(!gE.getEndNode().getType().equals(e.getEndNode().getType()) && !e.getEndNode().getType().equals("ANY")){
                             /**
                              * if they are not the same we need to continue to look, but we set flag to false to keep track
                              */
@@ -209,7 +211,7 @@ public class GraphController {
                 }else if(e.getEndNode() == n){
                     if(gE.getEndNode() == node){
                         nooneChecked = false;
-                        if(!gE.getStartNode().getType().equals(e.getStartNode().getType())){
+                        if(!gE.getStartNode().getType().equals(e.getStartNode().getType()) && !e.getStartNode().getType().equals("ANY")){
                             Log.print("allEdgeAreContainedIn: found edge where start nodes were not the same", Log.LEVEL.INFO);
                             returnBool = false;
                         }else{
