@@ -364,14 +364,14 @@ public class Controller {
      * Saves level state in file
      */
     private void PrepareSave() {
-        String path = JOptionPane.showInputDialog("Save","What is the name of the savefile?");
+        String path = JOptionPane.showInputDialog("Save","newfile");
         if (path == "" || path == null) {
             path = "newfile";
         }
         if(rule_pane.isVisible()){
-            FileHandler.saveRule(activeRule,path);
+            FileHandler.saveRule(activeRule,"saves/rules/"+path);
         }else {
-            FileHandler.SaveNodes(nodeController.getNodes(), "saves/" + path);
+            FileHandler.SaveNodes(nodeController.getNodes(), "saves/levels/" + path);
         }
     }
 

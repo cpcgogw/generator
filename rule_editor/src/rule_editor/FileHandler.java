@@ -435,6 +435,16 @@ public class FileHandler {
 
             DOMSource source = new DOMSource(doc);
             try {
+                File saves = new File("saves");
+                File rules = new File("saves/rules");
+                File levels = new File("saves/levels");
+                if (!saves.exists())
+                    saves.mkdir();
+                if (!rules.exists())
+                    rules.mkdir();
+                if (!levels.exists())
+                    levels.mkdir();
+
                 FileWriter fileWriter = new FileWriter(path);
                 StreamResult streamResult = new StreamResult(fileWriter);
                 transformer.transform(source, streamResult);
