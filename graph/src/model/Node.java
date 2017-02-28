@@ -14,6 +14,11 @@ public class Node extends Circle {
     private static int idCounter=0;
     public static final int DEFAULT_RADIUS = 40;
 
+    public enum NodeType{
+        START, END, LOCK, KEY, ROOM
+    }
+    private String type;
+
     public Node(Node n) {
         super(n.getCenterX(), n.getCenterY(), n.getRadius(), n.getFill());
         edges = new ArrayList<>();
@@ -60,21 +65,21 @@ public class Node extends Circle {
     }
 
     public void setType(NodeType type) {
-        this.type = type;
+        this.type = type.toString();
         setColor();
     }
-
-
-    public enum NodeType{
-        START, END, LOCK, KEY, ROOM
-    }
-    private NodeType type;
-
-    public Node(double x, double y, int radius, Color color, NodeType type){
+    public Node(double x, double y, int radius, Color color, String type){
         super(x, y, radius, color);
         edges = new ArrayList<Edge>();
         id = idCounter++;
         this.type = type;
+        setColor();
+    }
+    public Node(double x, double y, int radius, Color color, NodeType type){
+        super(x, y, radius, color);
+        edges = new ArrayList<Edge>();
+        id = idCounter++;
+        this.type = type.toString();
         setColor();
     }
     public Node(int id, double x, double y, int radius, Color color, NodeType type){
@@ -84,22 +89,29 @@ public class Node extends Circle {
             idCounter = id+1;
         }
     }
+    public Node(int id, double x, double y, int radius, Color color, String type){
+        this(x, y, radius, color, type);
+        this.id = id;
+        if(id>=idCounter){
+            idCounter = id+1;
+        }
+    }
 
     private void setColor() {
         switch (type){
-            case END:
+            case "END":
                 this.setFill(Color.FORESTGREEN);
                 break;
-            case KEY:
+            case "KEY":
                 this.setFill(Color.ORANGE);
                 break;
-            case LOCK:
+            case "LOCK":
                 this.setFill(Color.RED);
                 break;
-            case ROOM:
+            case "ROOM":
                 this.setFill(Color.PINK);
                 break;
-            case START:
+            case "START":
                 this.setFill(Color.DEEPSKYBLUE);
                 break;
         }
@@ -127,7 +139,7 @@ public class Node extends Circle {
     public int getNodeId() {
         return id;
     }
-    public NodeType getType(){
+    public String getType(){
         return type;
     }
 
