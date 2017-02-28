@@ -75,19 +75,38 @@ public class GraphController {
      * Applies a random matching rule from a given set of rules
      * @param rules
      * Rules to try to apply
-     * @param pattern
-     * pattern to apply the rules to
+     * @param graph
+     * Graph to apply the rules to
      */
-    public void applyRandomMatchingRule(ArrayList<Rule> rules, Pattern pattern) {
-        ArrayList<Pair<Rule, Pattern>> rulePatternList = rulesMatchingPattern(rules, pattern);
+    public void applyRandomMatchingRule(ArrayList<Rule> rules, Pattern graph) {
+        ArrayList<Pair<Rule, Pattern>> rulePatternList = rulesMatchingPattern(rules, graph);
         if (rulePatternList.size() > 0) {
             Pair<Rule, Pattern> pair = rulePatternList.get(random.nextInt(rulePatternList.size()));
             Rule r = pair.getKey();
             Pattern p = pair.getValue();
-            pattern.resetIds();
-            execute(pattern, p, r);
+            graph.resetIds();
+            applyRule(graph, p, r);
         }
     }
+
+    /*/**
+     * Tries to apply a given rule to the pattern.
+     *
+     * @param rule
+     * The rule to try.
+     * @param graph
+     * The graph we try to apply the rule to.
+     * @return
+     * Whether or not the rule was applied successfully.
+    public boolean tryApplyRule(Rule rule, Pattern graph) {
+        Pair<Rule, Pattern> match; //= patternMatchingRule(rule, graph);
+        if (match != null) {
+            graph.resetIds();
+            applyRule(graph, match.getValue(), match.getKey());
+            return true;
+        }
+        return false;
+    }*/
 
     public void replace(Pattern p, Rule rule) {
         Pattern tr = rule.randomPossiblePattern();
@@ -151,7 +170,7 @@ public class GraphController {
         return ret;
     }
 
-    public boolean nodeContainsSubPattern(Node node, ArrayList<Node> checkedNodes, Pattern p, Rule rule){
+    private boolean nodeContainsSubPattern(Node node, ArrayList<Node> checkedNodes, Pattern p, Rule rule){
         boolean returnBool = false;
         if(checkedNodes.contains(node)){
             return true;
@@ -161,7 +180,7 @@ public class GraphController {
             if(node.getType().equals(n.getType()) || n.getType().equals("ANY")) {
                 checkedNodes.add(node);
                 Log.print("nodeContainsSubPattern: found matching type", Log.LEVEL.DEBUG);
-                /**
+                /*
                  * all edges in node n must be in node "node"
                  * also traverses the nodes to check
                  */
@@ -171,7 +190,7 @@ public class GraphController {
                     p.nodes.add(node);
                 }
             }
-            /**
+            /*
              * once we have found a node which has the correct edges we can check all the subnodes to that node.
              * issue here is that we need to keep track of which nodes we have check in order to not have a circular dep.
              */
@@ -193,13 +212,13 @@ public class GraphController {
                     if(gE.getStartNode() == node){ // if node is start node in its edge
                         nooneChecked = false;
                         if(!gE.getEndNode().getType().equals(e.getEndNode().getType()) && !e.getEndNode().getType().equals("ANY")){
-                            /**
+                            /*
                              * if they are not the same we need to continue to look, but we set flag to false to keep track
                              */
                             Log.print("allEdgeAreContainedIn: found edge where end nodes were not the same", Log.LEVEL.INFO);
                             returnBool = false;
                         }else{
-                            /**
+                            /*
                              * if we find a matching node-edge pair we can set flag to true and check this subnode for subpattern.
                              * finally we break loop
                              */
@@ -229,9 +248,20 @@ public class GraphController {
         Log.print("returning: " + returnBool, Log.LEVEL.DEBUG);
         return returnBool;
     }
-    public void execute(Pattern pattern, Pattern p,Rule rule) {
+
+    /**
+     * Applies rule to subpattern in graph.
+     *
+     * @param graph
+     * The graph to which we apply the given rule.
+     * @param p
+     * The subpattern inside the graph which we apply the rule to.
+     * @param rule
+     * The rule which we apply to the subpattern in the graph.
+     */
+    private void applyRule(Pattern graph, Pattern p,Rule rule) {
         replace(p, rule);
-        addAllNotIn(pattern, p);
+        addAllNotIn(graph, p);
     }
     private String info(Node node) {
         return " Type: " + node.getType() + ", id:" + node.getNodeId() + ", #edges: " + node.getEdges().size();
