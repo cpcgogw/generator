@@ -97,6 +97,15 @@ public class Edge extends Line{
         getStartNode().removeEdge(this);
         getEndNode().removeEdge(this);
     }
+
+    /**
+     * Given a node to replace and a node to add instead this method checks which node is the one given, if the
+     * startnode is the replace node we set the startnode to be the newNode, and vice versa for endNode
+     * @param replace
+     * Node to replace
+     * @param newNode
+     * Node to replace with
+     */
     public void replaceNode(Node replace, Node newNode){
         if(startNode == replace){
             startNode = newNode;

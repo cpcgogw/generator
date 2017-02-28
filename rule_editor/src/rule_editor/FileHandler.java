@@ -389,5 +389,105 @@ public class FileHandler {
         }
         return nodeMap;
     }
+    public void saveRule(String path, Rule rule){
+        try {
+            DocumentBuilderFactory dFact = DocumentBuilderFactory.newInstance();
+            DocumentBuilder build = dFact.newDocumentBuilder();
+            Document doc = build.newDocument();
+
+            //<Rule></Rule>
+            Element elemRule = doc.createElement("Rule");
+            doc.appendChild(elemRule);
+
+            //<Rule><MatchingPattern></MatchingPattern></Rule>
+            Element elemMatchingPattern = doc.createElement("MatchingPattern");
+            elemRule.appendChild(elemMatchingPattern);
+            //<Rule><MatchingPattern><Pattern></Pattern></MatchingPattern></Rule>
+            Element elemNodes = doc.createElement("Pattern");
+            elemMatchingPattern.appendChild(elemNodes);
+            //<Rule><MatchingPattern><Pattern>...</Pattern></MatchingPattern></Rule>
+            insertNodesInto(rule.matchingPattern.nodes, elemNodes, doc);
+
+
+            //<Rule><PossibleTranslations></PossibleTranslations></Rule>
+            Element elemPosTranslations = doc.createElement("PossibleTranslations");
+            elemRule.appendChild(elemPosTranslations);
+            //<Rule><PossibleTranslations><Pattern></Pattern>....</PossibleTranslations></Rule>
+            for (Pattern p : rule.possibleTranslations) {
+                Element elemSinglePattern = doc.createElement("Pattern");
+                elemPosTranslations.appendChild(elemSinglePattern);
+                //<Rule><PossibleTranslations><Pattern>...</Pattern>[..]</PossibleTranslations></Rule>
+                insertNodesInto(p.nodes, elemSinglePattern, doc);
+            }
+
+            /* Saves File at specific directory
+                */
+
+            Transformer transformer = TransformerFactory.newInstance().newTransformer();
+
+            //formatting for human readability.
+            transformer.setOutputProperty(
+                    "{http://xml.apache.org/xslt}indent-amount", "4");
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+
+            DOMSource source = new DOMSource(doc);
+            try {
+                FileWriter fileWriter = new FileWriter(path);
+                StreamResult streamResult = new StreamResult(fileWriter);
+                transformer.transform(source, streamResult);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } catch (TransformerException ex) {
+            Log.print("Error outputting document", Log.LEVEL.ERROR);
+        } catch (ParserConfigurationException ex) {
+            Log.print("Error building document", Log.LEVEL.ERROR);
+        } catch (Exception e) {
+            Log.print("Rule::save(String): There was an error saving the Rule: ", Log.LEVEL.ERROR);
+            e.printStackTrace();
+        }
+    }
+
+    private void insertNodesInto(ArrayList<rule_editor.model.Node> nodes, Element elemNodes, Document doc) {
+        //<Node><ID>id</ID><Tag>tag</Tag><X>x</X><Y>y</Y></Node>
+        for (rule_editor.model.Node node : nodes) {
+            Element elemNode = doc.createElement("Node");
+            elemNodes.appendChild(elemNode);
+
+            Element elemId = doc.createElement("ID");
+            elemId.appendChild(doc.createTextNode(String.valueOf(node.getNodeId())));
+            elemNode.appendChild(elemId);
+
+            Element elemTag = doc.createElement("Tag");
+            elemTag.appendChild(doc.createTextNode(String.valueOf(node.getType())));
+            elemNode.appendChild(elemTag);
+
+            Element elemX = doc.createElement("X");
+            elemX.appendChild(doc.createTextNode(String.valueOf(node.getCenterX())));
+            elemNode.appendChild(elemX);
+
+            Element elemY = doc.createElement("Y");
+            elemY.appendChild(doc.createTextNode(String.valueOf(node.getCenterY())));
+            elemNode.appendChild(elemY);
+
+            Element elemEdges = doc.createElement("Edges");
+            elemNode.appendChild(elemEdges);
+            for (Edge edge : node.getEdges()) {
+                Element elemEdge = doc.createElement("Edge");
+                elemEdges.appendChild(elemEdge);
+
+                Element elemStart = doc.createElement("StartID");
+                elemStart.appendChild(doc.createTextNode(String.valueOf(edge.getStartNode().getNodeId())));
+                elemEdge.appendChild(elemStart);
+
+                Element elemEnd = doc.createElement("EndID");
+                elemEnd.appendChild(doc.createTextNode(String.valueOf(edge.getEndNode().getNodeId())));
+                elemEdge.appendChild(elemEnd);
+            }
+
+        }
+    }
+
 }
 

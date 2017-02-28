@@ -22,8 +22,17 @@ public class Node extends Circle {
         setColor();
     }
 
+    /**
+     * Sets the node id to the given integer, sets the idCounter to that id if the idCounter is less than or equal
+     * to the given id
+     * @param nodeId
+     * Id to set this.id to
+     */
     public void setNodeId(int nodeId) {
         this.id = nodeId;
+        if(idCounter<=nodeId){
+            idCounter = nodeId+1;
+        }
     }
 
     public void addAllEdges(ArrayList<Edge> edges) {
