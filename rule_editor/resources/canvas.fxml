@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane fx:id="window" prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="rule_editor.controller.Controller">
+   <children>
+      <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="27.0">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+               <children>
+                  <ScrollPane prefHeight="400.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="800.0" prefWidth="200.0">
+                           <children>
+                              <VBox fx:id="node_types_box" prefHeight="771.0" prefWidth="100.0">
+                                 <children>
+                                    <Button fx:id="start_node_button" mnemonicParsing="false" prefHeight="93.0" prefWidth="100.0" style="-fx-background-color: #00BFFF;" text="StartNode" />
+                                    <Button fx:id="end_node_button" mnemonicParsing="false" prefHeight="89.0" prefWidth="100.0" style="-fx-background-color: #228B22;" text="EndNode" />
+                                    <Button fx:id="key_node_button" mnemonicParsing="false" prefHeight="93.0" prefWidth="100.0" style="-fx-background-color: #FFA500;" text="KeyNode" />
+                                    <Button fx:id="lock_node_button" mnemonicParsing="false" prefHeight="95.0" prefWidth="100.0" style="-fx-background-color: #FF0000;" text="LockNode" />
+                                    <Button fx:id="room_node_button" mnemonicParsing="false" prefHeight="98.0" prefWidth="100.0" style="-fx-background-color: #FFC0CB;" text="RoomNode" />
+                                    <Button fx:id="edge_button" mnemonicParsing="false" prefHeight="98.0" prefWidth="100.0" style="-fx-background-color: #ABCDEF;" text="Edge" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </AnchorPane>
+                    </content>
+                  </ScrollPane>
+               </children>
+            </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+               <children>
+                  <ScrollPane prefHeight="400.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <content>
+                        <VBox prefHeight="255.0" prefWidth="197.0">
+                           <children>
+                              <Button fx:id="move_button" mnemonicParsing="false" prefHeight="26.0" prefWidth="156.0" text="Move" />
+                              <Button fx:id="delete_button" mnemonicParsing="false" prefHeight="26.0" prefWidth="156.0" text="Delete" />
+                              <Button fx:id="select_node_button" mnemonicParsing="false" prefHeight="26.0" prefWidth="156.0" text="Select" />
+                              <Button fx:id="new_scenario_button" mnemonicParsing="false" prefHeight="26.0" prefWidth="155.0" text="New Scenario" />
+                              <Button fx:id="gen_button" mnemonicParsing="false" prefHeight="26.0" prefWidth="155.0" text="Generate level" />
+                           </children>
+                        </VBox>
+                     </content>
+                  </ScrollPane>
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+      <Pane fx:id="canvas" minHeight="593.0" minWidth="1200.0" prefHeight="800.0" prefWidth="712.0" style="-fx-background-color: #EFE;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="29.0" />
+       <GridPane fx:id="rule_pane" layoutX="200.0" layoutY="29.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="29.0">
+           <columnConstraints>
+               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+           </columnConstraints>
+           <rowConstraints>
+               <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+           </rowConstraints>
+           <children>
+               <TabPane fx:id="rule_tab_pane" prefHeight="671.0" prefWidth="762.0" tabClosingPolicy="UNAVAILABLE" GridPane.columnIndex="1" />
+               <Pane fx:id="rule_canvas" prefHeight="671.0" prefWidth="437.0" style="-fx-background-color: #EFA;" />
+            <Pane fx:id="node_inspector_pane" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #EFA;" GridPane.columnIndex="2">
+               <children>
+                  <TextField fx:id="active_node_id_field" layoutX="14.0" layoutY="91.0" prefHeight="26.0" prefWidth="160.0" />
+                  <Button fx:id="active_node_save_button" layoutX="117.0" layoutY="127.0" mnemonicParsing="false" text="Button" />
+                  <Label layoutX="14.0" layoutY="75.0" text="ID" />
+               </children>
+            </Pane>
+           </children>
+       </GridPane>
+      <MenuBar prefHeight="29.0" prefWidth="1306.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+                  <MenuItem fx:id="new_button" mnemonicParsing="false" text="New" />
+                  <MenuItem fx:id="load_level_button" mnemonicParsing="false" text="Open Level" />
+                  <MenuItem fx:id="load_rule_button" mnemonicParsing="false" text="Open Rule" />
+                  <MenuItem fx:id="save_button" mnemonicParsing="false" text="Save" />
+              <MenuItem fx:id="close_button" mnemonicParsing="false" text="Close" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="View">
+            <items>
+                  <MenuItem fx:id="level_menu_item" mnemonicParsing="false" text="Level" />
+              <MenuItem fx:id="rule_menu_item" mnemonicParsing="false" text="Rule" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+   </children>
+</AnchorPane>
