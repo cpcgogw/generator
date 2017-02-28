@@ -88,7 +88,7 @@ public class GraphController {
             execute(pattern, p, r);
         }
     }
-    
+
     public void replace(Pattern p, Rule rule) {
         Pattern tr = rule.randomPossiblePattern();
         for (Node node : p.nodes) {

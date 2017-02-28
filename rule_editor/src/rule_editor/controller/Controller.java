@@ -1,12 +1,6 @@
 package rule_editor.controller;
 
-import rule_editor.FileHandler;
-import rule_editor.Log;
-import rule_editor.model.Edge;
-import rule_editor.model.Node;
-import rule_editor.model.Node.NodeType;
-import rule_editor.model.Pattern;
-import rule_editor.model.Rule;
+import graph_generator.GraphController;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -18,6 +12,13 @@ import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+import rule_editor.FileHandler;
+import rule_editor.Log;
+import rule_editor.model.Edge;
+import rule_editor.model.Node;
+import rule_editor.model.Node.NodeType;
+import rule_editor.model.Pattern;
+import rule_editor.model.Rule;
 
 import javax.swing.*;
 import java.io.File;
@@ -123,7 +124,7 @@ public class Controller {
     public NodeType getActiveType(){
         return activeType;
     }
-
+    private GraphController graphController;
     /**
      * Returns the activeCanvas which is set when the mouse enters a pane we want to draw our graphs in.
      * @return The latest activated canvas.
@@ -146,6 +147,7 @@ public class Controller {
 
     private NodeController nodeController;
     public void initialize(){
+        GraphController graphController = new GraphController();
         scenarios = new HashMap<Pane, Pattern>();
         activeType = NodeType.START;
         activeTool = NODE;
@@ -238,7 +240,7 @@ public class Controller {
     }
 
     private Pattern translateLevel(Pattern pattern, ArrayList<Rule> rules) {
-        pattern.findAndReplace(rules);
+        graphController.applyRandomMatchingRule(rules, pattern);
         return pattern;
     }
 
@@ -364,7 +366,7 @@ public class Controller {
             path = "newfile";
         }
         if(rule_pane.isVisible()){
-            activeRule.save(path);
+            FileHandler.saveRule(activeRule,path);
         }else {
             FileHandler.SaveNodes(nodeController.getNodes(), "saves/" + path);
         }

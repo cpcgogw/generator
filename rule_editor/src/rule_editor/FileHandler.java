@@ -389,7 +389,7 @@ public class FileHandler {
         }
         return nodeMap;
     }
-    public void saveRule(String path, Rule rule){
+    public static void saveRule(Rule rule, String path){
         try {
             DocumentBuilderFactory dFact = DocumentBuilderFactory.newInstance();
             DocumentBuilder build = dFact.newDocumentBuilder();
@@ -449,7 +449,7 @@ public class FileHandler {
         }
     }
 
-    private void insertNodesInto(ArrayList<rule_editor.model.Node> nodes, Element elemNodes, Document doc) {
+    private static void insertNodesInto(ArrayList<rule_editor.model.Node> nodes, Element elemNodes, Document doc) {
         //<Node><ID>id</ID><Tag>tag</Tag><X>x</X><Y>y</Y></Node>
         for (rule_editor.model.Node node : nodes) {
             Element elemNode = doc.createElement("Node");
