@@ -239,6 +239,9 @@ public class Controller {
     }
 
     private Pattern translateLevel(Pattern pattern, ArrayList<Rule> rules) {
+        if(graphController == null){
+            graphController = new GraphController();
+        }
         graphController.applyRandomMatchingRule(rules, pattern);
         return pattern;
     }
