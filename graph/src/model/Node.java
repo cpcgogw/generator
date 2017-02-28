@@ -68,6 +68,11 @@ public class Node extends Circle {
         this.type = type.toString();
         setColor();
     }
+    public void setType(String  type) {
+        this.type = type;
+        setColor();
+    }
+
     public Node(double x, double y, int radius, Color color, String type){
         super(x, y, radius, color);
         edges = new ArrayList<Edge>();
