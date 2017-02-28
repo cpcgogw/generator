@@ -139,7 +139,7 @@ public class GraphController {
         Node ret = null;
         for (Node n :
                 rule.matchingPattern.nodes) {
-            if (node.getType() == n.getType()){
+            if (node.getType().equals(n.getType())){
                 for (Node n2 : p.nodes) {
                     if (n2.getNodeId() == n.getNodeId())
                         return n2;
@@ -156,7 +156,7 @@ public class GraphController {
         }
         for (Node n : rule.matchingPattern.nodes) {
             // find node in matching pattern with same type.
-            if(node.getType() == n.getType()) {
+            if(node.getType().equals(n.getType())) {
                 checkedNodes.add(node);
                 Log.print("nodeContainsSubPattern: found matching type", Log.LEVEL.DEBUG);
                 /**
@@ -190,7 +190,7 @@ public class GraphController {
                 if(e.getStartNode() == n){ // if n is start node then we check end node
                     if(gE.getStartNode() == node){ // if node is start node in its edge
                         nooneChecked = false;
-                        if(gE.getEndNode().getType() != e.getEndNode().getType()){
+                        if(!gE.getEndNode().getType().equals(e.getEndNode().getType())){
                             /**
                              * if they are not the same we need to continue to look, but we set flag to false to keep track
                              */
@@ -209,7 +209,7 @@ public class GraphController {
                 }else if(e.getEndNode() == n){
                     if(gE.getEndNode() == node){
                         nooneChecked = false;
-                        if(gE.getStartNode().getType() != e.getStartNode().getType()){
+                        if(!gE.getStartNode().getType().equals(e.getStartNode().getType())){
                             Log.print("allEdgeAreContainedIn: found edge where start nodes were not the same", Log.LEVEL.INFO);
                             returnBool = false;
                         }else{
