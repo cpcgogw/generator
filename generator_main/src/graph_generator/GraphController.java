@@ -111,11 +111,9 @@ public class GraphController {
     public void replace(Pattern p, Rule rule) {
         Pattern tr = rule.randomPossiblePattern();
         for (Node node : p.nodes) {
-            ArrayList<Edge> outsideEdges = node.extractOutgoingEdges(p);
             Node n = findCorrespondingNode(node, tr, rule);
             if(n != null){
                 Log.print("replace: found corresponding node; "+ info(n), Log.LEVEL.INFO);
-                n.addAllEdges(outsideEdges);
                 n.removeEdgesToNodesWithType("ANY");
                 for (Edge e :
                         n.getEdges()) {
@@ -123,7 +121,7 @@ public class GraphController {
                 }
                 node.setCenterX(n.getCenterX());
                 node.setCenterY(n.getCenterY());
-                node.setEdges(n.getEdges());
+                node.addAllEdges(n.getEdges());
                 node.setType(n.getType());
                 node.setNodeId(n.getNodeId());
             }
