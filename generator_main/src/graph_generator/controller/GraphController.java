@@ -1,4 +1,4 @@
-package graph_generator;
+package graph_generator.controller;
 
 import javafx.util.Pair;
 import model.Edge;

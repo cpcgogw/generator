@@ -1,6 +1,6 @@
 package rule_editor.controller;
 
-import graph_generator.GraphController;
+import graph_generator.controller.GraphController;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
