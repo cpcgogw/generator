@@ -22,7 +22,7 @@ public class GraphControllerTest {
     @Before
     public void init(){
         graphController = new GraphController();
-        //Log.level = Log.LEVEL.DEBUG;
+        Log.level = Log.LEVEL.DEBUG;
     }
     @Test
     public void rulesMatchingPattern() throws Exception {
@@ -39,8 +39,6 @@ public class GraphControllerTest {
         Node startNode = node("START");
         Node endNode = node("END");
         Edge e = new Edge(startNode, endNode);
-        startNode.addEdge(e);
-        endNode.addEdge(e);
         matchingPattern.nodes.add(startNode);
         matchingPattern.nodes.add(endNode);
 
@@ -48,8 +46,6 @@ public class GraphControllerTest {
         Node lockNode = node("LOCK");
         Node weirdNode = node("WEIRD");
         Edge e2 = new Edge(lockNode, weirdNode);
-        lockNode.addEdge(e2);
-        weirdNode.addEdge(e2);
         weirdPattern.nodes.add(lockNode);
         weirdPattern.nodes.add(weirdNode);
 
@@ -59,10 +55,6 @@ public class GraphControllerTest {
         Node node3 = node("OTHER");
         Edge e3 = new Edge(node1, node2);
         Edge e4 = new Edge(node2, node3);
-        node1.addEdge(e3);
-        node2.addEdge(e3);
-        node2.addEdge(e4);
-        node3.addEdge(e4);
         ourPattern.nodes.add(node1);
         ourPattern.nodes.add(node2);
         ourPattern.nodes.add(node3);
@@ -75,6 +67,27 @@ public class GraphControllerTest {
         ArrayList<Pair<Rule, Pattern>> pairArrayList = graphController.rulesMatchingPattern(rules, ourPattern);
 
         assert pairArrayList.size() == 2;
+
+        /*
+        create pattern containing node with more than 8 edges to/from it
+        make sure we get no rules matching
+         */
+        Pattern overFullPattern = new Pattern();
+        Node startOverFull = node("START");
+        Node endOverFull = node("END");
+        Edge edgeOverfull = new Edge(startOverFull, endOverFull);
+        overFullPattern.nodes.add(startOverFull);
+        overFullPattern.nodes.add(endOverFull);
+        for (int i = 0; i < 8; i++) {
+            Node n = node("LOL"+i);
+            Edge eTmp = new Edge(n, startOverFull);
+            overFullPattern.nodes.add(n);
+        }
+        Log.print("overfullPattern: " + GraphLogger.patternToString(overFullPattern), Log.LEVEL.DEBUG);
+
+        pairArrayList = graphController.rulesMatchingPattern(rules, overFullPattern);
+        System.out.println(pairArrayList.size());
+        assert pairArrayList.size() == 0;
     }
 
     @Test
@@ -96,11 +109,7 @@ public class GraphControllerTest {
         Node nodeB = node("B");
         Node nodeC = node("C");
         Edge bToC = new Edge(nodeB, nodeC);
-        nodeB.addEdge(bToC);
-        nodeC.addEdge(bToC);
         Edge cToA = new Edge(nodeC, nodeA2);
-        nodeA2.addEdge(cToA);
-        nodeC.addEdge(cToA);
         trans.nodes.add(nodeA2);
         trans.nodes.add(nodeB);
         trans.nodes.add(nodeC);
@@ -133,6 +142,7 @@ public class GraphControllerTest {
         Log.print(GraphLogger.patternToString(graph), Log.LEVEL.DEBUG);
 
         assert graph.nodes.size() == 2*n+1;
+
     }
 
     private Node node(String type) {

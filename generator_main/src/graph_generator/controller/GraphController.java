@@ -55,7 +55,7 @@ public class GraphController {
                 }
 
                 Pattern p = new Pattern();
-                boolean result = nodeContainsSubPattern(pattern.nodes.get(i), new ArrayList<Node>(), p, r);
+                boolean result = insertValidSubPatternFromRule(pattern.nodes.get(i), new ArrayList<Node>(), p, r);
 
                 if(result){
                     rulePatternList.add(new Pair<>(r,p));
@@ -168,7 +168,23 @@ public class GraphController {
         return ret;
     }
 
-    private boolean nodeContainsSubPattern(Node node, ArrayList<Node> checkedNodes, Pattern p, Rule rule){
+    /**
+     * Checks if node 'node' is a valid node in the given rules matchingpattern if that is the case its added to the
+     * pattern 'buildPattern' will return false if any valid 'node' found in matchingpattern has more than 8 edges.
+     * After checking a node, if its valid and has more nodes to check it will call itself with the next node and
+     * add the checked node node to checkedNode list.
+     * @param node
+     * Node to check if valid in matchingPattern
+     * @param checkedNodes
+     * List of checked nodes so we dont check same node twice
+     * @param buildPattern
+     * Valid subpattern built from 'node'
+     * @param rule
+     * Rule with the pattern we are matching against
+     * @return
+     * returns true if we have found a valid subpattern
+     */
+    private boolean insertValidSubPatternFromRule(Node node, ArrayList<Node> checkedNodes, Pattern buildPattern, Rule rule){
         boolean returnBool = false;
         if(checkedNodes.contains(node)){
             return true;
@@ -178,14 +194,22 @@ public class GraphController {
             if(node.getType().equals(n.getType()) || n.getType().equals("ANY")) {
                 checkedNodes.add(node);
                 Log.print("nodeContainsSubPattern: found matching type", Log.LEVEL.DEBUG);
+
+                /*
+                check so that node has less than 8 edges
+                 */
+                if(node.getEdges().size()>8){
+                    Log.print("nodeContainsSubpattern: node has more than 8 edges; returning false", Log.LEVEL.DEBUG);
+                    return false;
+                }
                 /*
                  * all edges in node n must be in node "node"
                  * also traverses the nodes to check
                  */
-                returnBool = allEdgeAreContainedIn(n, node, checkedNodes, p, rule);
+                returnBool = allEdgeAreContainedIn(n, node, checkedNodes, buildPattern, rule);
                 if(returnBool){
                     Log.print("nodeContainsSubPattern: edges were correct, adding to pattern", Log.LEVEL.DEBUG);
-                    p.nodes.add(node);
+                    buildPattern.nodes.add(node);
                 }
             }
             /*
@@ -197,6 +221,15 @@ public class GraphController {
         return returnBool;
     }
 
+    /**
+     * Checks so all that all edges that node 'n' has, node 'node' will have too.
+     * @param n
+     * @param node
+     * @param checkedNodes
+     * @param p
+     * @param rule
+     * @return
+     */
     private boolean allEdgeAreContainedIn(Node n, Node node, ArrayList<Node> checkedNodes, Pattern p, Rule rule){
         boolean returnBool = true;
         boolean nooneChecked = true;
@@ -221,7 +254,7 @@ public class GraphController {
                              * finally we break loop
                              */
                             Log.print("allEdgeAreContainedIn: found true case, checking subNode", Log.LEVEL.INFO);
-                            returnBool = nodeContainsSubPattern(gE.getEndNode(), checkedNodes, p, rule);
+                            returnBool = insertValidSubPatternFromRule(gE.getEndNode(), checkedNodes, p, rule);
                             break;
                         }
                     }
@@ -233,7 +266,7 @@ public class GraphController {
                             returnBool = false;
                         }else{
                             Log.print("allEdgeAreContainedIn: found true case, checking subNode", Log.LEVEL.INFO);
-                            returnBool = nodeContainsSubPattern(gE.getStartNode(), checkedNodes, p, rule);
+                            returnBool = insertValidSubPatternFromRule(gE.getStartNode(), checkedNodes, p, rule);
                             break;
                         }
                     }
