@@ -130,7 +130,6 @@ public class GraphControllerTest {
                 Pair<Rule, Pattern> pair = rulePatternList.get(0);
                 Rule r = pair.getKey();
                 Pattern p = pair.getValue();
-                graph.resetIds();
                 Log.print("applying rule", Log.LEVEL.DEBUG);
                 Log.print("Before: \n " + GraphLogger.patternToString(graph), Log.LEVEL.DEBUG);
                 Log.print("Subpattern: " + GraphLogger.patternToString(p), Log.LEVEL.DEBUG);

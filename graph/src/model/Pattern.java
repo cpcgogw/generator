@@ -36,9 +36,11 @@ public class Pattern {
     }
 
     public void resetIds() {
+        int idCounter = Node.idCounter;
         for (Node node :
                 nodes) {
-            node.setNodeId((node.getNodeId()+3)* 2);
+            node.setNodeId(idCounter);
+            idCounter++;
         }
     }
 }

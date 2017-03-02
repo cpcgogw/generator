@@ -223,7 +223,6 @@ public class Controller {
         }
         //display
         currentLevel = newLevel;
-        newLevel.resetIds();
         for(Node n : newLevel.nodes){
             //Node node = n.clone();
             nodeController.addNode(n);

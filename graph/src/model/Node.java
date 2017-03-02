@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class Node extends Circle {
     private ArrayList<Edge> edges;
     private int id;
-    private static int idCounter=0;
+    public static int idCounter=0;
     public static final int DEFAULT_RADIUS = 40;
 
     public enum NodeType{
