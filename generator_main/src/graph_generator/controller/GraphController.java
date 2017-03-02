@@ -1,5 +1,6 @@
 package graph_generator.controller;
 
+import graph_generator.utils.GraphLogger;
 import javafx.util.Pair;
 import model.Edge;
 import model.Node;
@@ -47,10 +48,10 @@ public class GraphController {
             for (int i = 0; i < pattern.nodes.size(); i++) {
 
                 Log.print("checking subpattern:", Log.LEVEL.DEBUG);
-                Log.print(info(pattern.nodes.get(i)), Log.LEVEL.DEBUG);
+                Log.print(GraphLogger.nodeToString(pattern.nodes.get(i)), Log.LEVEL.DEBUG);
                 Log.print("vs", Log.LEVEL.DEBUG);
                 for (Node n : r.matchingPattern.nodes) {
-                    Log.print(info(n), Log.LEVEL.DEBUG);
+                    Log.print(GraphLogger.nodeToString(n), Log.LEVEL.DEBUG);
                 }
 
                 Pattern p = new Pattern();
@@ -84,7 +85,6 @@ public class GraphController {
             Pair<Rule, Pattern> pair = rulePatternList.get(random.nextInt(rulePatternList.size()));
             Rule r = pair.getKey();
             Pattern p = pair.getValue();
-            graph.resetIds();
             applyRule(graph, p, r);
         }
     }
@@ -113,7 +113,7 @@ public class GraphController {
         for (Node node : p.nodes) {
             Node n = findCorrespondingNode(node, tr, rule);
             if(n != null){
-                Log.print("replace: found corresponding node; "+ info(n), Log.LEVEL.INFO);
+                Log.print("replace: found corresponding node; "+ GraphLogger.nodeToString(n), Log.LEVEL.INFO);
                 n.removeEdgesToNodesWithType("ANY");
                 for (Edge e :
                         n.getEdges()) {
@@ -146,9 +146,9 @@ public class GraphController {
                 }
             }
             if(!contains && !node.getType().equals("ANY")){
-                Log.print("addAllNotIn: adding node; " + info(node), Log.LEVEL.DEBUG);
+                Log.print("addAllNotIn: adding node; " + GraphLogger.nodeToString(node), Log.LEVEL.DEBUG);
 
-                p.nodes.add(node);
+                p.nodes.add(node.clone());
             }
         }
     }
@@ -258,11 +258,9 @@ public class GraphController {
      * The rule which we apply to the subpattern in the graph.
      */
     public void applyRule(Pattern graph, Pattern p,Rule rule) {
+        graph.resetIds();
         replace(p, rule);
         addAllNotIn(graph, p);
-    }
-    private String info(Node node) {
-        return " Type: " + node.getType() + ", id:" + node.getNodeId() + ", #edges: " + node.getEdges().size();
     }
 
 }
