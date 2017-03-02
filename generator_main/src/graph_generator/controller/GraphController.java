@@ -257,7 +257,7 @@ public class GraphController {
      * @param rule
      * The rule which we apply to the subpattern in the graph.
      */
-    private void applyRule(Pattern graph, Pattern p,Rule rule) {
+    public void applyRule(Pattern graph, Pattern p,Rule rule) {
         replace(p, rule);
         addAllNotIn(graph, p);
     }
