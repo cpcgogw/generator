@@ -43,4 +43,13 @@ public class Pattern {
             idCounter++;
         }
     }
+
+    @Override
+    public String toString() {
+        String ret = "Pattern : \n";
+        for (Node n : this.nodes) {
+            ret += " node; " + n + "\n";
+        }
+        return ret;
+    }
 }

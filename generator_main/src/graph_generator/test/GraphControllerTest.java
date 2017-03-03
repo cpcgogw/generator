@@ -1,7 +1,6 @@
 package graph_generator.test;
 
 import graph_generator.controller.GraphController;
-import graph_generator.utils.GraphLogger;
 import javafx.scene.paint.Color;
 import javafx.util.Pair;
 import model.Edge;
@@ -83,7 +82,7 @@ public class GraphControllerTest {
             Edge eTmp = new Edge(n, startOverFull);
             overFullPattern.nodes.add(n);
         }
-        Log.print("overfullPattern: " + GraphLogger.patternToString(overFullPattern), Log.LEVEL.DEBUG);
+        Log.print("overfullPattern: " + overFullPattern, Log.LEVEL.DEBUG);
 
         pairArrayList = graphController.rulesMatchingPattern(rules, overFullPattern);
         System.out.println(pairArrayList.size());
@@ -131,14 +130,14 @@ public class GraphControllerTest {
                 Rule r = pair.getKey();
                 Pattern p = pair.getValue();
                 Log.print("applying rule", Log.LEVEL.DEBUG);
-                Log.print("Before: \n " + GraphLogger.patternToString(graph), Log.LEVEL.DEBUG);
-                Log.print("Subpattern: " + GraphLogger.patternToString(p), Log.LEVEL.DEBUG);
+                Log.print("Before: \n " + graph, Log.LEVEL.DEBUG);
+                Log.print("Subpattern: " + p, Log.LEVEL.DEBUG);
                 graphController.applyRule(graph, p, r);
-                Log.print("After: \n " + GraphLogger.patternToString(graph), Log.LEVEL.DEBUG);
+                Log.print("After: \n " + graph, Log.LEVEL.DEBUG);
             }
         }
 
-        Log.print(GraphLogger.patternToString(graph), Log.LEVEL.DEBUG);
+        Log.print(graph.toString(), Log.LEVEL.DEBUG);
 
         assert graph.nodes.size() == 2*n+1;
 
