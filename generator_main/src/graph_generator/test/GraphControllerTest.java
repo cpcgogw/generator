@@ -19,10 +19,25 @@ import java.util.ArrayList;
  */
 public class GraphControllerTest {
     private GraphController graphController;
+    private ArrayList<Rule> rules;
     @Before
     public void init(){
         graphController = new GraphController();
         Log.level = Log.LEVEL.DEBUG;
+
+        rules = new ArrayList<>();
+
+        Pattern matchingPattern = new Pattern();
+        Node startNode = node("START");
+        Node endNode = node("END");
+        Edge e = new Edge(startNode, endNode);
+        matchingPattern.nodes.add(startNode);
+        matchingPattern.nodes.add(endNode);
+
+
+        Rule matchingRule = new Rule(matchingPattern);
+
+        rules.add(matchingRule);
     }
     @Test
     public void rulesMatchingPattern() throws Exception {
@@ -34,13 +49,6 @@ public class GraphControllerTest {
         expect output pair array have n/2 different rules, in reality it can have multiple matches on same subpattern
             "starting" on different nodes
          */
-
-        Pattern matchingPattern = new Pattern();
-        Node startNode = node("START");
-        Node endNode = node("END");
-        Edge e = new Edge(startNode, endNode);
-        matchingPattern.nodes.add(startNode);
-        matchingPattern.nodes.add(endNode);
 
         Pattern weirdPattern = new Pattern();
         Node lockNode = node("LOCK");
@@ -59,15 +67,16 @@ public class GraphControllerTest {
         ourPattern.nodes.add(node2);
         ourPattern.nodes.add(node3);
 
-        Rule matchingRule = new Rule(matchingPattern);
         Rule weirdRule = new Rule(weirdPattern);
-        ArrayList<Rule> rules = new ArrayList<>();
-        rules.add(matchingRule);
+
         rules.add(weirdRule);
         ArrayList<Pair<Rule, Pattern>> pairArrayList = graphController.rulesMatchingPattern(rules, ourPattern);
 
         assert pairArrayList.size() == 2;
+    }
 
+    @Test
+    public void rulesMatchingPatternOverfull() throws Exception {
         /*
         create pattern containing node with more than 8 edges to/from it
         make sure we get no rules matching
@@ -79,15 +88,23 @@ public class GraphControllerTest {
         overFullPattern.nodes.add(startOverFull);
         overFullPattern.nodes.add(endOverFull);
         for (int i = 0; i < 8; i++) {
-            Node n = node("LOL"+i);
+            Node n = node("LOL" + i);
             Edge eTmp = new Edge(n, startOverFull);
             overFullPattern.nodes.add(n);
         }
         Log.print("overfullPattern: " + GraphLogger.patternToString(overFullPattern), Log.LEVEL.DEBUG);
 
-        pairArrayList = graphController.rulesMatchingPattern(rules, overFullPattern);
+        ArrayList<Pair<Rule, Pattern>> pairArrayList = graphController.rulesMatchingPattern(rules, overFullPattern);
         System.out.println(pairArrayList.size());
         assert pairArrayList.size() == 0;
+    }
+    @Test
+    public void rulesMatchingPatternAnyNode() throws Exception {
+        /*
+        create rule using 'ANY' node type.
+        make sure we match correctly
+         */
+        
     }
 
     @Test
