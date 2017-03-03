@@ -1,6 +1,5 @@
 package graph_generator.controller;
 
-import graph_generator.utils.GraphLogger;
 import javafx.util.Pair;
 import model.Edge;
 import model.Node;
@@ -48,10 +47,10 @@ public class GraphController {
             for (int i = 0; i < pattern.nodes.size(); i++) {
 
                 Log.print("checking subpattern:", Log.LEVEL.DEBUG);
-                Log.print(GraphLogger.nodeToString(pattern.nodes.get(i)), Log.LEVEL.DEBUG);
+                Log.print(pattern.nodes.get(i).toString(), Log.LEVEL.DEBUG);
                 Log.print("vs", Log.LEVEL.DEBUG);
                 for (Node n : r.matchingPattern.nodes) {
-                    Log.print(GraphLogger.nodeToString(n), Log.LEVEL.DEBUG);
+                    Log.print(n.toString(), Log.LEVEL.DEBUG);
                 }
 
                 Pattern p = new Pattern();
@@ -113,7 +112,7 @@ public class GraphController {
         for (Node node : p.nodes) {
             Node n = findCorrespondingNode(node, tr, rule);
             if(n != null){
-                Log.print("replace: found corresponding node; "+ GraphLogger.nodeToString(n), Log.LEVEL.INFO);
+                Log.print("replace: found corresponding node; "+ n, Log.LEVEL.INFO);
                 n.removeEdgesToNodesWithType("ANY");
                 for (Edge e :
                         n.getEdges()) {
@@ -146,7 +145,7 @@ public class GraphController {
                 }
             }
             if(!contains && !node.getType().equals("ANY")){
-                Log.print("addAllNotIn: adding node; " + GraphLogger.nodeToString(node), Log.LEVEL.DEBUG);
+                Log.print("addAllNotIn: adding node; " + node, Log.LEVEL.DEBUG);
 
                 p.nodes.add(node.clone());
             }

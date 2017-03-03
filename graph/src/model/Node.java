@@ -188,4 +188,9 @@ public class Node extends Circle {
         }
         return node;
     }
+
+    @Override
+    public String toString() {
+        return "Type: " + this.getType() + ", id:" + this.getNodeId() + ", #edges: " + this.getEdges().size();
+    }
 }
