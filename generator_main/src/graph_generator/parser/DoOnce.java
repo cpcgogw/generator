@@ -1,7 +1,7 @@
 package graph_generator.parser;
 
 import graph_generator.controller.GraphController;
-import model.Rule;
+import model.Pattern;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ public class DoOnce extends Command {
     GraphController graphController = new GraphController();
 
     @Override
-    public boolean execute() {
+    public boolean execute(Pattern graph) {
         //List<Pair<Rule, Pattern>> matches = graphController.getRuleMatching(rule)
         //if match.size() > 0
         //>choose random match and apply rule
@@ -24,6 +24,7 @@ public class DoOnce extends Command {
         //graphController.applyRule(r, graph, pattern);
         if (rule != null)
             return true;
+
         return false;
     }
 

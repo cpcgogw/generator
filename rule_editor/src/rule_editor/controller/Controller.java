@@ -1,6 +1,7 @@
 package rule_editor.controller;
 
 import graph_generator.controller.GraphController;
+import graph_generator.parser.CookbookParser;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -95,6 +96,9 @@ public class Controller {
     @FXML
     private MenuItem level_menu_item;
 
+    @FXML
+    private MenuItem apply_cookbook;
+
     /**
      * inspector pane
      */
@@ -172,6 +176,8 @@ public class Controller {
         rule_menu_item.setOnAction(actionEvent -> showRules());
         level_menu_item.setOnAction(actionEvent -> showLevel());
         close_button.setOnAction(actionEvent -> Platform.exit());
+        //Test of cookbook
+        apply_cookbook.setOnAction(actionEvent -> loadCookbook());
 
         //init level canvas
         canvas.setOnMouseClicked(mouseEvent -> handlePress(mouseEvent, canvas));
@@ -214,6 +220,7 @@ public class Controller {
                 rules.add(new Rule(match, FileHandler.LoadTranslations(f)));
             }
         }
+
         canvas.getChildren().clear();
         //match to current level
         Pattern newLevel = translateLevel(currentLevel, rules);
@@ -325,6 +332,28 @@ public class Controller {
             canvas.getChildren().add(c.getArrow());
             canvas.getChildren().add(c);
         }
+    }
+
+    /**
+     * Loads cookbook and applies it to the current graph.
+     */
+    private void loadCookbook() {
+        CookbookParser cookbookParser = new CookbookParser();
+        String file = JOptionPane.showInputDialog("Cookbook","sample_cookbook.cb");
+
+        Log.print("Controller: Loading cookbook...", Log.LEVEL.INFO);
+
+        if (file == null || file.equals("")) {
+            Log.print("Controller: No cookbook selected.", Log.LEVEL.WARNING);
+            return;
+        }
+
+        if (!cookbookParser.parseCookbook(file, currentLevel)) {
+            Log.print("Controller: Couldn't use cookbook on graph", Log.LEVEL.ERROR);
+            Platform.exit();
+        }
+
+        Log.print("Controller: Cookbook "+file+" applied successfully.", Log.LEVEL.INFO);
     }
 
     /**

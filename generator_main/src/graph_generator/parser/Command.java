@@ -1,5 +1,7 @@
 package graph_generator.parser;
 
+import model.Pattern;
+
 import java.util.List;
 
 /**
@@ -7,7 +9,7 @@ import java.util.List;
  * Created by time on 3/4/17.
  */
 public abstract class Command {
-    abstract boolean execute();
+    abstract boolean execute(Pattern graph);
     abstract boolean setParameters(List<String> params);
 
     public String getName() {

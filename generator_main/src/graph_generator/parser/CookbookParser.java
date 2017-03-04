@@ -8,6 +8,7 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 
+import model.Pattern;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
@@ -24,11 +25,13 @@ public class CookbookParser {
     private Document document = null;
     private RecipeParser recipeParser = new RecipeParser();
 
-    public void parseCookbook(String file) {
-        file = "generator_main/resources/" +file;
+    public boolean parseCookbook(String file, Pattern graph) {
+        String tmp = Log.prefix;
+        Log.prefix = "CookbookParser: ";
 
-        Log.level = Log.LEVEL.INFO;
+        file = "generator_main/resources/" +file;
         Log.print("Parsing cookbook located at "+file, Log.LEVEL.INFO);
+
         try {
             File fxmlFile = new File(file);
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -44,21 +47,20 @@ public class CookbookParser {
             Log.print("Number of recipes: "+recipes.getLength(), Log.LEVEL.DEBUG);
             for (int i=0; i<recipes.getLength(); i++) {
                 Log.print("Recipe"+(i+1)+": "+recipes.item(i).getTextContent(), Log.LEVEL.DEBUG);
-                if (!recipeParser.parseRecipe(recipes.item(i).getTextContent())) {
+                if (!recipeParser.parseRecipe(recipes.item(i).getTextContent(), graph)) {
                     Log.print("Recipe: "+recipes.item(i).getTextContent()+" failed to parse.", Log.LEVEL.ERROR);
-                    return;
+                    Log.prefix = tmp;
+                    return false;
                 } else {
                     Log.print("Recipe: "+recipes.item(i).getTextContent()+" was applied successfully.", Log.LEVEL.INFO);
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return;
+            Log.prefix = tmp;
+            return false;
         }
-    }
-
-    public static void main(String[] args) {
-        CookbookParser cbp = new CookbookParser();
-        cbp.parseCookbook("sample_cookbook.cb");
+        Log.prefix = tmp;
+        return true;
     }
 }

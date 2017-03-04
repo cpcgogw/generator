@@ -2,6 +2,7 @@ package graph_generator.parser;
 
 import com.sun.xml.internal.bind.v2.model.core.EnumLeafInfo;
 import graph_generator.controller.CommandController;
+import model.Pattern;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -15,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Class for parsing and applying .r xml Recipe files on a graph.
+ *
  * Created by time on 3/3/17.
  */
 public class RecipeParser {
@@ -28,7 +31,10 @@ public class RecipeParser {
      * @param file
      * Recipe to parse and execute.
      */
-    public boolean parseRecipe(String file) { //}, Pattern graph) {
+    public boolean parseRecipe(String file, Pattern graph) {
+        String tmp = Log.prefix;
+        Log.prefix = "RecipeParser: ";
+
         Log.print("Begin parsing recipe at "+file, Log.LEVEL.INFO);
         file = "generator_main/resources/" +file;
         boolean result = true;
@@ -53,6 +59,7 @@ public class RecipeParser {
                 Command command = CommandController.getInstance().getCommand(name.item(0).getTextContent());
                 if (command == null) {
                     Log.print("Command not found. Found \"" + command + "\" instead.", Log.LEVEL.ERROR);
+                    Log.prefix = tmp;
                     return false;
                 }
 
@@ -71,13 +78,16 @@ public class RecipeParser {
                 }
 
                 command.setParameters(paraList);
-                result = command.execute();
-                Log.print("Command \""+command.getName()+"\" was executed successfully: " +result, Log.LEVEL.DEBUG);
+                result = command.execute(graph);
+                Log.print("Command \""+command.getName()+"\" was executed "+(result ? "successfully." : "with failure."), Log.LEVEL.DEBUG);
             }
         } catch (Exception e) {
             e.printStackTrace();
+            Log.prefix = tmp;
             return false;
         }
+
+        Log.prefix = tmp;
         return true;
     }
 
@@ -97,10 +107,5 @@ public class RecipeParser {
             if (nl.item(i).getNodeType() == Node.TEXT_NODE)
                 nl.item(i).getParentNode().removeChild(nl.item(i));
         }
-    }
-
-    public static void main(String[] args) {
-        RecipeParser rp = new RecipeParser();
-        rp.parseRecipe("generator_main/resources/sample_recipe.r");
     }
 }

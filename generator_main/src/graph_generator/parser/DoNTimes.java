@@ -1,5 +1,7 @@
 package graph_generator.parser;
 
+import model.Pattern;
+
 import java.util.List;
 
 /**
@@ -15,7 +17,7 @@ public class DoNTimes extends Command {
     }
 
     @Override
-    boolean execute() {
+    boolean execute(Pattern graph) {
         if (rule == null || n<=0)
             return false;
 

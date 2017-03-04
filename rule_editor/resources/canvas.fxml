@@ -104,6 +104,7 @@
                   <MenuItem fx:id="load_level_button" mnemonicParsing="false" text="Open Level" />
                   <MenuItem fx:id="load_rule_button" mnemonicParsing="false" text="Open Rule" />
                   <MenuItem fx:id="save_button" mnemonicParsing="false" text="Save" />
+                <MenuItem fx:id="apply_cookbook" mnemonicParsing="false" text="Use cookbook" />
               <MenuItem fx:id="close_button" mnemonicParsing="false" text="Close" />
             </items>
           </Menu>
