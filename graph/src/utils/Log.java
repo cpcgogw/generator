@@ -11,10 +11,11 @@ public class Log {
 
     private static boolean LOGGING = false;
     public static LEVEL level = LEVEL.NONE;
+    public static String prefix = "";
 
     public static void print(String message, LEVEL l) {
         if (level.compareTo(l) >= 0 && level != LEVEL.NONE) {
-            System.out.println(l+": "+message);
+            System.out.println(l+": "+prefix+message);
         }
     }
 }
