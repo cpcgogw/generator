@@ -28,9 +28,10 @@ public class RecipeParser {
      * @param file
      * Recipe to parse and execute.
      */
-    public void parseRecipe(String file) { //}, Pattern graph) {
-        Log.level = Log.LEVEL.DEBUG;
+    public boolean parseRecipe(String file) { //}, Pattern graph) {
         Log.print("Begin parsing recipe at "+file, Log.LEVEL.INFO);
+        file = "generator_main/resources/" +file;
+        boolean result = true;
 
         try {
             File fxmlFile = new File(file);
@@ -43,7 +44,7 @@ public class RecipeParser {
             Log.print("Root: " + document.getDocumentElement().getNodeName(), Log.LEVEL.DEBUG);
 
             //For each command, try parse, then execute if parse successful
-            for (int j=0; j<commands.getLength() && commands.item(j) instanceof Element; j++) {
+            for (int j=0; j<commands.getLength() && result; j++) {
                 Element commandElement = (Element) commands.item(j);
                 NodeList name = commandElement.getElementsByTagName("name");
                 Log.print("Command: " + name.item(0).getTextContent(), Log.LEVEL.DEBUG);
@@ -52,8 +53,9 @@ public class RecipeParser {
                 Command command = CommandController.getInstance().getCommand(name.item(0).getTextContent());
                 if (command == null) {
                     Log.print("Command not found. Found \"" + command + "\" instead.", Log.LEVEL.ERROR);
-                    return;
+                    return false;
                 }
+
                 Log.print("Parsed command: " + command.getName(), Log.LEVEL.DEBUG);
 
                 NodeList params = commandElement.getElementsByTagName("params");
@@ -69,12 +71,14 @@ public class RecipeParser {
                 }
 
                 command.setParameters(paraList);
-                Log.print("Command was executed successfully: " + command.execute(), Log.LEVEL.DEBUG);
+                result = command.execute();
+                Log.print("Command \""+command.getName()+"\" was executed successfully: " +result, Log.LEVEL.DEBUG);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return;
+            return false;
         }
+        return true;
     }
 
     public boolean execute() {
@@ -93,11 +97,6 @@ public class RecipeParser {
             if (nl.item(i).getNodeType() == Node.TEXT_NODE)
                 nl.item(i).getParentNode().removeChild(nl.item(i));
         }
-    }
-
-    public boolean tryExecute(String text) {
-
-        return false;
     }
 
     public static void main(String[] args) {

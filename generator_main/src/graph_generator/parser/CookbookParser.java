@@ -12,6 +12,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
+import utils.Log;
 
 
 /**
@@ -21,8 +22,13 @@ import org.w3c.dom.Element;
  */
 public class CookbookParser {
     private Document document = null;
+    private RecipeParser recipeParser = new RecipeParser();
 
     public void parseCookbook(String file) {
+        file = "generator_main/resources/" +file;
+
+        Log.level = Log.LEVEL.INFO;
+        Log.print("Parsing cookbook located at "+file, Log.LEVEL.INFO);
         try {
             File fxmlFile = new File(file);
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -31,10 +37,19 @@ public class CookbookParser {
             document = dBuilder.parse(fxmlFile);
 
             document.getDocumentElement().normalize();
-            System.out.println("Root element: " + document.getDocumentElement().getNodeName());
-            NodeList nl = document.getElementsByTagName("command");
+            Log.print("Root element: " + document.getDocumentElement().getNodeName(), Log.LEVEL.DEBUG);
+            NodeList recipes = document.getElementsByTagName("recipe");
 
-            for (int i=0; i<nl.getLength() && tryExecute(nl.item(i).getTextContent()); i++) {
+            Log.print("Parsing and executing recipes.", Log.LEVEL.INFO);
+            Log.print("Number of recipes: "+recipes.getLength(), Log.LEVEL.DEBUG);
+            for (int i=0; i<recipes.getLength(); i++) {
+                Log.print("Recipe"+(i+1)+": "+recipes.item(i).getTextContent(), Log.LEVEL.DEBUG);
+                if (!recipeParser.parseRecipe(recipes.item(i).getTextContent())) {
+                    Log.print("Recipe: "+recipes.item(i).getTextContent()+" failed to parse.", Log.LEVEL.ERROR);
+                    return;
+                } else {
+                    Log.print("Recipe: "+recipes.item(i).getTextContent()+" was applied successfully.", Log.LEVEL.INFO);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -42,13 +57,8 @@ public class CookbookParser {
         }
     }
 
-    public boolean tryExecute(String text) {
-
-        return false;
-    }
-
     public static void main(String[] args) {
         CookbookParser cbp = new CookbookParser();
-        cbp.parseCookbook("generator_main/resources/sample_cookbook.cb");
+        cbp.parseCookbook("sample_cookbook.cb");
     }
 }

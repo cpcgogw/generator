@@ -2,9 +2,6 @@
 <cookbook>
 	<name>Sample</name>
 	<recipes>
-		<recipe>addCoolStart.r</recipe>
-		<recipe>addEnemyDungeon.r</recipe>
-		<recipe>addRooms.r</recipe>
-		<recipe>addEnd.r</recipe>
+		<recipe>sample_recipe.r</recipe>
 	</recipes>
 </cookbook>
