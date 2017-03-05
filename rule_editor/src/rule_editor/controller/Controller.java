@@ -24,6 +24,7 @@ import javax.swing.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import static model.Node.DEFAULT_RADIUS;
 import static rule_editor.controller.Controller.tools.*;
@@ -211,26 +212,31 @@ public class Controller {
      * looks for scenarios/rules in ./saves/rules
      */
     private void generateLevel() {
-        File folder = new File("saves/rules");
-        ArrayList<Rule> rules = new ArrayList<>();
-        //load list of rules
-        for (File f : folder.listFiles()) {
-            if(!f.isDirectory()){
-                Pattern match = new Pattern(FileHandler.LoadMatchingPattern(f));
-                rules.add(new Rule(match, FileHandler.LoadTranslations(f)));
-            }
-        }
+        List<Rule> rules = loadAllRules();
 
         canvas.getChildren().clear();
+
         //match to current level
         Pattern newLevel = translateLevel(currentLevel, rules);
+
         Log.print("Dumping generated level: ", Log.LEVEL.DEBUG);
         for (Node n : newLevel.nodes) {
             Log.print("  node: Type: " + n.getType() + ", id:" + n.getNodeId() + ", #edges: " + n.getEdges().size(), Log.LEVEL.DEBUG);
         }
+
         //display
-        currentLevel = newLevel;
-        for(Node n : newLevel.nodes){
+        updateDisplayedGraph(newLevel);
+    }
+
+    /**
+     * Updates the displayed graph to the one given as a parameter.
+     *
+     * @param newGraph
+     * The new graph to display.
+     */
+    private void updateDisplayedGraph(Pattern newGraph) {
+        currentLevel = newGraph;
+        for(Node n : newGraph.nodes){
             //Node node = n.clone();
             nodeController.addNode(n);
             canvas.getChildren().add(n);
@@ -245,7 +251,27 @@ public class Controller {
         }
     }
 
-    private Pattern translateLevel(Pattern pattern, ArrayList<Rule> rules) {
+    /**
+     * Loads all available rules.
+     *
+     * @return
+     * List of all rules.
+     */
+    private List<Rule> loadAllRules() {
+        File folder = new File("saves/rules");
+        List<Rule> rules = new ArrayList<>();
+
+        for (File f : folder.listFiles()) {
+            if(!f.isDirectory()){
+                Pattern match = new Pattern(FileHandler.LoadMatchingPattern(f));
+                rules.add(new Rule(match, FileHandler.LoadTranslations(f)));
+            }
+        }
+
+        return rules;
+    }
+
+    private Pattern translateLevel(Pattern pattern, List<Rule> rules) {
         if(graphController == null){
             graphController = new GraphController();
         }
@@ -349,11 +375,12 @@ public class Controller {
         }
 
         if (!cookbookParser.parseCookbook(file, currentLevel)) {
-            Log.print("Controller: Couldn't use cookbook on graph", Log.LEVEL.ERROR);
+            Log.print("Controller: Cookbook \""+file+"\" failed to apply.", Log.LEVEL.ERROR);
             Platform.exit();
+            return;
         }
 
-        Log.print("Controller: Cookbook "+file+" applied successfully.", Log.LEVEL.INFO);
+        Log.print("Controller: Cookbook "+file+" was applied successfully.", Log.LEVEL.INFO);
     }
 
     /**

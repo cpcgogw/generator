@@ -80,6 +80,9 @@ public class RecipeParser {
                 command.setParameters(paraList);
                 result = command.execute(graph);
                 Log.print("Command \""+command.getName()+"\" was executed "+(result ? "successfully." : "with failure."), Log.LEVEL.DEBUG);
+                if (!result) {
+                    return false;
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
