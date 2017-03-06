@@ -46,8 +46,8 @@ public class GraphController {
         for (Rule r : rules) {
             for (int i = 0; i < pattern.nodes.size(); i++) {
 
-                Log.print("checking subpattern:", Log.LEVEL.DEBUG);
-                Log.print(pattern.nodes.get(i).toString(), Log.LEVEL.DEBUG);
+                Log.print("rulesMatchingPattern: checking subpattern:", Log.LEVEL.DEBUG);
+                Log.print("rulesMatchingPattern: " + pattern.nodes.get(i).toString(), Log.LEVEL.DEBUG);
                 Log.print("vs", Log.LEVEL.DEBUG);
                 for (Node n : r.matchingPattern.nodes) {
                     Log.print(n.toString(), Log.LEVEL.DEBUG);
@@ -60,10 +60,10 @@ public class GraphController {
                     rulePatternList.add(new Pair<>(r,p));
                 }
 
-                Log.print(""+result, Log.LEVEL.DEBUG);
-                Log.print("found: ", Log.LEVEL.DEBUG);
+                Log.print("rulesMatchingPattern: "+result, Log.LEVEL.DEBUG);
+                Log.print("rulesMatchingPattern: found: ", Log.LEVEL.DEBUG);
                 for (Node n : p.nodes) {
-                    Log.print(" Type: " + n.getType() + ", id:" + n.getNodeId() + ", #edges: " + n.getEdges().size(), Log.LEVEL.DEBUG);
+                    Log.print("rulesMatchingPattern: " + n, Log.LEVEL.DEBUG);
                 }
             }
         }
@@ -88,24 +88,6 @@ public class GraphController {
         }
     }
 
-    /*/**
-     * Tries to apply a given rule to the pattern.
-     *
-     * @param rule
-     * The rule to try.
-     * @param graph
-     * The graph we try to apply the rule to.
-     * @return
-     * Whether or not the rule was applied successfully.
-    public boolean tryApplyRule(Rule rule, Pattern graph) {
-        Pair<Rule, Pattern> match; //= patternMatchingRule(rule, graph);
-        if (match != null) {
-            graph.resetIds();
-            applyRule(graph, match.getValue(), match.getKey());
-            return true;
-        }
-        return false;
-    }*/
 
     public void replace(Pattern p, Rule rule) {
         Pattern tr = rule.randomPossiblePattern();
@@ -192,13 +174,13 @@ public class GraphController {
             // find node in matching pattern with same type.
             if(node.getType().equals(n.getType()) || n.getType().equals("ANY")) {
                 checkedNodes.add(node);
-                Log.print("nodeContainsSubPattern: found matching type", Log.LEVEL.DEBUG);
+                Log.print("insertValidSubPatternFromRule: found matching type", Log.LEVEL.DEBUG);
 
                 /*
                 check so that node has less than 8 edges
                  */
                 if(node.getEdges().size()>8){
-                    Log.print("nodeContainsSubpattern: node has more than 8 edges; returning false", Log.LEVEL.DEBUG);
+                    Log.print("insertValidSubPatternFromRule: node has more than 8 edges; returning false", Log.LEVEL.DEBUG);
                     return false;
                 }
                 /*
@@ -207,7 +189,7 @@ public class GraphController {
                  */
                 returnBool = allEdgeAreContainedIn(n, node, checkedNodes, buildPattern, rule);
                 if(returnBool){
-                    Log.print("nodeContainsSubPattern: edges were correct, adding to pattern", Log.LEVEL.DEBUG);
+                    Log.print("insertValidSubPatternFromRule: edges were correct, adding to pattern", Log.LEVEL.DEBUG);
                     buildPattern.nodes.add(node);
                 }
             }
@@ -231,13 +213,14 @@ public class GraphController {
      */
     private boolean allEdgeAreContainedIn(Node n, Node node, ArrayList<Node> checkedNodes, Pattern p, Rule rule){
         boolean returnBool = true;
-        boolean nooneChecked = true;
+        boolean nooneChecked = false;
         if(n.getEdges().size() > node.getEdges().size()){
             Log.print("allEdgeAreContainedIn: given node had less edges than other given node", Log.LEVEL.DEBUG);
             return false;
         }
         for (Edge e : n.getEdges()) { // for each edge in node from matching pattern
             for (Edge gE : node.getEdges()) { // for each edge in given node
+                nooneChecked = true;
                 if(e.getStartNode() == n){ // if n is start node then we check end node
                     if(gE.getStartNode() == node){ // if node is start node in its edge
                         nooneChecked = false;
@@ -272,10 +255,11 @@ public class GraphController {
                 }
             }
             if(nooneChecked){
+                Log.print("allEdgeAreContainedIn: returning false, nothing was checked", Log.LEVEL.DEBUG);
                 return false;
             }
         }
-        Log.print("returning: " + returnBool, Log.LEVEL.DEBUG);
+        Log.print("allEdgeAreContainedIn: returning: " + returnBool, Log.LEVEL.DEBUG);
         return returnBool;
     }
 

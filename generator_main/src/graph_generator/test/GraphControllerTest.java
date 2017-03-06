@@ -22,7 +22,7 @@ public class GraphControllerTest {
     @Before
     public void init(){
         graphController = new GraphController();
-        Log.level = Log.LEVEL.DEBUG;
+        Log.level = Log.LEVEL.INFO;
 
         rules = new ArrayList<>();
 
@@ -102,8 +102,41 @@ public class GraphControllerTest {
         /*
         create rule using 'ANY' node type.
         make sure we match correctly
+            start -> any : should work
+            start <- any : should not work
          */
-        
+        rules = new ArrayList<>();
+        Pattern anyMatchingPattern = new Pattern();
+        Node start = node("START");
+        Node any = node("ANY");
+        Edge matchEdge = new Edge(start, any);
+        anyMatchingPattern.nodes.add(start);
+        anyMatchingPattern.nodes.add(any);
+        rules.add(new Rule(anyMatchingPattern));
+
+        Pattern validPatten = new Pattern();
+        Node start1 = node("START");
+        Node any1 = node("ASDF");
+        Edge validEdge = new Edge(start1, any1);
+        validPatten.nodes.add(start1);
+        validPatten.nodes.add(any1);
+
+        Pattern invalidPattern = new Pattern();
+        Node start2 = node("START");
+        Node any2 = node("ASDF");
+        Edge invalidEdge = new Edge(any2, start2);
+        invalidPattern.nodes.add(start2);
+        invalidPattern.nodes.add(any2);
+
+        ArrayList<Pair<Rule, Pattern>> pairArrayList = graphController.rulesMatchingPattern(rules, validPatten);
+        System.out.println(pairArrayList.size());
+
+        assert pairArrayList.size() == 2;
+
+        pairArrayList = graphController.rulesMatchingPattern(rules, invalidPattern);
+        System.out.println(pairArrayList.size());
+
+        assert pairArrayList.size() == 0;
     }
 
     @Test
