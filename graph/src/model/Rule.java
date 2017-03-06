@@ -61,4 +61,12 @@ public class Rule {
     public Pattern randomPossiblePattern() {
         return possibleTranslations.get(rand.nextInt(possibleTranslations.size()));
     }
+
+    @Override
+    public String toString() {
+        String s = "Matching "+matchingPattern+"\n";
+        for (Pattern p : possibleTranslations)
+            s += "Translation "+p+"\n";
+        return s;
+    }
 }

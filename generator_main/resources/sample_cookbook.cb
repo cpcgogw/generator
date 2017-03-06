@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<cookbook>
+	<name>Sample</name>
+	<recipes>
+		<recipe>sample_recipe.r</recipe>
+	</recipes>
+</cookbook>

@@ -8,6 +8,7 @@ import model.Rule;
 import utils.Log;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -41,7 +42,7 @@ public class GraphController {
      * A list of pairs in which the first element in the pair is the rule that matched and the second is the subpattern
      * the rule matched against
      */
-    public ArrayList<Pair<Rule, Pattern>> rulesMatchingPattern(ArrayList<Rule> rules, Pattern pattern) {
+    public ArrayList<Pair<Rule, Pattern>> rulesMatchingPattern(List<Rule> rules, Pattern pattern) {
         ArrayList<Pair<Rule, Pattern>> rulePatternList = new ArrayList<>();
         for (Rule r : rules) {
             for (int i = 0; i < pattern.nodes.size(); i++) {
@@ -76,9 +77,8 @@ public class GraphController {
      * @param rules
      * Rules to try to apply
      * @param graph
-     * Graph to apply the rules to
      */
-    public void applyRandomMatchingRule(ArrayList<Rule> rules, Pattern graph) {
+    public void applyRandomMatchingRule(List<Rule> rules, Pattern graph) {
         ArrayList<Pair<Rule, Pattern>> rulePatternList = rulesMatchingPattern(rules, graph);
         if (rulePatternList.size() > 0) {
             Pair<Rule, Pattern> pair = rulePatternList.get(random.nextInt(rulePatternList.size()));
