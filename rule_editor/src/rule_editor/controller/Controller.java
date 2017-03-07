@@ -217,27 +217,22 @@ public class Controller {
         canvas.getChildren().clear();
 
         //match to current level
-        Pattern newLevel = translateLevel(currentLevel, rules);
+        translateLevel(currentLevel, rules);
 
         Log.print("Dumping generated level: ", Log.LEVEL.DEBUG);
-        for (Node n : newLevel.nodes) {
+        for (Node n : currentLevel.nodes) {
             Log.print("  node: Type: " + n.getType() + ", id:" + n.getNodeId() + ", #edges: " + n.getEdges().size(), Log.LEVEL.DEBUG);
         }
 
         //display
-        updateDisplayedGraph(newLevel);
+        updateDisplayedGraph();
     }
 
     /**
-     * Updates the displayed graph to the one given as a parameter.
-     *
-     * @param newGraph
-     * The new graph to display.
+     * Updates the currentLevel.
      */
-    private void updateDisplayedGraph(Pattern newGraph) {
-        currentLevel = newGraph;
-        for(Node n : newGraph.nodes){
-            //Node node = n.clone();
+    private void updateDisplayedGraph() {
+        for(Node n : currentLevel.nodes){
             nodeController.addNode(n);
             canvas.getChildren().add(n);
             for(Edge e : n.getEdges()){
@@ -271,12 +266,11 @@ public class Controller {
         return rules;
     }
 
-    private Pattern translateLevel(Pattern pattern, List<Rule> rules) {
+    private void translateLevel(Pattern pattern, List<Rule> rules) {
         if(graphController == null){
             graphController = new GraphController();
         }
-        graphController.applyRandomMatchingRule(rules, pattern);
-        return pattern;
+        graphController.applyRandomRule(rules, pattern);
     }
 
     private void showRules() {

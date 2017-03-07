@@ -1,6 +1,5 @@
 package graph_generator.parser;
 
-import com.sun.xml.internal.bind.v2.model.core.EnumLeafInfo;
 import graph_generator.controller.CommandController;
 import model.Pattern;
 import org.w3c.dom.Document;
@@ -23,7 +22,7 @@ import java.util.List;
 public class RecipeParser {
     private Document document = null;
     Command command = null;
-    CommandController controller = new CommandController();
+    CommandController controller = CommandController.getInstance();
 
     /**
      * Parses and executes a single recipe.

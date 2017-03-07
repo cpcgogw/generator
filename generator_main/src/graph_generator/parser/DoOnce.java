@@ -5,21 +5,19 @@ import javafx.util.Pair;
 import model.Edge;
 import model.Node;
 import model.Pattern;
+import model.Rule;
+import rule_editor.FileHandler;
+import utils.Log;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import model.Rule;
-import rule_editor.FileHandler;
-import rule_editor.controller.Controller;
-import sun.rmi.server.LoaderHandler;
-import utils.Log;
-
 /**
  * Created by time on 3/4/17.
  */
 public class DoOnce extends Command {
+    //TODO: Make actual Rule instead of String
     String rule = null;
     final int numOfParams = 1;
     //TODO: should be a singleton so graph cant get into a weird state.

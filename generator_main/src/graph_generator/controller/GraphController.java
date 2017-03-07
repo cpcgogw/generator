@@ -20,15 +20,17 @@ public class GraphController {
         random = new Random();
     }
     /**
-     * Calls applyRandomMatchingRule n number of times
+     * Calls applyRandomRule n number of times
      * @param rules
      * Which rules to try and apply
      * @param n
-     * number of times to try replace
+     * number of times to try insertAndReplace
+     * @param graph
+     * The full graph on which which to apply the rules too
      */
-    public void applyRandomMatchingRuleNTimes(ArrayList<Rule> rules, int n, Pattern pattern){
+    public void applyRandomRuleNTimes(ArrayList<Rule> rules, int n, Pattern graph){
         for (int i = 0; i < n; i++) {
-            applyRandomMatchingRule(rules, pattern);
+            applyRandomRule(rules, graph);
         }
     }
 
@@ -36,39 +38,41 @@ public class GraphController {
      * Returns all rules that can be applied to the given pattern
      * @param rules
      * A list of rules to match vs the given pattern
-     * @param pattern
-     * A pattern to match vs the rules
+     * @param graph
+     * A pattern to match vs the rules (full graph)
      * @return
      * A list of pairs in which the first element in the pair is the rule that matched and the second is the subpattern
      * the rule matched against
      */
-    public ArrayList<Pair<Rule, Pattern>> rulesMatchingPattern(List<Rule> rules, Pattern pattern) {
+    public ArrayList<Pair<Rule, Pattern>> rulesMatchingPattern(List<Rule> rules, Pattern graph) {
         ArrayList<Pair<Rule, Pattern>> rulePatternList = new ArrayList<>();
         for (Rule r : rules) {
-            for (int i = 0; i < pattern.nodes.size(); i++) {
-
-                Log.print("rulesMatchingPattern: checking subpattern:", Log.LEVEL.DEBUG);
-                Log.print("rulesMatchingPattern: " + pattern.nodes.get(i).toString(), Log.LEVEL.DEBUG);
-                Log.print("vs", Log.LEVEL.DEBUG);
-                for (Node n : r.matchingPattern.nodes) {
-                    Log.print(n.toString(), Log.LEVEL.DEBUG);
-                }
-
-                Pattern p = new Pattern();
-                boolean result = insertValidSubPatternFromRule(pattern.nodes.get(i), new ArrayList<Node>(), p, r);
-
-                if(result){
-                    rulePatternList.add(new Pair<>(r,p));
-                }
-
-                Log.print("rulesMatchingPattern: "+result, Log.LEVEL.DEBUG);
-                Log.print("rulesMatchingPattern: found: ", Log.LEVEL.DEBUG);
-                for (Node n : p.nodes) {
-                    Log.print("rulesMatchingPattern: " + n, Log.LEVEL.DEBUG);
-                }
-            }
+            rulePatternList.addAll(ruleMatchingPattern(r, graph));
         }
 
+        return rulePatternList;
+    }
+
+    public ArrayList<Pair<Rule, Pattern>> ruleMatchingPattern(Rule r, Pattern graph) {
+        ArrayList<Pair<Rule, Pattern>> rulePatternList = new ArrayList<>();
+        for (int i = 0; i < graph.nodes.size(); i++) {
+            Log.print("rulesMatchingPattern: checking subpattern:", Log.LEVEL.DEBUG);
+            Log.print("rulesMatchingPattern: " + graph.nodes.get(i).toString(), Log.LEVEL.DEBUG);
+            Log.print("vs", Log.LEVEL.DEBUG);
+            Log.print(r.matchingPattern.nodes.toString(), Log.LEVEL.DEBUG);
+
+
+            Pattern p = new Pattern();
+            boolean result = insertValidSubPatternFromRule(graph.nodes.get(i), new ArrayList<Node>(), p, r);
+
+            if(result){
+                rulePatternList.add(new Pair<>(r,p));
+            }
+
+            Log.print("rulesMatchingPattern: "+result, Log.LEVEL.DEBUG);
+            Log.print("rulesMatchingPattern: found: ", Log.LEVEL.DEBUG);
+            Log.print(p.nodes.toString(), Log.LEVEL.DEBUG);
+        }
         return rulePatternList;
     }
 
@@ -78,7 +82,7 @@ public class GraphController {
      * Rules to try to apply
      * @param graph
      */
-    public void applyRandomMatchingRule(List<Rule> rules, Pattern graph) {
+    public void applyRandomRule(List<Rule> rules, Pattern graph) {
         ArrayList<Pair<Rule, Pattern>> rulePatternList = rulesMatchingPattern(rules, graph);
         if (rulePatternList.size() > 0) {
             Pair<Rule, Pattern> pair = rulePatternList.get(random.nextInt(rulePatternList.size()));
@@ -89,12 +93,12 @@ public class GraphController {
     }
 
 
-    public void replace(Pattern p, Rule rule) {
+    public void insertAndReplace(Pattern graph, Pattern p, Rule rule) {
         Pattern tr = rule.randomPossiblePattern();
         for (Node node : p.nodes) {
             Node n = findCorrespondingNode(node, tr, rule);
             if(n != null){
-                Log.print("replace: found corresponding node; "+ n, Log.LEVEL.INFO);
+                Log.print("insertAndReplace: found corresponding node; "+ n, Log.LEVEL.INFO);
                 n.removeEdgesToNodesWithType("ANY");
                 for (Edge e :
                         n.getEdges()) {
@@ -108,6 +112,7 @@ public class GraphController {
             }
         }
         addAllNotIn(p, tr);
+        addAllNotIn(graph, p);
     }
 
     /**
@@ -273,10 +278,9 @@ public class GraphController {
      * @param rule
      * The rule which we apply to the subpattern in the graph.
      */
-    public void applyRule(Pattern graph, Pattern p,Rule rule) {
+    public void applyRule(Pattern graph, Pattern p, Rule rule) {
         graph.resetIds();
-        replace(p, rule);
-        addAllNotIn(graph, p);
+        insertAndReplace(graph, p, rule);
     }
 
 }

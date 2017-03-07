@@ -26,7 +26,7 @@ public class CommandController {
     /**
      * Adds all possible commands to list of possible commands.
      */
-    public CommandController() {
+    private CommandController() {
         commands.add(new DoOnce());
         commands.add(new DoNTimes());
     }
