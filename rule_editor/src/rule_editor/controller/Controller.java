@@ -368,12 +368,15 @@ public class Controller {
             return;
         }
 
+        canvas.getChildren().clear();
+
         if (!cookbookParser.parseCookbook(file, currentLevel)) {
             Log.print("Controller: Cookbook \""+file+"\" failed to apply.", Log.LEVEL.ERROR);
             Platform.exit();
             return;
         }
 
+        updateDisplayedGraph();
         Log.print("Controller: Cookbook "+file+" was applied successfully.", Log.LEVEL.INFO);
     }
 
