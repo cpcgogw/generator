@@ -19,11 +19,11 @@ public class Rule {
         possibleTranslations = new ArrayList<Pattern>();
     }
 
-    public Rule(Pattern match, ArrayList<Pair<ArrayList<Node>, ArrayList<Edge>>> translations) {
+    public Rule(Pattern match, ArrayList<Pair<ArrayList<DrawableNode>, ArrayList<DrawableEdge>>> translations) {
         this.matchingPattern = match;
         possibleTranslations = new ArrayList<Pattern>();
         rand = new Random();
-        for (Pair<ArrayList<Node>, ArrayList<Edge>> pair : translations) {
+        for (Pair<ArrayList<DrawableNode>, ArrayList<DrawableEdge>> pair : translations) {
             Pattern p = new Pattern(pair);
             possibleTranslations.add(p);
         }

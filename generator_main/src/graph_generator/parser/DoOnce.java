@@ -2,8 +2,8 @@ package graph_generator.parser;
 
 import graph_generator.controller.GraphController;
 import javafx.util.Pair;
-import model.Edge;
-import model.Node;
+import model.DrawableEdge;
+import model.DrawableNode;
 import model.Pattern;
 import model.Rule;
 import rule_editor.FileHandler;
@@ -34,7 +34,7 @@ public class DoOnce extends Command {
             return false;
         }
 
-        Pair<ArrayList<Node>,ArrayList<Edge>> ruleR = FileHandler.LoadNodes(file);
+        Pair<ArrayList<DrawableNode>,ArrayList<DrawableEdge>> ruleR = FileHandler.LoadNodes(file);
         Rule r = new Rule(new Pattern(FileHandler.LoadMatchingPattern(file)), FileHandler.LoadTranslations(file));
         ArrayList<Rule> rl = new ArrayList<>();
         rl.add(r);

@@ -109,7 +109,7 @@ public class NodeGrid {
      * @param y
      * Y coordinate of origin.
      * @param node
-     * Node to be searched for.
+     * DrawableNode to be searched for.
      * @return
      * True if node is neighbour to position (x,y), otherwise False.
      */

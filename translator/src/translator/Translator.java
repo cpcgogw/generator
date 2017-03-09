@@ -38,7 +38,7 @@ public class Translator {
     private static void placeGraphOnGrid(Pattern graph, NodeGrid grid) {
         Log.print("Translator: Placing graph on grid...", Log.LEVEL.INFO);
 
-        // Place all nodes on graph
+        // Place all drawableNodes on graph
         if (!placeAll(graph.pattern.remove(0), (ArrayList<Node>) graph.pattern, grid)) {
             Log.print("Translator: Unable to place graph on grid!", Log.LEVEL.ERROR);
             return;
@@ -55,16 +55,16 @@ public class Translator {
      */
 
     /**
-     * Tries to place a node and all nodes after it on the grid.
+     * Tries to place a node and all drawableNodes after it on the grid.
      *
      * @param node
-     * Node to be placed.
+     * DrawableNode to be placed.
      * @param rest
-     * All other nodes to be placed.
+     * All other drawableNodes to be placed.
      * @param grid
-     * The grid to place the nodes on.
+     * The grid to place the drawableNodes on.
      * @return
-     * True if node and all other nodes were placed successfully, otherwise False.
+     * True if node and all other drawableNodes were placed successfully, otherwise False.
      */
     public static boolean placeAll(Node node, ArrayList<Node> rest, NodeGrid grid) {
         int a = 0;
@@ -86,9 +86,9 @@ public class Translator {
                     tmpGrid.addNode(node, x, y);
                     ArrayList<Node> tmpRest = (ArrayList<Node>) rest.clone();
 
-                    // Try to place the remaining nodes.
+                    // Try to place the remaining drawableNodes.
                     if (placeAll(tmpRest.remove(0),tmpRest,tmpGrid)) {
-                        // We were able to successfully place all nodes using this configuration.
+                        // We were able to successfully place all drawableNodes using this configuration.
                         // So copy all references so they will be saved further up the chain.
                         // The brute force is complete.
                         NodeGrid.copy(tmpGrid, grid);

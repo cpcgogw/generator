@@ -13,8 +13,8 @@ import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Pair;
-import model.Edge;
-import model.Node;
+import model.DrawableEdge;
+import model.DrawableNode;
 import model.Pattern;
 import model.Rule;
 import rule_editor.FileHandler;
@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static model.Node.DEFAULT_RADIUS;
+import static model.DrawableNode.DEFAULT_RADIUS;
 import static rule_editor.controller.Controller.tools.*;
 
 public class Controller {
@@ -109,15 +109,15 @@ public class Controller {
     public TextField active_node_id_field;
     @FXML
     private Button active_node_save_button;
-    public Node activeNode;
+    public DrawableNode activeDrawableNode;
 
     private HashMap<Pane, Pattern> scenarios;
     private Pattern matchingPattern;
     private Pattern currentLevel;
 
-    public void setActiveNode(Node activeNode) {
-        this.activeNode = activeNode;
-        active_node_id_field.setText(String.valueOf(activeNode.getNodeId()));
+    public void setActiveDrawableNode(DrawableNode activeDrawableNode) {
+        this.activeDrawableNode = activeDrawableNode;
+        active_node_id_field.setText(String.valueOf(activeDrawableNode.getNodeId()));
     }
 
 
@@ -125,7 +125,7 @@ public class Controller {
         return activeTool;
     }
 
-    public Node.NodeType getActiveType(){
+    public DrawableNode.NodeType getActiveType(){
         return activeType;
     }
     private GraphController graphController;
@@ -145,7 +145,7 @@ public class Controller {
     }
     private FileChooser fileChooser = new FileChooser();
     public static tools activeTool;
-    public static Node.NodeType activeType;
+    public static DrawableNode.NodeType activeType;
 
     public static Pane activeCanvas;
 
@@ -153,7 +153,7 @@ public class Controller {
     public void initialize(){
         GraphController graphController = new GraphController();
         scenarios = new HashMap<Pane, Pattern>();
-        activeType = Node.NodeType.START;
+        activeType = DrawableNode.NodeType.START;
         activeTool = NODE;
         activeCanvas = rule_canvas;
         currentLevel = new Pattern();
@@ -164,12 +164,12 @@ public class Controller {
         move_button.setOnMouseClicked(mouseEvent -> activeTool = MOVE);
         select_node_button.setOnMouseClicked(mouseEvent -> activeTool = SELECT);
         // init node buttons
-        start_node_button.setOnMouseClicked(mouseEvent -> activateType(Node.NodeType.START));
-        end_node_button.setOnMouseClicked(mouseEvent -> activateType(Node.NodeType.END));
-        key_node_button.setOnMouseClicked(mouseEvent -> activateType(Node.NodeType.KEY));
-        lock_node_button.setOnMouseClicked(mouseEvent -> activateType(Node.NodeType.LOCK));
-        room_node_button.setOnMouseClicked(mouseEvent -> activateType(Node.NodeType.ROOM));
-        any_node_button.setOnMouseClicked(mouseEvent -> activateType(Node.NodeType.ANY));
+        start_node_button.setOnMouseClicked(mouseEvent -> activateType(DrawableNode.NodeType.START));
+        end_node_button.setOnMouseClicked(mouseEvent -> activateType(DrawableNode.NodeType.END));
+        key_node_button.setOnMouseClicked(mouseEvent -> activateType(DrawableNode.NodeType.KEY));
+        lock_node_button.setOnMouseClicked(mouseEvent -> activateType(DrawableNode.NodeType.LOCK));
+        room_node_button.setOnMouseClicked(mouseEvent -> activateType(DrawableNode.NodeType.ROOM));
+        any_node_button.setOnMouseClicked(mouseEvent -> activateType(DrawableNode.NodeType.ANY));
         // init top menu
         save_button.setOnAction(actionEvent -> PrepareSave());
         load_level_button.setOnAction(actionEvent -> PrepareLoadLevel());
@@ -203,7 +203,7 @@ public class Controller {
     }
 
     private void saveActiveNode() {
-        activeNode.setNodeId(Integer.parseInt(active_node_id_field.getText()));
+        activeDrawableNode.setNodeId(Integer.parseInt(active_node_id_field.getText()));
     }
 
 
@@ -220,8 +220,8 @@ public class Controller {
         translateLevel(currentLevel, rules);
 
         Log.print("Dumping generated level: ", Log.LEVEL.DEBUG);
-        for (Node n : currentLevel.nodes) {
-            Log.print("  node: Type: " + n.getType() + ", id:" + n.getNodeId() + ", #edges: " + n.getEdges().size(), Log.LEVEL.DEBUG);
+        for (DrawableNode n : currentLevel.drawableNodes) {
+            Log.print("  node: Type: " + n.getType() + ", id:" + n.getNodeId() + ", #edges: " + n.getDrawableEdges().size(), Log.LEVEL.DEBUG);
         }
 
         //display
@@ -232,11 +232,11 @@ public class Controller {
      * Updates the currentLevel.
      */
     private void updateDisplayedGraph() {
-        for(Node n : currentLevel.nodes){
+        for(DrawableNode n : currentLevel.drawableNodes){
             nodeController.addNode(n);
             canvas.getChildren().add(n);
-            for(Edge e : n.getEdges()){
-                Edge c = nodeController.getEdgeController().addEdge(e);
+            for(DrawableEdge e : n.getDrawableEdges()){
+                DrawableEdge c = nodeController.getEdgeController().addEdge(e);
                 if(!canvas.getChildren().contains(c.getArrow()))
                     canvas.getChildren().add(c.getArrow());
                 if(!canvas.getChildren().contains(c))
@@ -280,13 +280,13 @@ public class Controller {
         activeCanvas = rule_canvas;
 
         Log.print("Dumping current rule: \n MatchingPattern: ", Log.LEVEL.INFO);
-        for (Node n : activeRule.matchingPattern.nodes) {
+        for (DrawableNode n : activeRule.matchingPattern.drawableNodes) {
             Log.print("  node: " + n.getType().toString(), Log.LEVEL.INFO);
         }
         Log.print(" possibleOutcomes: ", Log.LEVEL.INFO);
         for (Pattern p : activeRule.possibleTranslations){
             Log.print("  outcome: ", Log.LEVEL.INFO);
-            for (Node n : p.nodes) {
+            for (DrawableNode n : p.drawableNodes) {
                 Log.print("   node: " + n.getType().toString(), Log.LEVEL.INFO);
             }
         }
@@ -299,7 +299,7 @@ public class Controller {
         activeCanvas = canvas;
     }
 
-    private void activateType(Node.NodeType type) {
+    private void activateType(DrawableNode.NodeType type) {
         activeType = type;
         activeTool = NODE;
     }
@@ -329,26 +329,26 @@ public class Controller {
         activeRule = new Rule(matchingPattern);
 
 
-        Pair<ArrayList<Node>,ArrayList<Edge>> pair = FileHandler.LoadMatchingPattern(file);
-        ArrayList<Pair<ArrayList<Node>,ArrayList<Edge>>> translations = FileHandler.LoadTranslations(file);
+        Pair<ArrayList<DrawableNode>,ArrayList<DrawableEdge>> pair = FileHandler.LoadMatchingPattern(file);
+        ArrayList<Pair<ArrayList<DrawableNode>,ArrayList<DrawableEdge>>> translations = FileHandler.LoadTranslations(file);
         activeCanvas = rule_canvas;
-        insertIntoCanvasAndList(rule_canvas, matchingPattern.nodes, pair);
+        insertIntoCanvasAndList(rule_canvas, matchingPattern.drawableNodes, pair);
 
-        for (Pair<ArrayList<Node>, ArrayList<Edge>> p : translations){
+        for (Pair<ArrayList<DrawableNode>, ArrayList<DrawableEdge>> p : translations){
 
             Pair<Pane, Pattern> panePatternPair = addTab("saved tab");
-            insertIntoCanvasAndList(panePatternPair.getKey(), panePatternPair.getValue().nodes, p);
+            insertIntoCanvasAndList(panePatternPair.getKey(), panePatternPair.getValue().drawableNodes, p);
         }
     }
 
-    private void insertIntoCanvasAndList(Pane canvas, ArrayList<Node> nodes, Pair<ArrayList<Node>, ArrayList<Edge>> pair) {
-        for(Node node : pair.getKey()){
-            nodes.add(node);
-            canvas.getChildren().add(node);
-            nodeController.addNode(node);
+    private void insertIntoCanvasAndList(Pane canvas, ArrayList<DrawableNode> drawableNodes, Pair<ArrayList<DrawableNode>, ArrayList<DrawableEdge>> pair) {
+        for(DrawableNode drawableNode : pair.getKey()){
+            drawableNodes.add(drawableNode);
+            canvas.getChildren().add(drawableNode);
+            nodeController.addNode(drawableNode);
         }
-        for(Edge e : pair.getValue()){
-            Edge c = nodeController.getEdgeController().addEdge(e);
+        for(DrawableEdge e : pair.getValue()){
+            DrawableEdge c = nodeController.getEdgeController().addEdge(e);
             canvas.getChildren().add(c.getArrow());
             canvas.getChildren().add(c);
         }
@@ -400,13 +400,13 @@ public class Controller {
         canvas.getChildren().clear();
 
 
-        Pair<ArrayList<Node>,ArrayList<Edge>> pair = FileHandler.LoadNodes(file);
-        for(Node node : pair.getKey()){
-            Node c = nodeController.addNode(node);
+        Pair<ArrayList<DrawableNode>,ArrayList<DrawableEdge>> pair = FileHandler.LoadNodes(file);
+        for(DrawableNode drawableNode : pair.getKey()){
+            DrawableNode c = nodeController.addNode(drawableNode);
             canvas.getChildren().add(c);
         }
-        for(Edge e : pair.getValue()){
-            Edge c = nodeController.getEdgeController().addEdge(e);
+        for(DrawableEdge e : pair.getValue()){
+            DrawableEdge c = nodeController.getEdgeController().addEdge(e);
             canvas.getChildren().add(c.getArrow());
             canvas.getChildren().add(c);
         }
@@ -423,21 +423,21 @@ public class Controller {
         if(rule_pane.isVisible()){
             FileHandler.saveRule(activeRule,"saves/rules/"+path);
         }else {
-            FileHandler.SaveNodes(nodeController.getNodes(), "saves/levels/" + path);
+            FileHandler.SaveNodes(nodeController.getDrawableNodes(), "saves/levels/" + path);
         }
     }
 
     private void handlePress(MouseEvent event, Pane c) {
         if(activeTool == NODE){
-            Node node = nodeController.addNode(event.getX(), event.getY(), DEFAULT_RADIUS, Color.BLUE);
+            DrawableNode drawableNode = nodeController.addNode(event.getX(), event.getY(), DEFAULT_RADIUS, Color.BLUE);
 
-            c.getChildren().add(node);
+            c.getChildren().add(drawableNode);
             if(c == rule_canvas){
-                matchingPattern.nodes.add(node);
+                matchingPattern.drawableNodes.add(drawableNode);
             }else if(c == canvas){
-                currentLevel.nodes.add(node);
+                currentLevel.drawableNodes.add(drawableNode);
             } else {
-                scenarios.get(c).nodes.add(node);
+                scenarios.get(c).drawableNodes.add(drawableNode);
             }
         }
     }
