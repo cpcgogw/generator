@@ -18,4 +18,8 @@ public class Log {
             System.out.println(l+": "+prefix+message);
         }
     }
+
+    public static void print(Object message, LEVEL l) {
+        print(message.toString(), l);
+    }
 }
