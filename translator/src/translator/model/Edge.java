@@ -1,4 +1,4 @@
-package translator;
+package translator.model;
 
 /**
  * Created by time on 3/8/17.

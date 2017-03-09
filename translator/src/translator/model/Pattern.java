@@ -1,6 +1,5 @@
-package translator;
+package translator.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
