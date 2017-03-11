@@ -13,11 +13,10 @@ import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Pair;
-import model.DrawableEdge;
-import model.DrawableNode;
-import model.DrawablePattern;
-import model.Rule;
+import model.*;
 import rule_editor.FileHandler;
+import translator.Translator;
+import translator.model.NodeGrid;
 import utils.Log;
 
 import javax.swing.*;
@@ -47,6 +46,8 @@ public class Controller {
     private Button select_node_button;
     @FXML
     private Button gen_button;
+    @FXML
+    private Button level_to_grid_button;
 
 
     @FXML
@@ -179,7 +180,8 @@ public class Controller {
         close_button.setOnAction(actionEvent -> Platform.exit());
         //Test of cookbook
         apply_cookbook.setOnAction(actionEvent -> loadCookbook());
-
+        //Test of nodegrid
+        level_to_grid_button.setOnMouseClicked(mouseEvent -> currentLevelToGrid());
         //init level canvas
         canvas.setOnMouseClicked(mouseEvent -> handlePress(mouseEvent, canvas));
         canvas.setOnMouseEntered(event -> requestFocus(canvas));
@@ -202,6 +204,22 @@ public class Controller {
         activeRule = new Rule(matchingDrawablePattern);
     }
 
+    private void currentLevelToGrid() {
+        NodeGrid grid = new NodeGrid(currentLevel.drawableNodes.size());
+        System.out.println(currentLevel);
+        Translator.placeGraphOnGrid(currentLevel, grid);
+        for (int x = 0; x < grid.grid.length; x++) {
+            for (int y = 0; y < grid.grid[0].length; y++) {
+                Node n = grid.grid[y][x];
+                if(n != null){
+                    DrawableNode node = (DrawableNode) n;
+                    node.setCenterX(x*150+50);
+                    node.setCenterY(y*150+50);
+                    node.updateEdges();
+                }
+            }
+        }
+    }
 
     private void saveActiveNode() {
         activeDrawableNode.setNodeId(Integer.parseInt(active_node_id_field.getText()));

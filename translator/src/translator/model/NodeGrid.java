@@ -13,7 +13,7 @@ import java.util.List;
  * Created by time on 3/9/17.
  */
 public class NodeGrid {
-    private Node[][] grid = null;
+    public Node[][] grid = null;
     //private List<Pair<Integer, Integer>> placed = new ArrayList<>();
     private List<Node> placed = new ArrayList<>();
 

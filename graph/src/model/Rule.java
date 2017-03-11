@@ -59,6 +59,7 @@ public class Rule {
     }
 
     public DrawablePattern randomPossiblePattern() {
+        System.out.println(possibleTranslations.size());
         return possibleTranslations.get(rand.nextInt(possibleTranslations.size()));
     }
 

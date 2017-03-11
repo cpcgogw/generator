@@ -72,6 +72,7 @@
                                           <Button fx:id="select_node_button" mnemonicParsing="false" prefHeight="26.0" prefWidth="156.0" text="Select" />
                                           <Button fx:id="new_scenario_button" mnemonicParsing="false" prefHeight="26.0" prefWidth="155.0" text="New Scenario" />
                                           <Button fx:id="gen_button" mnemonicParsing="false" prefHeight="26.0" prefWidth="155.0" text="Generate level" />
+                                          <Button fx:id="level_to_grid_button" mnemonicParsing="false" prefHeight="26.0" prefWidth="155.0" text="Display level on grid" />
                                        </children>
                                     </VBox>
                                  </content>
