@@ -1,5 +1,7 @@
 package translator.model;
 
+import model.Node;
+
 import java.util.List;
 
 /**

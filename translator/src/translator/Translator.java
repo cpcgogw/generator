@@ -1,7 +1,10 @@
 package translator;
 
-import translator.model.Edge;
-import translator.model.Node;
+
+import model.Edge;
+import model.Node;
+import translator.model.AbstractEdge;
+import translator.model.AbstractNode;
 import translator.model.NodeGrid;
 import translator.model.Pattern;
 import utils.Log;
@@ -117,32 +120,36 @@ public class Translator {
         Pattern pattern = new Pattern();
         List<Node> graph = new ArrayList<>();
 
-        Node n1 = new Node();
-        Node n2 = new Node();
-        Node n3 = new Node();
-        Node n4 = new Node();
+        Node n1 = new AbstractNode();
+        Node n2 = new AbstractNode();
+        Node n3 = new AbstractNode();
+        Node n4 = new AbstractNode();
 
         graph.add(n1);
         graph.add(n2);
         graph.add(n3);
         graph.add(n4);
 
-        Edge e1 = new Edge(n1, n2);
-        Edge e2 = new Edge(n2, n3);
+        Edge e1 = new AbstractEdge(n1, n2);
+        Edge e2 = new AbstractEdge(n2, n3);
 
-        Edge e3 = new Edge(n3, n4);
-        Edge e4 = new Edge(n4, n3);
+        Edge e3 = new AbstractEdge(n3, n4);
+        Edge e4 = new AbstractEdge(n4, n3);
 
-        Edge e5 = new Edge(n4, n1);
-        Edge e6 = new Edge(n1, n4);
+        Edge e5 = new AbstractEdge(n4, n1);
+        Edge e6 = new AbstractEdge(n1, n4);
 
-        n1.edges.add(e1);
-        n1.edges.add(e6);
-        n2.edges.add(e2);
-        n3.edges.add(e3);
-        n4.edges.add(e4);
-        n4.edges.add(e5);
-
+        n1.addEdge(e1);
+        n1.addEdge(e6);
+        n2.addEdge(e2);
+        n3.addEdge(e3);
+        n4.addEdge(e4);
+        n4.addEdge(e5);
+        /*
+        0->1->2
+        2<->3
+        0<->3
+         */
         pattern.pattern = graph;
         return pattern;
     }

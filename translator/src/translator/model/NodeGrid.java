@@ -1,6 +1,8 @@
 package translator.model;
 
 import javafx.util.Pair;
+import model.Edge;
+import model.Node;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,11 +91,11 @@ public class NodeGrid {
             return false;
 
         // Check neighbours
-        for (Edge e : node.edges) {
+        for (Edge e : node.getEdges()) {
 
             // Is already placed so we must be next to it.
-            if (placed.contains(e.to)) {
-                if (!isNeighbour(x, y, e.to)) {
+            if (placed.contains(e.getTo())) {
+                if (!isNeighbour(x, y, e.getTo())) {
                     return false;
                 }
             }
@@ -157,9 +159,9 @@ public class NodeGrid {
             for (int y=0; y<grid[0].length; y++) {
                 if (grid[x][y] != null) {
                     if (y==0)
-                        s += getNode(x, y).getId();
+                        s += getNode(x, y).getNodeId();
                     else
-                        s += " "+getNode(x, y).getId();
+                        s += " "+getNode(x, y).getNodeId();
                 } else {
                     if (y==0)
                         s += "*";

@@ -2,13 +2,14 @@ package model;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import utils.Log;
 
 import java.util.ArrayList;
 
 /**
  * Created by vilddjur on 1/24/17.
  */
-public class DrawableNode extends Circle {
+public class DrawableNode extends Circle implements Node{
     private ArrayList<DrawableEdge> drawableEdges;
     private int id;
     public static int idCounter=0;
@@ -164,6 +165,26 @@ public class DrawableNode extends Circle {
     public int getNodeId() {
         return id;
     }
+
+    @Override
+    public void addEdge(Edge e) {
+        String tmpPrefix = Log.prefix;
+        Log.prefix = "addEdge: ";
+        if(e instanceof DrawableEdge) {
+            this.drawableEdges.add((DrawableEdge) e);
+        }else{
+            Log.print("given edge of incorrect type", Log.LEVEL.ERROR);
+        }
+        Log.prefix = tmpPrefix;
+    }
+
+    @Override
+    public ArrayList<Edge> getEdges() {
+        ArrayList<Edge> edges = new ArrayList<>();
+        edges.addAll(drawableEdges);
+        return edges;
+    }
+
     public String getType(){
         return type;
     }

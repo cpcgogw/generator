@@ -7,7 +7,7 @@ import javafx.scene.shape.*;
 /**
  * Created by vilddjur on 1/24/17.
  */
-public class DrawableEdge extends Line{
+public class DrawableEdge extends Line implements Edge{
     private DrawableNode startDrawableNode;
     private DrawableNode endDrawableNode;
     private Path arrowHead;
@@ -110,5 +110,15 @@ public class DrawableEdge extends Line{
         }else if(endDrawableNode == replace){
             endDrawableNode = newDrawableNode;
         }
+    }
+
+    @Override
+    public Node getFrom() {
+        return startDrawableNode;
+    }
+
+    @Override
+    public Node getTo() {
+        return endDrawableNode;
     }
 }
