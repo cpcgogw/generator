@@ -8,8 +8,8 @@ import java.util.ArrayList;
 /**
  * Created by vilddjur on 1/24/17.
  */
-public class Node extends Circle {
-    private ArrayList<Edge> edges;
+public class DrawableNode extends Circle {
+    private ArrayList<DrawableEdge> drawableEdges;
     private int id;
     public static int idCounter=0;
     public static final int DEFAULT_RADIUS = 40;
@@ -19,9 +19,9 @@ public class Node extends Circle {
     }
     private String type;
 
-    public Node(Node n) {
+    public DrawableNode(DrawableNode n) {
         super(n.getCenterX(), n.getCenterY(), n.getRadius(), n.getFill());
-        edges = new ArrayList<>();
+        drawableEdges = new ArrayList<>();
         id = n.id;
         this.type = n.getType();
         setColor();
@@ -40,28 +40,28 @@ public class Node extends Circle {
         }
     }
 
-    public void addAllEdges(ArrayList<Edge> edges) {
-        this.edges.addAll(edges);
+    public void addAllEdges(ArrayList<DrawableEdge> drawableEdges) {
+        this.drawableEdges.addAll(drawableEdges);
     }
 
-    public ArrayList<Edge> extractOutgoingEdges(Pattern p) {
-        ArrayList<Edge> outgoingEdges = new ArrayList<>();
-        for (Edge e : edges) {
-            if(this == e.getEndNode()){ // we are end node, check if start node is in given pattern
-                if(!p.nodes.contains(e.getStartNode())){
-                    outgoingEdges.add(e);
+    public ArrayList<DrawableEdge> extractOutgoingEdges(Pattern p) {
+        ArrayList<DrawableEdge> outgoingDrawableEdges = new ArrayList<>();
+        for (DrawableEdge e : drawableEdges) {
+            if(this == e.getEndDrawableNode()){ // we are end node, check if start node is in given pattern
+                if(!p.drawableNodes.contains(e.getStartDrawableNode())){
+                    outgoingDrawableEdges.add(e);
                 }
             }else{ // we are start node, check if end node is in given pattern
-                if(!p.nodes.contains(e.getEndNode())){
-                    outgoingEdges.add(e);
+                if(!p.drawableNodes.contains(e.getEndDrawableNode())){
+                    outgoingDrawableEdges.add(e);
                 }
             }
         }
-        return outgoingEdges;
+        return outgoingDrawableEdges;
     }
 
-    public void setEdges(ArrayList<Edge> edges) {
-        this.edges = edges;
+    public void setDrawableEdges(ArrayList<DrawableEdge> drawableEdges) {
+        this.drawableEdges = drawableEdges;
     }
 
     public void setType(NodeType type) {
@@ -73,28 +73,28 @@ public class Node extends Circle {
         setColor();
     }
 
-    public Node(double x, double y, int radius, Color color, String type){
+    public DrawableNode(double x, double y, int radius, Color color, String type){
         super(x, y, radius, color);
-        edges = new ArrayList<Edge>();
+        drawableEdges = new ArrayList<DrawableEdge>();
         id = idCounter++;
         this.type = type;
         setColor();
     }
-    public Node(double x, double y, int radius, Color color, NodeType type){
+    public DrawableNode(double x, double y, int radius, Color color, NodeType type){
         super(x, y, radius, color);
-        edges = new ArrayList<Edge>();
+        drawableEdges = new ArrayList<DrawableEdge>();
         id = idCounter++;
         this.type = type.toString();
         setColor();
     }
-    public Node(int id, double x, double y, int radius, Color color, NodeType type){
+    public DrawableNode(int id, double x, double y, int radius, Color color, NodeType type){
         this(x, y, radius, color, type);
         this.id = id;
         if(id>=idCounter){
             idCounter = id+1;
         }
     }
-    public Node(int id, double x, double y, int radius, Color color, String type){
+    public DrawableNode(int id, double x, double y, int radius, Color color, String type){
         this(x, y, radius, color, type);
         this.id = id;
         if(id>=idCounter){
@@ -130,35 +130,35 @@ public class Node extends Circle {
         super.setCenterY(y);
     }
 
-    public ArrayList<Edge> getEdges() {
-        return edges;
+    public ArrayList<DrawableEdge> getDrawableEdges() {
+        return drawableEdges;
     }
 
     public void updateEdges(){
-        for (Edge e : edges) {
+        for (DrawableEdge e : drawableEdges) {
             e.updateNodes();
         }
     }
 
-    public void addEdge(Edge e){
-        edges.add(e);
+    public void addEdge(DrawableEdge e){
+        drawableEdges.add(e);
     }
 
     public void removeEdgesToNodesWithType(String type) {
-        ArrayList<Edge> newEdges = new ArrayList<>();
-        for (Edge e :
-                edges) {
-            if (e.getStartNode() == this){
-                if(!e.getEndNode().getType().equals(type)){
-                    newEdges.add(e);
+        ArrayList<DrawableEdge> newDrawableEdges = new ArrayList<>();
+        for (DrawableEdge e :
+                drawableEdges) {
+            if (e.getStartDrawableNode() == this){
+                if(!e.getEndDrawableNode().getType().equals(type)){
+                    newDrawableEdges.add(e);
                 }
-            }else if(e.getEndNode() == this){
-                if(!e.getStartNode().getType().equals(type)){
-                    newEdges.add(e);
+            }else if(e.getEndDrawableNode() == this){
+                if(!e.getStartDrawableNode().getType().equals(type)){
+                    newDrawableEdges.add(e);
                 }
             }
         }
-        this.setEdges(newEdges);
+        this.setDrawableEdges(newDrawableEdges);
     }
 
     public int getNodeId() {
@@ -168,8 +168,8 @@ public class Node extends Circle {
         return type;
     }
 
-    public void removeEdge(Edge edge) {
-        edges.remove(edge);
+    public void removeEdge(DrawableEdge drawableEdge) {
+        drawableEdges.remove(drawableEdge);
     }
 
     @Override
@@ -177,20 +177,20 @@ public class Node extends Circle {
         return super.hashCode()+id*5+type.hashCode()*7;
     }
 
-    public Node clone(){
-        Node node = new Node(this.getCenterX(), this.getCenterY(), (int)this.getRadius(), Color.AQUA, this.getType());
-        for (Edge e: this.edges){
-            if(e.getStartNode().getNodeId() == this.id)
-                e.setStartNode(node);
-            if(e.getEndNode().getNodeId() == this.id)
-                e.setEndNode(node);
-            node.edges.add(e);
+    public DrawableNode clone(){
+        DrawableNode drawableNode = new DrawableNode(this.getCenterX(), this.getCenterY(), (int)this.getRadius(), Color.AQUA, this.getType());
+        for (DrawableEdge e: this.drawableEdges){
+            if(e.getStartDrawableNode().getNodeId() == this.id)
+                e.setStartDrawableNode(drawableNode);
+            if(e.getEndDrawableNode().getNodeId() == this.id)
+                e.setEndNode(drawableNode);
+            drawableNode.drawableEdges.add(e);
         }
-        return node;
+        return drawableNode;
     }
 
     @Override
     public String toString() {
-        return "Type: " + this.getType() + ", id:" + this.getNodeId() + ", #edges: " + this.getEdges().size();
+        return "Type: " + this.getType() + ", id:" + this.getNodeId() + ", #drawableEdges: " + this.getDrawableEdges().size();
     }
 }

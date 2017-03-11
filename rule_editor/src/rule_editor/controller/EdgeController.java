@@ -1,8 +1,8 @@
 package rule_editor.controller;
 
 
-import model.Edge;
-import model.Node;
+import model.DrawableEdge;
+import model.DrawableNode;
 
 /**
  * Created by vilddjur on 1/25/17.
@@ -13,8 +13,8 @@ public class EdgeController {
         dragging = false;
     }
 
-    public Edge addEdge(Node c, Node s) {
-        Edge e = new Edge(c, s);
+    public DrawableEdge addEdge(DrawableNode c, DrawableNode s) {
+        DrawableEdge e = new DrawableEdge(c, s);
 
         e.setOnMousePressed(mouseEvent -> handlePress(mouseEvent, e));
         e.setOnMouseReleased(event -> {
@@ -30,7 +30,7 @@ public class EdgeController {
         return e;
     }
 
-    private void handlePress(javafx.scene.input.MouseEvent mouseEvent, Edge e) {
+    private void handlePress(javafx.scene.input.MouseEvent mouseEvent, DrawableEdge e) {
         if(Controller.activeTool == Controller.tools.DELETE){
             e.delete();
             Controller.getActiveCanvas().getChildren().removeAll(e, e.getArrow());
@@ -39,7 +39,7 @@ public class EdgeController {
         }
     }
 
-    public Edge addEdge(Edge e) {
+    public DrawableEdge addEdge(DrawableEdge e) {
         e.setOnMousePressed(mouseEvent -> dragging = true);
         e.setOnMouseReleased(event -> {
             dragging = false;

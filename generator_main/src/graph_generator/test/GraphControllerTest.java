@@ -3,8 +3,8 @@ package graph_generator.test;
 import graph_generator.controller.GraphController;
 import javafx.scene.paint.Color;
 import javafx.util.Pair;
-import model.Edge;
-import model.Node;
+import model.DrawableEdge;
+import model.DrawableNode;
 import model.Pattern;
 import model.Rule;
 import org.junit.Before;
@@ -27,11 +27,11 @@ public class GraphControllerTest {
         rules = new ArrayList<>();
 
         Pattern matchingPattern = new Pattern();
-        Node startNode = node("START");
-        Node endNode = node("END");
-        Edge e = new Edge(startNode, endNode);
-        matchingPattern.nodes.add(startNode);
-        matchingPattern.nodes.add(endNode);
+        DrawableNode startDrawableNode = node("START");
+        DrawableNode endDrawableNode = node("END");
+        DrawableEdge e = new DrawableEdge(startDrawableNode, endDrawableNode);
+        matchingPattern.drawableNodes.add(startDrawableNode);
+        matchingPattern.drawableNodes.add(endDrawableNode);
 
 
         Rule matchingRule = new Rule(matchingPattern);
@@ -46,25 +46,25 @@ public class GraphControllerTest {
             create n (random?) translations, maybe not needed?
         create pattern matching one of these rules
         expect output pair array have n/2 different rules, in reality it can have multiple matches on same subpattern
-            "starting" on different nodes
+            "starting" on different drawableNodes
          */
 
         Pattern weirdPattern = new Pattern();
-        Node lockNode = node("LOCK");
-        Node weirdNode = node("WEIRD");
-        Edge e2 = new Edge(lockNode, weirdNode);
-        weirdPattern.nodes.add(lockNode);
-        weirdPattern.nodes.add(weirdNode);
+        DrawableNode lockDrawableNode = node("LOCK");
+        DrawableNode weirdDrawableNode = node("WEIRD");
+        DrawableEdge e2 = new DrawableEdge(lockDrawableNode, weirdDrawableNode);
+        weirdPattern.drawableNodes.add(lockDrawableNode);
+        weirdPattern.drawableNodes.add(weirdDrawableNode);
 
         Pattern ourPattern = new Pattern();
-        Node node1 = node("START");
-        Node node2 = node("END");
-        Node node3 = node("OTHER");
-        Edge e3 = new Edge(node1, node2);
-        Edge e4 = new Edge(node2, node3);
-        ourPattern.nodes.add(node1);
-        ourPattern.nodes.add(node2);
-        ourPattern.nodes.add(node3);
+        DrawableNode drawableNode1 = node("START");
+        DrawableNode drawableNode2 = node("END");
+        DrawableNode drawableNode3 = node("OTHER");
+        DrawableEdge e3 = new DrawableEdge(drawableNode1, drawableNode2);
+        DrawableEdge e4 = new DrawableEdge(drawableNode2, drawableNode3);
+        ourPattern.drawableNodes.add(drawableNode1);
+        ourPattern.drawableNodes.add(drawableNode2);
+        ourPattern.drawableNodes.add(drawableNode3);
 
         Rule weirdRule = new Rule(weirdPattern);
 
@@ -81,15 +81,15 @@ public class GraphControllerTest {
         make sure we get no rules matching
          */
         Pattern overFullPattern = new Pattern();
-        Node startOverFull = node("START");
-        Node endOverFull = node("END");
-        Edge edgeOverfull = new Edge(startOverFull, endOverFull);
-        overFullPattern.nodes.add(startOverFull);
-        overFullPattern.nodes.add(endOverFull);
+        DrawableNode startOverFull = node("START");
+        DrawableNode endOverFull = node("END");
+        DrawableEdge drawableEdgeOverfull = new DrawableEdge(startOverFull, endOverFull);
+        overFullPattern.drawableNodes.add(startOverFull);
+        overFullPattern.drawableNodes.add(endOverFull);
         for (int i = 0; i < 8; i++) {
-            Node n = node("LOL" + i);
-            Edge eTmp = new Edge(n, startOverFull);
-            overFullPattern.nodes.add(n);
+            DrawableNode n = node("LOL" + i);
+            DrawableEdge eTmp = new DrawableEdge(n, startOverFull);
+            overFullPattern.drawableNodes.add(n);
         }
         Log.print("overfullPattern: " + overFullPattern, Log.LEVEL.DEBUG);
 
@@ -107,26 +107,26 @@ public class GraphControllerTest {
          */
         rules = new ArrayList<>();
         Pattern anyMatchingPattern = new Pattern();
-        Node start = node("START");
-        Node any = node("ANY");
-        Edge matchEdge = new Edge(start, any);
-        anyMatchingPattern.nodes.add(start);
-        anyMatchingPattern.nodes.add(any);
+        DrawableNode start = node("START");
+        DrawableNode any = node("ANY");
+        DrawableEdge matchDrawableEdge = new DrawableEdge(start, any);
+        anyMatchingPattern.drawableNodes.add(start);
+        anyMatchingPattern.drawableNodes.add(any);
         rules.add(new Rule(anyMatchingPattern));
 
         Pattern validPatten = new Pattern();
-        Node start1 = node("START");
-        Node any1 = node("ASDF");
-        Edge validEdge = new Edge(start1, any1);
-        validPatten.nodes.add(start1);
-        validPatten.nodes.add(any1);
+        DrawableNode start1 = node("START");
+        DrawableNode any1 = node("ASDF");
+        DrawableEdge validDrawableEdge = new DrawableEdge(start1, any1);
+        validPatten.drawableNodes.add(start1);
+        validPatten.drawableNodes.add(any1);
 
         Pattern invalidPattern = new Pattern();
-        Node start2 = node("START");
-        Node any2 = node("ASDF");
-        Edge invalidEdge = new Edge(any2, start2);
-        invalidPattern.nodes.add(start2);
-        invalidPattern.nodes.add(any2);
+        DrawableNode start2 = node("START");
+        DrawableNode any2 = node("ASDF");
+        DrawableEdge invalidDrawableEdge = new DrawableEdge(any2, start2);
+        invalidPattern.drawableNodes.add(start2);
+        invalidPattern.drawableNodes.add(any2);
 
         ArrayList<Pair<Rule, Pattern>> pairArrayList = graphController.rulesMatchingPattern(rules, validPatten);
         System.out.println(pairArrayList.size());
@@ -144,31 +144,31 @@ public class GraphControllerTest {
     /*
     create rule with simple matching pattern,
         a = b->c->a
-    expect nodes size to be 2n+1 after applyingRule n times
+    expect drawableNodes size to be 2n+1 after applyingRule n times
      */
         int nodeId = 1337;
         Pattern simplePattern =  new Pattern();
-        Node nodeA = node("A");
-        nodeA.setNodeId(nodeId);
-        simplePattern.nodes.add(nodeA);
+        DrawableNode drawableNodeA = node("A");
+        drawableNodeA.setNodeId(nodeId);
+        simplePattern.drawableNodes.add(drawableNodeA);
 
         Pattern trans =  new Pattern();
-        Node nodeA2 = node("A");
-        nodeA2.setNodeId(nodeId);
-        Node nodeB = node("B");
-        Node nodeC = node("C");
-        Edge bToC = new Edge(nodeB, nodeC);
-        Edge cToA = new Edge(nodeC, nodeA2);
-        trans.nodes.add(nodeA2);
-        trans.nodes.add(nodeB);
-        trans.nodes.add(nodeC);
+        DrawableNode drawableNodeA2 = node("A");
+        drawableNodeA2.setNodeId(nodeId);
+        DrawableNode drawableNodeB = node("B");
+        DrawableNode drawableNodeC = node("C");
+        DrawableEdge bToC = new DrawableEdge(drawableNodeB, drawableNodeC);
+        DrawableEdge cToA = new DrawableEdge(drawableNodeC, drawableNodeA2);
+        trans.drawableNodes.add(drawableNodeA2);
+        trans.drawableNodes.add(drawableNodeB);
+        trans.drawableNodes.add(drawableNodeC);
 
         Rule rule = new Rule(simplePattern);
         rule.possibleTranslations.add(trans);
 
         Pattern graph = new Pattern();
-        Node nodeA3 = node("A");
-        graph.nodes.add(nodeA3);
+        DrawableNode drawableNodeA3 = node("A");
+        graph.drawableNodes.add(drawableNodeA3);
 
         ArrayList<Rule> rules = new ArrayList<Rule>();
         rules.add(rule);
@@ -189,11 +189,11 @@ public class GraphControllerTest {
 
         Log.print(graph.toString(), Log.LEVEL.DEBUG);
 
-        assert graph.nodes.size() == 2*n+1;
+        assert graph.drawableNodes.size() == 2*n+1;
 
     }
 
-    private Node node(String type) {
-        return new Node(0,0,40, Color.AQUA, type);
+    private DrawableNode node(String type) {
+        return new DrawableNode(0,0,40, Color.AQUA, type);
     }
 }
