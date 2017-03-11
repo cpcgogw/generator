@@ -15,7 +15,7 @@ import javafx.stage.Stage;
 import javafx.util.Pair;
 import model.DrawableEdge;
 import model.DrawableNode;
-import model.Pattern;
+import model.DrawablePattern;
 import model.Rule;
 import rule_editor.FileHandler;
 import utils.Log;
@@ -111,9 +111,9 @@ public class Controller {
     private Button active_node_save_button;
     public DrawableNode activeDrawableNode;
 
-    private HashMap<Pane, Pattern> scenarios;
-    private Pattern matchingPattern;
-    private Pattern currentLevel;
+    private HashMap<Pane, DrawablePattern> scenarios;
+    private DrawablePattern matchingDrawablePattern;
+    private DrawablePattern currentLevel;
 
     public void setActiveDrawableNode(DrawableNode activeDrawableNode) {
         this.activeDrawableNode = activeDrawableNode;
@@ -152,11 +152,11 @@ public class Controller {
     private NodeController nodeController;
     public void initialize(){
         GraphController graphController = new GraphController();
-        scenarios = new HashMap<Pane, Pattern>();
+        scenarios = new HashMap<Pane, DrawablePattern>();
         activeType = DrawableNode.NodeType.START;
         activeTool = NODE;
         activeCanvas = rule_canvas;
-        currentLevel = new Pattern();
+        currentLevel = new DrawablePattern();
 
         edge_button.setOnMouseClicked(mouseEvent -> activeTool = EDGE);
         // init editing buttons
@@ -195,12 +195,13 @@ public class Controller {
         // init inspector pane
         active_node_save_button.setOnMouseClicked(mouseEvent -> saveActiveNode());
 
-        new_button.setOnAction(actionEvent -> {nodeController.clear(); canvas.getChildren().clear(); currentLevel = new Pattern();});
+        new_button.setOnAction(actionEvent -> {nodeController.clear(); canvas.getChildren().clear(); currentLevel = new DrawablePattern();});
 
         // initialize currentRule;
-        matchingPattern = new Pattern();
-        activeRule = new Rule(matchingPattern);
+        matchingDrawablePattern = new DrawablePattern();
+        activeRule = new Rule(matchingDrawablePattern);
     }
+
 
     private void saveActiveNode() {
         activeDrawableNode.setNodeId(Integer.parseInt(active_node_id_field.getText()));
@@ -258,7 +259,7 @@ public class Controller {
 
         for (File f : folder.listFiles()) {
             if(!f.isDirectory()){
-                Pattern match = new Pattern(FileHandler.LoadMatchingPattern(f));
+                DrawablePattern match = new DrawablePattern(FileHandler.LoadMatchingPattern(f));
                 rules.add(new Rule(match, FileHandler.LoadTranslations(f)));
             }
         }
@@ -266,11 +267,11 @@ public class Controller {
         return rules;
     }
 
-    private void translateLevel(Pattern pattern, List<Rule> rules) {
+    private void translateLevel(DrawablePattern drawablePattern, List<Rule> rules) {
         if(graphController == null){
             graphController = new GraphController();
         }
-        graphController.applyRandomRule(rules, pattern);
+        graphController.applyRandomRule(rules, drawablePattern);
     }
 
     private void showRules() {
@@ -280,11 +281,11 @@ public class Controller {
         activeCanvas = rule_canvas;
 
         Log.print("Dumping current rule: \n MatchingPattern: ", Log.LEVEL.INFO);
-        for (DrawableNode n : activeRule.matchingPattern.drawableNodes) {
+        for (DrawableNode n : activeRule.matchingDrawablePattern.drawableNodes) {
             Log.print("  node: " + n.getType().toString(), Log.LEVEL.INFO);
         }
         Log.print(" possibleOutcomes: ", Log.LEVEL.INFO);
-        for (Pattern p : activeRule.possibleTranslations){
+        for (DrawablePattern p : activeRule.possibleTranslations){
             Log.print("  outcome: ", Log.LEVEL.INFO);
             for (DrawableNode n : p.drawableNodes) {
                 Log.print("   node: " + n.getType().toString(), Log.LEVEL.INFO);
@@ -325,18 +326,18 @@ public class Controller {
         scenarios.clear();
 
         //new rule
-        matchingPattern = new Pattern();
-        activeRule = new Rule(matchingPattern);
+        matchingDrawablePattern = new DrawablePattern();
+        activeRule = new Rule(matchingDrawablePattern);
 
 
         Pair<ArrayList<DrawableNode>,ArrayList<DrawableEdge>> pair = FileHandler.LoadMatchingPattern(file);
         ArrayList<Pair<ArrayList<DrawableNode>,ArrayList<DrawableEdge>>> translations = FileHandler.LoadTranslations(file);
         activeCanvas = rule_canvas;
-        insertIntoCanvasAndList(rule_canvas, matchingPattern.drawableNodes, pair);
+        insertIntoCanvasAndList(rule_canvas, matchingDrawablePattern.drawableNodes, pair);
 
         for (Pair<ArrayList<DrawableNode>, ArrayList<DrawableEdge>> p : translations){
 
-            Pair<Pane, Pattern> panePatternPair = addTab("saved tab");
+            Pair<Pane, DrawablePattern> panePatternPair = addTab("saved tab");
             insertIntoCanvasAndList(panePatternPair.getKey(), panePatternPair.getValue().drawableNodes, p);
         }
     }
@@ -433,7 +434,7 @@ public class Controller {
 
             c.getChildren().add(drawableNode);
             if(c == rule_canvas){
-                matchingPattern.drawableNodes.add(drawableNode);
+                matchingDrawablePattern.drawableNodes.add(drawableNode);
             }else if(c == canvas){
                 currentLevel.drawableNodes.add(drawableNode);
             } else {
@@ -441,7 +442,7 @@ public class Controller {
             }
         }
     }
-    private Pair<Pane, Pattern> addTab(String s){
+    private Pair<Pane, DrawablePattern> addTab(String s){
         Tab tab = new Tab(s);
         Pane c = new Pane();
         c.setOnMouseClicked(mouseEvent -> {
@@ -451,7 +452,7 @@ public class Controller {
         c.setOnMouseEntered(event -> requestFocus(c));
         tab.setContent(c);
         rule_tab_pane.getTabs().add(tab);
-        Pattern p = new Pattern();
+        DrawablePattern p = new DrawablePattern();
         activeRule.possibleTranslations.add(p);
         scenarios.put(c, p);
         return new Pair<>(c, p);

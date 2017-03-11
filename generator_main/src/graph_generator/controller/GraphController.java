@@ -3,7 +3,7 @@ package graph_generator.controller;
 import javafx.util.Pair;
 import model.DrawableEdge;
 import model.DrawableNode;
-import model.Pattern;
+import model.DrawablePattern;
 import model.Rule;
 import utils.Log;
 
@@ -28,7 +28,7 @@ public class GraphController {
      * @param graph
      * The full graph on which which to apply the rules too
      */
-    public void applyRandomRuleNTimes(ArrayList<Rule> rules, int n, Pattern graph){
+    public void applyRandomRuleNTimes(ArrayList<Rule> rules, int n, DrawablePattern graph){
         for (int i = 0; i < n; i++) {
             applyRandomRule(rules, graph);
         }
@@ -44,8 +44,8 @@ public class GraphController {
      * A list of pairs in which the first element in the pair is the rule that matched and the second is the subpattern
      * the rule matched against
      */
-    public ArrayList<Pair<Rule, Pattern>> rulesMatchingPattern(List<Rule> rules, Pattern graph) {
-        ArrayList<Pair<Rule, Pattern>> rulePatternList = new ArrayList<>();
+    public ArrayList<Pair<Rule, DrawablePattern>> rulesMatchingPattern(List<Rule> rules, DrawablePattern graph) {
+        ArrayList<Pair<Rule, DrawablePattern>> rulePatternList = new ArrayList<>();
         for (Rule r : rules) {
             rulePatternList.addAll(ruleMatchingPattern(r, graph));
         }
@@ -53,16 +53,16 @@ public class GraphController {
         return rulePatternList;
     }
 
-    public ArrayList<Pair<Rule, Pattern>> ruleMatchingPattern(Rule r, Pattern graph) {
-        ArrayList<Pair<Rule, Pattern>> rulePatternList = new ArrayList<>();
+    public ArrayList<Pair<Rule, DrawablePattern>> ruleMatchingPattern(Rule r, DrawablePattern graph) {
+        ArrayList<Pair<Rule, DrawablePattern>> rulePatternList = new ArrayList<>();
         for (int i = 0; i < graph.drawableNodes.size(); i++) {
             Log.print("rulesMatchingPattern: checking subpattern:", Log.LEVEL.DEBUG);
             Log.print("rulesMatchingPattern: " + graph.drawableNodes.get(i).toString(), Log.LEVEL.DEBUG);
             Log.print("vs", Log.LEVEL.DEBUG);
-            Log.print(r.matchingPattern.drawableNodes.toString(), Log.LEVEL.DEBUG);
+            Log.print(r.matchingDrawablePattern.drawableNodes.toString(), Log.LEVEL.DEBUG);
 
 
-            Pattern p = new Pattern();
+            DrawablePattern p = new DrawablePattern();
             boolean result = insertValidSubPatternFromRule(graph.drawableNodes.get(i), new ArrayList<DrawableNode>(), p, r);
 
             if(result){
@@ -82,19 +82,19 @@ public class GraphController {
      * Rules to try to apply
      * @param graph
      */
-    public void applyRandomRule(List<Rule> rules, Pattern graph) {
-        ArrayList<Pair<Rule, Pattern>> rulePatternList = rulesMatchingPattern(rules, graph);
+    public void applyRandomRule(List<Rule> rules, DrawablePattern graph) {
+        ArrayList<Pair<Rule, DrawablePattern>> rulePatternList = rulesMatchingPattern(rules, graph);
         if (rulePatternList.size() > 0) {
-            Pair<Rule, Pattern> pair = rulePatternList.get(random.nextInt(rulePatternList.size()));
+            Pair<Rule, DrawablePattern> pair = rulePatternList.get(random.nextInt(rulePatternList.size()));
             Rule r = pair.getKey();
-            Pattern p = pair.getValue();
+            DrawablePattern p = pair.getValue();
             applyRule(graph, p, r);
         }
     }
 
 
-    public void insertAndReplace(Pattern graph, Pattern p, Rule rule) {
-        Pattern tr = rule.randomPossiblePattern();
+    public void insertAndReplace(DrawablePattern graph, DrawablePattern p, Rule rule) {
+        DrawablePattern tr = rule.randomPossiblePattern();
         for (DrawableNode drawableNode : p.drawableNodes) {
             DrawableNode n = findCorrespondingNode(drawableNode, tr, rule);
             if(n != null){
@@ -122,7 +122,7 @@ public class GraphController {
      * @param tr
      * pattern to take drawableNodes from
      */
-    public void addAllNotIn(Pattern p, Pattern tr) {
+    public void addAllNotIn(DrawablePattern p, DrawablePattern tr) {
         for (DrawableNode drawableNode :
                 tr.drawableNodes) {
             boolean contains = false;
@@ -140,10 +140,10 @@ public class GraphController {
     }
 
 
-    private DrawableNode findCorrespondingNode(DrawableNode drawableNode, Pattern p, Rule rule) {
+    private DrawableNode findCorrespondingNode(DrawableNode drawableNode, DrawablePattern p, Rule rule) {
         DrawableNode ret = null;
         for (DrawableNode n :
-                rule.matchingPattern.drawableNodes) {
+                rule.matchingDrawablePattern.drawableNodes) {
             if (drawableNode.getType().equals(n.getType())){
                 for (DrawableNode n2 : p.drawableNodes) {
                     if (n2.getNodeId() == n.getNodeId())
@@ -156,26 +156,26 @@ public class GraphController {
 
     /**
      * Checks if drawableNode 'drawableNode' is a valid drawableNode in the given rules matchingpattern if that is the case its added to the
-     * pattern 'buildPattern' will return false if any valid 'drawableNode' found in matchingpattern has more than 8 edges.
+     * pattern 'buildDrawablePattern' will return false if any valid 'drawableNode' found in matchingpattern has more than 8 edges.
      * After checking a drawableNode, if its valid and has more drawableNodes to check it will call itself with the next drawableNode and
      * add the checked drawableNode drawableNode to checkedNode list.
      * @param drawableNode
-     * DrawableNode to check if valid in matchingPattern
+     * DrawableNode to check if valid in matchingDrawablePattern
      * @param checkedDrawableNodes
      * List of checked drawableNodes so we dont check same drawableNode twice
-     * @param buildPattern
+     * @param buildDrawablePattern
      * Valid subpattern built from 'drawableNode'
      * @param rule
      * Rule with the pattern we are matching against
      * @return
      * returns true if we have found a valid subpattern
      */
-    private boolean insertValidSubPatternFromRule(DrawableNode drawableNode, ArrayList<DrawableNode> checkedDrawableNodes, Pattern buildPattern, Rule rule){
+    private boolean insertValidSubPatternFromRule(DrawableNode drawableNode, ArrayList<DrawableNode> checkedDrawableNodes, DrawablePattern buildDrawablePattern, Rule rule){
         boolean returnBool = false;
         if(checkedDrawableNodes.contains(drawableNode)){
             return true;
         }
-        for (DrawableNode n : rule.matchingPattern.drawableNodes) {
+        for (DrawableNode n : rule.matchingDrawablePattern.drawableNodes) {
             // find drawableNode in matching pattern with same type.
             if(drawableNode.getType().equals(n.getType()) || n.getType().equals("ANY")) {
                 checkedDrawableNodes.add(drawableNode);
@@ -192,10 +192,10 @@ public class GraphController {
                  * all edges in drawableNode n must be in drawableNode "drawableNode"
                  * also traverses the drawableNodes to check
                  */
-                returnBool = allEdgeAreContainedIn(n, drawableNode, checkedDrawableNodes, buildPattern, rule);
+                returnBool = allEdgeAreContainedIn(n, drawableNode, checkedDrawableNodes, buildDrawablePattern, rule);
                 if(returnBool){
                     Log.print("insertValidSubPatternFromRule: edges were correct, adding to pattern", Log.LEVEL.DEBUG);
-                    buildPattern.drawableNodes.add(drawableNode);
+                    buildDrawablePattern.drawableNodes.add(drawableNode);
                 }
             }
             /*
@@ -216,7 +216,7 @@ public class GraphController {
      * @param rule
      * @return
      */
-    private boolean allEdgeAreContainedIn(DrawableNode n, DrawableNode drawableNode, ArrayList<DrawableNode> checkedDrawableNodes, Pattern p, Rule rule){
+    private boolean allEdgeAreContainedIn(DrawableNode n, DrawableNode drawableNode, ArrayList<DrawableNode> checkedDrawableNodes, DrawablePattern p, Rule rule){
         boolean returnBool = true;
         boolean nooneChecked = false;
         if(n.getDrawableEdges().size() > drawableNode.getDrawableEdges().size()){
@@ -278,7 +278,7 @@ public class GraphController {
      * @param rule
      * The rule which we apply to the subpattern in the graph.
      */
-    public void applyRule(Pattern graph, Pattern p, Rule rule) {
+    public void applyRule(DrawablePattern graph, DrawablePattern p, Rule rule) {
         graph.resetIds();
         insertAndReplace(graph, p, rule);
     }

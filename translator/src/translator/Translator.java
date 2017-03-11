@@ -3,14 +3,14 @@ package translator;
 
 import model.Edge;
 import model.Node;
+import model.Pattern;
 import translator.model.AbstractEdge;
 import translator.model.AbstractNode;
+import translator.model.AbstractPattern;
 import translator.model.NodeGrid;
-import translator.model.Pattern;
 import utils.Log;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Class for translating a graph into a game world.
@@ -20,7 +20,7 @@ import java.util.List;
 public class Translator {
     public static void main(String[] args) {
         Log.level = Log.LEVEL.NONE;
-        Pattern graph = testGraph();
+        AbstractPattern graph = testGraph();
         NodeGrid grid = new NodeGrid(3);
 
         System.out.println("Grid before: ");
@@ -38,11 +38,11 @@ public class Translator {
      * @param grid
      * Grid to place graph on.
      */
-    private static void placeGraphOnGrid(Pattern graph, NodeGrid grid) {
+    public static void placeGraphOnGrid(Pattern graph, NodeGrid grid) {
         Log.print("Translator: Placing graph on grid...", Log.LEVEL.INFO);
 
         // Place all drawableNodes on graph
-        if (!placeAll(graph.pattern.remove(0), (ArrayList<Node>) graph.pattern, grid)) {
+        if (!placeAll(graph.remove(0), graph.getNodes(), grid)) {
             Log.print("Translator: Unable to place graph on grid!", Log.LEVEL.ERROR);
             return;
         }
@@ -116,9 +116,9 @@ public class Translator {
      * @return
      * The simple graph.
      */
-    public static Pattern testGraph() {
-        Pattern pattern = new Pattern();
-        List<Node> graph = new ArrayList<>();
+    public static AbstractPattern testGraph() {
+        AbstractPattern pattern = new AbstractPattern();
+        ArrayList<Node> graph = new ArrayList<>();
 
         Node n1 = new AbstractNode();
         Node n2 = new AbstractNode();
@@ -150,7 +150,7 @@ public class Translator {
         2<->3
         0<->3
          */
-        pattern.pattern = graph;
+        pattern.nodes = graph;
         return pattern;
     }
 }

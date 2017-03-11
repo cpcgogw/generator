@@ -5,7 +5,7 @@ import javafx.scene.paint.Color;
 import javafx.util.Pair;
 import model.DrawableEdge;
 import model.DrawableNode;
-import model.Pattern;
+import model.DrawablePattern;
 import model.Rule;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,15 +26,15 @@ public class GraphControllerTest {
 
         rules = new ArrayList<>();
 
-        Pattern matchingPattern = new Pattern();
+        DrawablePattern matchingDrawablePattern = new DrawablePattern();
         DrawableNode startDrawableNode = node("START");
         DrawableNode endDrawableNode = node("END");
         DrawableEdge e = new DrawableEdge(startDrawableNode, endDrawableNode);
-        matchingPattern.drawableNodes.add(startDrawableNode);
-        matchingPattern.drawableNodes.add(endDrawableNode);
+        matchingDrawablePattern.drawableNodes.add(startDrawableNode);
+        matchingDrawablePattern.drawableNodes.add(endDrawableNode);
 
 
-        Rule matchingRule = new Rule(matchingPattern);
+        Rule matchingRule = new Rule(matchingDrawablePattern);
 
         rules.add(matchingRule);
     }
@@ -49,27 +49,27 @@ public class GraphControllerTest {
             "starting" on different drawableNodes
          */
 
-        Pattern weirdPattern = new Pattern();
+        DrawablePattern weirdDrawablePattern = new DrawablePattern();
         DrawableNode lockDrawableNode = node("LOCK");
         DrawableNode weirdDrawableNode = node("WEIRD");
         DrawableEdge e2 = new DrawableEdge(lockDrawableNode, weirdDrawableNode);
-        weirdPattern.drawableNodes.add(lockDrawableNode);
-        weirdPattern.drawableNodes.add(weirdDrawableNode);
+        weirdDrawablePattern.drawableNodes.add(lockDrawableNode);
+        weirdDrawablePattern.drawableNodes.add(weirdDrawableNode);
 
-        Pattern ourPattern = new Pattern();
+        DrawablePattern ourDrawablePattern = new DrawablePattern();
         DrawableNode drawableNode1 = node("START");
         DrawableNode drawableNode2 = node("END");
         DrawableNode drawableNode3 = node("OTHER");
         DrawableEdge e3 = new DrawableEdge(drawableNode1, drawableNode2);
         DrawableEdge e4 = new DrawableEdge(drawableNode2, drawableNode3);
-        ourPattern.drawableNodes.add(drawableNode1);
-        ourPattern.drawableNodes.add(drawableNode2);
-        ourPattern.drawableNodes.add(drawableNode3);
+        ourDrawablePattern.drawableNodes.add(drawableNode1);
+        ourDrawablePattern.drawableNodes.add(drawableNode2);
+        ourDrawablePattern.drawableNodes.add(drawableNode3);
 
-        Rule weirdRule = new Rule(weirdPattern);
+        Rule weirdRule = new Rule(weirdDrawablePattern);
 
         rules.add(weirdRule);
-        ArrayList<Pair<Rule, Pattern>> pairArrayList = graphController.rulesMatchingPattern(rules, ourPattern);
+        ArrayList<Pair<Rule, DrawablePattern>> pairArrayList = graphController.rulesMatchingPattern(rules, ourDrawablePattern);
 
         assert pairArrayList.size() == 2;
     }
@@ -80,20 +80,20 @@ public class GraphControllerTest {
         create pattern containing node with more than 8 edges to/from it
         make sure we get no rules matching
          */
-        Pattern overFullPattern = new Pattern();
+        DrawablePattern overFullDrawablePattern = new DrawablePattern();
         DrawableNode startOverFull = node("START");
         DrawableNode endOverFull = node("END");
         DrawableEdge drawableEdgeOverfull = new DrawableEdge(startOverFull, endOverFull);
-        overFullPattern.drawableNodes.add(startOverFull);
-        overFullPattern.drawableNodes.add(endOverFull);
+        overFullDrawablePattern.drawableNodes.add(startOverFull);
+        overFullDrawablePattern.drawableNodes.add(endOverFull);
         for (int i = 0; i < 8; i++) {
             DrawableNode n = node("LOL" + i);
             DrawableEdge eTmp = new DrawableEdge(n, startOverFull);
-            overFullPattern.drawableNodes.add(n);
+            overFullDrawablePattern.drawableNodes.add(n);
         }
-        Log.print("overfullPattern: " + overFullPattern, Log.LEVEL.DEBUG);
+        Log.print("overfullPattern: " + overFullDrawablePattern, Log.LEVEL.DEBUG);
 
-        ArrayList<Pair<Rule, Pattern>> pairArrayList = graphController.rulesMatchingPattern(rules, overFullPattern);
+        ArrayList<Pair<Rule, DrawablePattern>> pairArrayList = graphController.rulesMatchingPattern(rules, overFullDrawablePattern);
         System.out.println(pairArrayList.size());
         assert pairArrayList.size() == 0;
     }
@@ -106,34 +106,34 @@ public class GraphControllerTest {
             start <- any : should not work
          */
         rules = new ArrayList<>();
-        Pattern anyMatchingPattern = new Pattern();
+        DrawablePattern anyMatchingDrawablePattern = new DrawablePattern();
         DrawableNode start = node("START");
         DrawableNode any = node("ANY");
         DrawableEdge matchDrawableEdge = new DrawableEdge(start, any);
-        anyMatchingPattern.drawableNodes.add(start);
-        anyMatchingPattern.drawableNodes.add(any);
-        rules.add(new Rule(anyMatchingPattern));
+        anyMatchingDrawablePattern.drawableNodes.add(start);
+        anyMatchingDrawablePattern.drawableNodes.add(any);
+        rules.add(new Rule(anyMatchingDrawablePattern));
 
-        Pattern validPatten = new Pattern();
+        DrawablePattern validPatten = new DrawablePattern();
         DrawableNode start1 = node("START");
         DrawableNode any1 = node("ASDF");
         DrawableEdge validDrawableEdge = new DrawableEdge(start1, any1);
         validPatten.drawableNodes.add(start1);
         validPatten.drawableNodes.add(any1);
 
-        Pattern invalidPattern = new Pattern();
+        DrawablePattern invalidDrawablePattern = new DrawablePattern();
         DrawableNode start2 = node("START");
         DrawableNode any2 = node("ASDF");
         DrawableEdge invalidDrawableEdge = new DrawableEdge(any2, start2);
-        invalidPattern.drawableNodes.add(start2);
-        invalidPattern.drawableNodes.add(any2);
+        invalidDrawablePattern.drawableNodes.add(start2);
+        invalidDrawablePattern.drawableNodes.add(any2);
 
-        ArrayList<Pair<Rule, Pattern>> pairArrayList = graphController.rulesMatchingPattern(rules, validPatten);
+        ArrayList<Pair<Rule, DrawablePattern>> pairArrayList = graphController.rulesMatchingPattern(rules, validPatten);
         System.out.println(pairArrayList.size());
 
         assert pairArrayList.size() == 2;
 
-        pairArrayList = graphController.rulesMatchingPattern(rules, invalidPattern);
+        pairArrayList = graphController.rulesMatchingPattern(rules, invalidDrawablePattern);
         System.out.println(pairArrayList.size());
 
         assert pairArrayList.size() == 0;
@@ -147,12 +147,12 @@ public class GraphControllerTest {
     expect drawableNodes size to be 2n+1 after applyingRule n times
      */
         int nodeId = 1337;
-        Pattern simplePattern =  new Pattern();
+        DrawablePattern simpleDrawablePattern =  new DrawablePattern();
         DrawableNode drawableNodeA = node("A");
         drawableNodeA.setNodeId(nodeId);
-        simplePattern.drawableNodes.add(drawableNodeA);
+        simpleDrawablePattern.drawableNodes.add(drawableNodeA);
 
-        Pattern trans =  new Pattern();
+        DrawablePattern trans =  new DrawablePattern();
         DrawableNode drawableNodeA2 = node("A");
         drawableNodeA2.setNodeId(nodeId);
         DrawableNode drawableNodeB = node("B");
@@ -163,10 +163,10 @@ public class GraphControllerTest {
         trans.drawableNodes.add(drawableNodeB);
         trans.drawableNodes.add(drawableNodeC);
 
-        Rule rule = new Rule(simplePattern);
+        Rule rule = new Rule(simpleDrawablePattern);
         rule.possibleTranslations.add(trans);
 
-        Pattern graph = new Pattern();
+        DrawablePattern graph = new DrawablePattern();
         DrawableNode drawableNodeA3 = node("A");
         graph.drawableNodes.add(drawableNodeA3);
 
@@ -174,11 +174,11 @@ public class GraphControllerTest {
         rules.add(rule);
         int n = 20;
         for (int i = 0; i < n; i++) {
-            ArrayList<Pair<Rule, Pattern>> rulePatternList = graphController.rulesMatchingPattern(rules, graph);
+            ArrayList<Pair<Rule, DrawablePattern>> rulePatternList = graphController.rulesMatchingPattern(rules, graph);
             if (rulePatternList.size() > 0) {
-                Pair<Rule, Pattern> pair = rulePatternList.get(0);
+                Pair<Rule, DrawablePattern> pair = rulePatternList.get(0);
                 Rule r = pair.getKey();
-                Pattern p = pair.getValue();
+                DrawablePattern p = pair.getValue();
                 Log.print("applying rule", Log.LEVEL.DEBUG);
                 Log.print("Before: \n " + graph, Log.LEVEL.DEBUG);
                 Log.print("Subpattern: " + p, Log.LEVEL.DEBUG);

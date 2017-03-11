@@ -4,7 +4,7 @@ import javafx.scene.paint.Color;
 import javafx.util.Pair;
 import model.DrawableEdge;
 import model.DrawableNode;
-import model.Pattern;
+import model.DrawablePattern;
 import model.Rule;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -294,7 +294,7 @@ public class FileHandler {
                 ArrayList<DrawableEdge> drawableEdges = new ArrayList<>();
 
 
-                NodeList xnodeList = ((Element) list).getElementsByTagName("DrawableNode"); //grab all "DrawableNode" from matchingPattern
+                NodeList xnodeList = ((Element) list).getElementsByTagName("DrawableNode"); //grab all "DrawableNode" from matchingDrawablePattern
                 nodeMap = extractNodes(xnodeList);
 
                 //Defines all drawableEdges...
@@ -321,7 +321,7 @@ public class FileHandler {
     private static ArrayList<NodeList> extractTranslations(Document doc) {
         ArrayList<NodeList> nodeListList = new ArrayList<NodeList>();
         Element posTrans = (Element) doc.getElementsByTagName("PossibleTranslations").item(0);
-        NodeList patterns = posTrans.getElementsByTagName("Pattern");
+        NodeList patterns = posTrans.getElementsByTagName("DrawablePattern");
         for (int i = 0; i < patterns.getLength(); i++) {
             nodeListList.add((NodeList) patterns.item(i));
         }
@@ -342,7 +342,7 @@ public class FileHandler {
 
             //Defines all drawableNodes...
             Node pattern = doc.getElementsByTagName("MatchingPattern").item(0);
-            NodeList xnodeList = ((Element) pattern).getElementsByTagName("DrawableNode"); //grab all "DrawableNode" from matchingPattern
+            NodeList xnodeList = ((Element) pattern).getElementsByTagName("DrawableNode"); //grab all "DrawableNode" from matchingDrawablePattern
             nodeMap = extractNodes(xnodeList);
 
 
@@ -406,21 +406,21 @@ public class FileHandler {
             //<Rule><MatchingPattern></MatchingPattern></Rule>
             Element elemMatchingPattern = doc.createElement("MatchingPattern");
             elemRule.appendChild(elemMatchingPattern);
-            //<Rule><MatchingPattern><Pattern></Pattern></MatchingPattern></Rule>
-            Element elemNodes = doc.createElement("Pattern");
+            //<Rule><MatchingPattern><DrawablePattern></DrawablePattern></MatchingPattern></Rule>
+            Element elemNodes = doc.createElement("DrawablePattern");
             elemMatchingPattern.appendChild(elemNodes);
-            //<Rule><MatchingPattern><Pattern>...</Pattern></MatchingPattern></Rule>
-            insertNodesInto(rule.matchingPattern.drawableNodes, elemNodes, doc);
+            //<Rule><MatchingPattern><DrawablePattern>...</DrawablePattern></MatchingPattern></Rule>
+            insertNodesInto(rule.matchingDrawablePattern.drawableNodes, elemNodes, doc);
 
 
             //<Rule><PossibleTranslations></PossibleTranslations></Rule>
             Element elemPosTranslations = doc.createElement("PossibleTranslations");
             elemRule.appendChild(elemPosTranslations);
-            //<Rule><PossibleTranslations><Pattern></Pattern>....</PossibleTranslations></Rule>
-            for (Pattern p : rule.possibleTranslations) {
-                Element elemSinglePattern = doc.createElement("Pattern");
+            //<Rule><PossibleTranslations><DrawablePattern></DrawablePattern>....</PossibleTranslations></Rule>
+            for (DrawablePattern p : rule.possibleTranslations) {
+                Element elemSinglePattern = doc.createElement("DrawablePattern");
                 elemPosTranslations.appendChild(elemSinglePattern);
-                //<Rule><PossibleTranslations><Pattern>...</Pattern>[..]</PossibleTranslations></Rule>
+                //<Rule><PossibleTranslations><DrawablePattern>...</DrawablePattern>[..]</PossibleTranslations></Rule>
                 insertNodesInto(p.drawableNodes, elemSinglePattern, doc);
             }
 

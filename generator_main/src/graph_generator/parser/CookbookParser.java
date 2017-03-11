@@ -4,7 +4,7 @@ import java.io.File;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 
-import model.Pattern;
+import model.DrawablePattern;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import utils.Log;
@@ -19,7 +19,7 @@ public class CookbookParser {
     private Document document = null;
     private RecipeParser recipeParser = new RecipeParser();
 
-    public boolean parseCookbook(String file, Pattern graph) {
+    public boolean parseCookbook(String file, DrawablePattern graph) {
         String tmp = Log.prefix;
         Log.prefix = "CookbookParser: ";
 

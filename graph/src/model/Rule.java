@@ -10,21 +10,21 @@ import java.util.Random;
  */
 public class Rule {
 
-    public Pattern matchingPattern;
-    public ArrayList<Pattern> possibleTranslations;
+    public DrawablePattern matchingDrawablePattern;
+    public ArrayList<DrawablePattern> possibleTranslations;
     private Random rand;
-    public Rule(Pattern matchingPattern){
+    public Rule(DrawablePattern matchingDrawablePattern){
         rand = new Random();
-        this.matchingPattern = matchingPattern;
-        possibleTranslations = new ArrayList<Pattern>();
+        this.matchingDrawablePattern = matchingDrawablePattern;
+        possibleTranslations = new ArrayList<DrawablePattern>();
     }
 
-    public Rule(Pattern match, ArrayList<Pair<ArrayList<DrawableNode>, ArrayList<DrawableEdge>>> translations) {
-        this.matchingPattern = match;
-        possibleTranslations = new ArrayList<Pattern>();
+    public Rule(DrawablePattern match, ArrayList<Pair<ArrayList<DrawableNode>, ArrayList<DrawableEdge>>> translations) {
+        this.matchingDrawablePattern = match;
+        possibleTranslations = new ArrayList<DrawablePattern>();
         rand = new Random();
         for (Pair<ArrayList<DrawableNode>, ArrayList<DrawableEdge>> pair : translations) {
-            Pattern p = new Pattern(pair);
+            DrawablePattern p = new DrawablePattern(pair);
             possibleTranslations.add(p);
         }
     }
@@ -35,7 +35,7 @@ public class Rule {
             if(o instanceof Rule){
                 Rule tmp = (Rule) o;
                 return super.equals(tmp)
-                        && tmp.matchingPattern.equals(this.matchingPattern)
+                        && tmp.matchingDrawablePattern.equals(this.matchingDrawablePattern)
                         && tmp.possibleTranslations.equals(this.possibleTranslations); // maybe sort the lists.
             }else{
                 return false;
@@ -49,23 +49,23 @@ public class Rule {
     @Override
     public int hashCode() {
         int code = 0;
-        code += matchingPattern.hashCode()*3;
+        code += matchingDrawablePattern.hashCode()*3;
         code += possibleTranslations.hashCode()*5;
         return super.hashCode() + code;
     }
 
-    public boolean matches(Pattern p){
-        return p.equals(matchingPattern);
+    public boolean matches(DrawablePattern p){
+        return p.equals(matchingDrawablePattern);
     }
 
-    public Pattern randomPossiblePattern() {
+    public DrawablePattern randomPossiblePattern() {
         return possibleTranslations.get(rand.nextInt(possibleTranslations.size()));
     }
 
     @Override
     public String toString() {
-        String s = "Matching "+matchingPattern+"\n";
-        for (Pattern p : possibleTranslations)
+        String s = "Matching "+ matchingDrawablePattern +"\n";
+        for (DrawablePattern p : possibleTranslations)
             s += "Translation "+p+"\n";
         return s;
     }

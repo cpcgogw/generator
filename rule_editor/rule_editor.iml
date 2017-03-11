@@ -10,5 +10,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="generator_main" />
     <orderEntry type="module" module-name="graph" />
+    <orderEntry type="module" module-name="translator" />
   </component>
 </module>

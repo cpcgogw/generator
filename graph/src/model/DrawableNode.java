@@ -45,7 +45,7 @@ public class DrawableNode extends Circle implements Node{
         this.drawableEdges.addAll(drawableEdges);
     }
 
-    public ArrayList<DrawableEdge> extractOutgoingEdges(Pattern p) {
+    public ArrayList<DrawableEdge> extractOutgoingEdges(DrawablePattern p) {
         ArrayList<DrawableEdge> outgoingDrawableEdges = new ArrayList<>();
         for (DrawableEdge e : drawableEdges) {
             if(this == e.getEndDrawableNode()){ // we are end node, check if start node is in given pattern

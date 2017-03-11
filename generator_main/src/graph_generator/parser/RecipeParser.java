@@ -1,7 +1,7 @@
 package graph_generator.parser;
 
 import graph_generator.controller.CommandController;
-import model.Pattern;
+import model.DrawablePattern;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -30,7 +30,7 @@ public class RecipeParser {
      * @param file
      * Recipe to parse and execute.
      */
-    public boolean parseRecipe(String file, Pattern graph) {
+    public boolean parseRecipe(String file, DrawablePattern graph) {
         String tmp = Log.prefix;
         Log.prefix = "RecipeParser: ";
 

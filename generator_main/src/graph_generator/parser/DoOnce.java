@@ -4,7 +4,7 @@ import graph_generator.controller.GraphController;
 import javafx.util.Pair;
 import model.DrawableEdge;
 import model.DrawableNode;
-import model.Pattern;
+import model.DrawablePattern;
 import model.Rule;
 import rule_editor.FileHandler;
 import utils.Log;
@@ -26,7 +26,7 @@ public class DoOnce extends Command {
     //TODO: all the parsing for the rule should be done before usage,
     // preferably in setParams or class calling this function.
     @Override
-    public boolean execute(Pattern graph) {
+    public boolean execute(DrawablePattern graph) {
         Log.print("DoOnce: Executing command on graph...", Log.LEVEL.INFO);
         File file = new File("saves/rules/"+rule);
         if (file == null) {
@@ -35,13 +35,13 @@ public class DoOnce extends Command {
         }
 
         Pair<ArrayList<DrawableNode>,ArrayList<DrawableEdge>> ruleR = FileHandler.LoadNodes(file);
-        Rule r = new Rule(new Pattern(FileHandler.LoadMatchingPattern(file)), FileHandler.LoadTranslations(file));
+        Rule r = new Rule(new DrawablePattern(FileHandler.LoadMatchingPattern(file)), FileHandler.LoadTranslations(file));
         ArrayList<Rule> rl = new ArrayList<>();
         rl.add(r);
 
         Log.print("Matching pattern to graph...", Log.LEVEL.INFO);
         Log.print("Graph: "+graph,Log.LEVEL.DEBUG);
-        ArrayList<Pair<Rule, Pattern>> rulePatternList = graphController.rulesMatchingPattern(rl, graph);
+        ArrayList<Pair<Rule, DrawablePattern>> rulePatternList = graphController.rulesMatchingPattern(rl, graph);
 
         if (rulePatternList.size() == 0) {
             Log.print("DoOnce: No rules matching pattern.", Log.LEVEL.WARNING);
