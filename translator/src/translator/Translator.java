@@ -1,16 +1,13 @@
 package translator;
 
 
-import model.Edge;
-import model.Node;
-import model.Pattern;
-import translator.model.AbstractEdge;
-import translator.model.AbstractNode;
-import translator.model.AbstractPattern;
-import translator.model.NodeGrid;
+import javafx.scene.paint.Color;
+import javafx.util.Pair;
+import model.*;
+import translator.model.*;
 import utils.Log;
 
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * Class for translating a graph into a game world.
@@ -19,15 +16,19 @@ import java.util.ArrayList;
  */
 public class Translator {
     public static void main(String[] args) {
-        Log.level = Log.LEVEL.NONE;
+        Log.level = Log.LEVEL.INFO;
         AbstractPattern graph = testGraph();
         NodeGrid grid = new NodeGrid(3);
+        NodeGrid res;
 
         System.out.println("Grid before: ");
         System.out.println(grid);
         placeGraphOnGrid(graph, grid);
         System.out.println("Grid after: ");
         System.out.println(grid);
+        System.out.println("Translated to low res: ");
+        res = translateToLowRes(grid);
+        System.out.println(res);
     }
 
     /**
@@ -51,13 +52,6 @@ public class Translator {
     }
 
     /**
-     * Print the grid to standard output.
-     *
-     * @param grid
-     * The grid to be printed.
-     */
-
-    /**
      * Tries to place a node and all drawableNodes after it on the grid.
      *
      * @param node
@@ -70,23 +64,20 @@ public class Translator {
      * True if node and all other drawableNodes were placed successfully, otherwise False.
      */
     public static boolean placeAll(Node node, ArrayList<Node> rest, NodeGrid grid) {
-        int a = 0;
         System.out.println("----");
         System.out.println(grid);
 
-        if (rest.size() == 2)
-            a++;
         // Try all places.
         for (int x=0; x<grid.size(); x++) {
             for (int y=0; y<grid.size(); y++) {
-                if (!grid.tryPlace(node, x, y))
+                if (!grid.tryPlace((Tile) node, x, y))
                     continue;
 
                 // If not the absolute last node.
                 if (rest.size() != 0) {
                     // Needed for passing references along without changing local references.
                     NodeGrid tmpGrid = grid.clone();
-                    tmpGrid.addNode(node, x, y);
+                    tmpGrid.addTile((Tile)node, x, y);
                     ArrayList<Node> tmpRest = (ArrayList<Node>) rest.clone();
 
                     // Try to place the remaining drawableNodes.
@@ -100,7 +91,7 @@ public class Translator {
                     }
                 } else {
                     // Since not doing more recursions copying is not necessary.
-                    grid.addNode(node, x, y);
+                    grid.addTile((Tile) node, x, y);
                     return true;
                 }
             }
@@ -108,6 +99,57 @@ public class Translator {
 
         // There is no possible way to place the graph on the grid.
         return false;
+    }
+
+    /**
+     * Translates a NodeGrid into a low res version of the same grid.
+     *
+     * @param grid
+     * Grid to be translated.
+     * @return
+     * The low res version of the grid.
+     */
+    public static NodeGrid translateToLowRes(NodeGrid grid) {
+        NodeGrid lowResGrid = new NodeGrid(1+grid.size()*2);
+
+        for (int y = 0; y < lowResGrid.size(); y++) {
+            for (int x = 0; x < lowResGrid.size(); x++) {
+                if (x % 2 == 1 && y % 2 == 1) {
+                    lowResGrid.addTile(grid.getTile(x/2, y/2), x, y);
+                }
+            }
+        }
+        //HashMap<Node, Pair<Integer, Integer>> placed = lowResGrid.getPlacedPositions();
+        List<Node> placed = lowResGrid.getNodes();
+        List<Pair<Integer, Integer>> toBePlaced = new ArrayList<>();
+        Log.print("Translator: Translating "+placed.size()+" nodes.", Log.LEVEL.INFO);
+        for (Node n : placed) {
+            if (n == null)
+                continue;
+            Log.print("Translator: Translating node "+n.getNodeId(), Log.LEVEL.INFO);
+
+
+            List<Edge> edges = n.getEdges();
+            for (Edge e : edges) {
+                Pair<Integer, Integer> first = lowResGrid.getNodePosition((Tile) e.getFrom());
+                Pair<Integer, Integer> second = lowResGrid.getNodePosition((Tile) e.getTo());
+
+                Pair<Integer, Integer> midPoint = midPoint(first, second);
+
+                toBePlaced.add(midPoint);
+            }
+        }
+
+        for (Pair p : toBePlaced) {
+            Road r = new Road();
+            lowResGrid.addTile(r, ((Integer)p.getKey()), ((Integer)p.getValue()));
+        }
+
+        return lowResGrid;
+    }
+
+    private static Pair<Integer,Integer> midPoint(Pair<Integer, Integer> from, Pair<Integer, Integer> to) {
+        return new Pair<>((from.getKey()+to.getKey())/2, (from.getValue()+to.getValue())/2);
     }
 
     /**

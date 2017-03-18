@@ -9,7 +9,7 @@ import java.util.ArrayList;
 /**
  * Created by vilddjur on 1/24/17.
  */
-public class DrawableNode extends Circle implements Node{
+public class DrawableNode extends Circle implements Node {
     private ArrayList<DrawableEdge> drawableEdges;
     private int id;
     public static int idCounter=0;
