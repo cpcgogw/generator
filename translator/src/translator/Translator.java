@@ -68,8 +68,8 @@ public class Translator {
         System.out.println(grid);
 
         // Try all places.
-        for (int x=0; x<grid.size(); x++) {
-            for (int y=0; y<grid.size(); y++) {
+        for (int y=0; y<grid.size(); y++) {
+            for (int x=0; x<grid.size(); x++) {
                 if (!grid.tryPlace((Tile) node, x, y))
                     continue;
 
