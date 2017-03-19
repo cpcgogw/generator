@@ -3,7 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/generator.iml" filepath="$PROJECT_DIR$/.idea/modules/generator.iml" />
-      <module fileurl="file://$PROJECT_DIR$/generator_main/generator_main.iml" filepath="$PROJECT_DIR$/generator_main/generator_main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/generator_main.iml" filepath="$PROJECT_DIR$/.idea/modules/generator_main.iml" group="generator" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/generator_test.iml" filepath="$PROJECT_DIR$/.idea/modules/generator_test.iml" group="generator" />
       <module fileurl="file://$PROJECT_DIR$/graph/graph.iml" filepath="$PROJECT_DIR$/graph/graph.iml" />
       <module fileurl="file://$PROJECT_DIR$/rule_editor/rule_editor.iml" filepath="$PROJECT_DIR$/rule_editor/rule_editor.iml" />

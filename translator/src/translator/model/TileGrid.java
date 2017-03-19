@@ -58,11 +58,11 @@ public class TileGrid {
 
     public boolean removeTile(int x, int y) {
         if (isValidPosition(x, y) && grid[x][y] != null) {
+            placed.remove(grid[x][y]);
             grid[x][y] = null;
-            placed.remove(new Pair<>(x, y));
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
     @Override
@@ -78,6 +78,9 @@ public class TileGrid {
     }
 
     public boolean tryPlace(Tile tile, int x, int y) {
+        if (placed.contains(tile))
+            return false;
+
         // Check to see no already placed neighbours are out of reach.
         if (isValidPlacement(tile, x, y)) {
             this.addTile(tile, x, y);
@@ -88,6 +91,9 @@ public class TileGrid {
     }
 
     protected boolean isValidPlacement(Tile tile, int x, int y) {
+        if (!isValidPosition(x, y))
+            return false;
+
         // If space is not free.
         if (getTile(x, y) != null)
             return false;
@@ -108,6 +114,9 @@ public class TileGrid {
      * True if node is neighbour to position (x,y), otherwise False.
      */
     protected boolean isNeighbour(int x, int y, Tile node) {
+        if (grid[x][y].equals(node))
+            return false;
+
         // Iterate through all neighbours
         for (int i=y-1; i<=y+1; i++) {
             for (int j = x-1; j<=x+1; j++) {
@@ -123,13 +132,17 @@ public class TileGrid {
     }
 
     public static boolean copy(TileGrid from, TileGrid to) {
-        if (from == null)
+        if (from == null || to == null)
             return false;
 
-        // Assuming equal sided grid.
+        if (from.size() != to.size())
+            return false;
+
+        // Equal sided grid.
         for (int x=0; x<from.size(); x++) {
             for (int y=0; y<from.size(); y++) {
-                to.addTile(from.getTile(x,y), x, y);
+                if (from.getTile(x, y) != null)
+                    to.addTile(from.getTile(x, y), x, y);
             }
         }
 
@@ -151,19 +164,34 @@ public class TileGrid {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (o instanceof TileGrid) {
+            if (((TileGrid) o).size() != this.size())
+                return false;
+
+            if (((TileGrid) o).getTiles().equals(this.getTiles())) {
+                if (((TileGrid) o).getPlacedPositions().equals(this.getPlacedPositions())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
     public String toString() {
         String s = "";
 
-        for (int x=0; x<grid.length; x++) {
-            for (int y=0; y<grid[0].length; y++) {
+        for (int y=0; y<grid[0].length; y++) {
+            for (int x=0; x<grid.length; x++) {
                 if (grid[x][y] != null) {
-                    if (y==0) {
+                    if (x==0) {
                         s += getTile(x, y).getRepresentation();
                     } else {
                         s += " " + getTile(x, y).getRepresentation();
                     }
                 } else {
-                    if (y==0)
+                    if (x==0)
                         s += "*";
                     else
                         s += " *";
