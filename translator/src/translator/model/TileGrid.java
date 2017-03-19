@@ -2,9 +2,7 @@ package translator.model;
 
 import javafx.util.Pair;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by time on 3/18/17.
@@ -17,14 +15,6 @@ public class TileGrid {
     public TileGrid(int size) {
         grid = new Tile[size][size];
         //initGrid();
-    }
-
-    private void initGrid() {
-        for (int x=0; x<grid.length; x++) {
-            for (int y=0; y<grid[0].length; y++) {
-                grid[x][y] = null;
-            }
-        }
     }
 
     public int size() {
@@ -46,9 +36,6 @@ public class TileGrid {
     }
 
     private boolean isValidPosition(int x, int y) {
-        if (grid == null)
-            return false;
-
         if (x >= 0 && x < grid.length &&
                 y >= 0 && y < grid[0].length) {
             return true;
@@ -67,14 +54,10 @@ public class TileGrid {
 
     @Override
     public TileGrid clone() {
-        if (grid == null)
-            return null;
-
         TileGrid tileGrid = new TileGrid(grid.length);
-        if (copy(this, tileGrid))
-            return tileGrid;
+        copy(this, tileGrid);
 
-        return null;
+        return tileGrid;
     }
 
     public boolean tryPlace(Tile tile, int x, int y) {
@@ -114,7 +97,7 @@ public class TileGrid {
      * True if node is neighbour to position (x,y), otherwise False.
      */
     protected boolean isNeighbour(int x, int y, Tile node) {
-        if (grid[x][y].equals(node))
+        if (grid[x][y] != null && grid[x][y].equals(node))
             return false;
 
         // Iterate through all neighbours
@@ -169,8 +152,12 @@ public class TileGrid {
             if (((TileGrid) o).size() != this.size())
                 return false;
 
-            if (((TileGrid) o).getTiles().equals(this.getTiles())) {
-                if (((TileGrid) o).getPlacedPositions().equals(this.getPlacedPositions())) {
+            Set<Tile> first = new HashSet<Tile>(((TileGrid) o).getTiles());
+            Set<Tile> second = new HashSet<Tile>(this.getTiles());
+            if (first.equals(second)) {
+                Set<Pair<Integer, Integer>> firstPositions = new HashSet<>(((TileGrid) o).getPlacedPositions().values());
+                Set<Pair<Integer, Integer>> secondPositions = new HashSet<>(this.getPlacedPositions().values());
+                if (firstPositions.equals(secondPositions)) {
                     return true;
                 }
             }

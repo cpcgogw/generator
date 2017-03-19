@@ -40,6 +40,7 @@ public class TileGridTest {
         assertFalse(tileGrid.addTile(new Road(), 0, 0));
         assertTrue(tileGrid.addTile(new Road(), GRID_SIZE-1, GRID_SIZE-1));
         assertEquals(tileGrid.getTiles().size(), 2);
+        assertNull(tileGrid.getTile(-1, -1));
     }
 
     @Test
@@ -146,6 +147,7 @@ public class TileGridTest {
         assertTrue(TileGrid.copy(tileGrid, tileGrid2));
         assertFalse(TileGrid.copy(tileGrid, tileGrid3));
         assertEquals(tileGrid, tileGrid2);
+        assertFalse(TileGrid.copy(tileGrid, null));
     }
 
     @Test

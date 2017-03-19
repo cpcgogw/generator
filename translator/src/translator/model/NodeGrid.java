@@ -40,11 +40,6 @@ public class NodeGrid extends TileGrid {
         return true;
     }
 
-    @Override
-    public List<Tile> getTiles() {
-        return super.getTiles();
-    }
-
     public List<Node> getNodes() {
         List<Tile> tiles = getTiles();
         List<Node> nodes = new ArrayList<>();
@@ -58,10 +53,8 @@ public class NodeGrid extends TileGrid {
 
     @Override
     public NodeGrid clone() {
-        if (grid == null)
-            return null;
-
         NodeGrid nodeGrid = new NodeGrid(grid.length);
+
         if (copy(this, nodeGrid))
             return nodeGrid;
 
