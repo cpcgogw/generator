@@ -1,5 +1,6 @@
 package rule_editor.controller;
 
+
 import graph_generator.controller.GraphController;
 import graph_generator.parser.CookbookParser;
 import javafx.application.Platform;
@@ -208,9 +209,9 @@ public class Controller {
         NodeGrid grid = new NodeGrid(currentLevel.drawableNodes.size());
         System.out.println(currentLevel);
         Translator.placeGraphOnGrid(currentLevel, grid);
-        for (int x = 0; x < grid.grid.length; x++) {
-            for (int y = 0; y < grid.grid[0].length; y++) {
-                Node n = grid.grid[y][x];
+        for (int x = 0; x < grid.size(); x++) {
+            for (int y = 0; y < grid.size(); y++) {
+                Node n = (Node) grid.getTile(x,y);
                 if(n != null){
                     DrawableNode node = (DrawableNode) n;
                     node.setCenterX(x*150+50);

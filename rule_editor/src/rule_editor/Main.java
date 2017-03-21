@@ -13,7 +13,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
 
         Parent root = FXMLLoader.load(getClass().getResource("/canvas.fxml"));
-        Log.level = Log.LEVEL.INFO;
+        Log.level = Log.LEVEL.ERROR;
 
 
         primaryStage.setScene(new Scene(root, 1200, 800));
