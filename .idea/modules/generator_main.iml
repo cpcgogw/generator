@@ -7,10 +7,6 @@
       <sourceFolder url="file://$MODULE_DIR$/../../generator_main/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../generator_main/resources" type="java-resource" />
     </content>
-    <content url="file://$MODULE_DIR$/../../src/main">
-      <sourceFolder url="file://$MODULE_DIR$/../../src/main/java" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/../../src/main/resources" type="java-resource" />
-    </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="graph" />
