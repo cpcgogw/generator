@@ -2,8 +2,6 @@
 # Created by https://www.gitignore.io/api/intellij,gradle,java
 
 # CUSTOM
-*.iml
-vcs.xml
 saves
 
 ### Intellij ###
