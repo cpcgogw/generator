@@ -9,11 +9,16 @@ import java.util.ArrayList;
 /**
  * Created by vilddjur on 1/24/17.
  */
-public class DrawableNode extends Circle implements Node {
+public class DrawableNode extends Circle implements Node, Tile {
     private ArrayList<DrawableEdge> drawableEdges;
     private int id;
     public static int idCounter=0;
     public static final int DEFAULT_RADIUS = 40;
+
+    @Override
+    public String getRepresentation() {
+        return ""+id;
+    }
 
     public enum NodeType{
         START, END, LOCK, KEY, ROOM, ANY

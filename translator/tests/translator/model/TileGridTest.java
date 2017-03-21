@@ -3,10 +3,9 @@ package translator.model;
 import javafx.util.Pair;
 import model.Edge;
 import model.Node;
-import org.junit.After;
+import model.Tile;
 import org.junit.Before;
 import org.junit.Test;
-import org.omg.CORBA.TIMEOUT;
 
 import java.util.List;
 

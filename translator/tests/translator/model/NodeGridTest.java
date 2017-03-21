@@ -2,6 +2,7 @@ package translator.model;
 
 import model.Edge;
 import model.Node;
+import model.Tile;
 import org.junit.Before;
 import org.junit.Test;
 

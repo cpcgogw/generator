@@ -1,12 +1,10 @@
 package translator.model;
 
-import javafx.util.Pair;
-import model.DrawableNode;
 import model.Edge;
 import model.Node;
+import model.Tile;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -33,6 +31,10 @@ public class NodeGrid extends TileGrid {
             // Is already placed so we must be next to it.
             if (placed.contains(e.getTo())) {
                 if (!isNeighbour(x, y, (Tile) e.getTo())) {
+                    return false;
+                }
+            }else if(placed.contains(e.getFrom())){
+                if (!isNeighbour(x, y, (Tile) e.getFrom())) {
                     return false;
                 }
             }

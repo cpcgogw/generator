@@ -1,13 +1,16 @@
 package translator;
 
 
-import javafx.scene.paint.Color;
 import javafx.util.Pair;
-import model.*;
+import model.Edge;
+import model.Node;
+import model.Pattern;
+import model.Tile;
 import translator.model.*;
 import utils.Log;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class for translating a graph into a game world.
@@ -42,8 +45,11 @@ public class Translator {
     public static void placeGraphOnGrid(Pattern graph, NodeGrid grid) {
         Log.print("Translator: Placing graph on grid...", Log.LEVEL.INFO);
 
+
+        ArrayList<Node> tmpRest = (ArrayList<Node>) graph.getNodes().clone();
+
         // Place all drawableNodes on graph
-        if (!placeAll(graph.remove(0), graph.getNodes(), grid)) {
+        if (!placeAll(tmpRest.remove(0), tmpRest, grid)) {
             Log.print("Translator: Unable to place graph on grid!", Log.LEVEL.ERROR);
             return;
         }
@@ -64,15 +70,16 @@ public class Translator {
      * True if node and all other drawableNodes were placed successfully, otherwise False.
      */
     public static boolean placeAll(Node node, ArrayList<Node> rest, NodeGrid grid) {
-        System.out.println("----");
-        System.out.println(grid);
+        Log.print("----", Log.LEVEL.DEBUG);
+        Log.print(grid, Log.LEVEL.DEBUG);
 
         // Try all places.
         for (int y=0; y<grid.size(); y++) {
             for (int x=0; x<grid.size(); x++) {
                 if (!grid.tryPlace((Tile) node, x, y))
                     continue;
-
+                Log.print("trying placement, "+ x+ ", " + y+"---", Log.LEVEL.DEBUG);
+                Log.print("\n"+grid.toString(), Log.LEVEL.DEBUG);
                 // If not the absolute last node.
                 if (rest.size() != 0) {
                     // Needed for passing references along without changing local references.
@@ -88,12 +95,17 @@ public class Translator {
                         NodeGrid.copy(tmpGrid, grid);
                         rest = tmpRest;
                         return true;
+                    }else{
+                        Log.print("Unable to place on " + x + ", " + y, Log.LEVEL.DEBUG);
+                        Log.print("\n" + grid.toString(), Log.LEVEL.DEBUG);
+                        grid.removeTile(x,y);
                     }
                 } else {
                     // Since not doing more recursions copying is not necessary.
                     grid.addTile((Tile) node, x, y);
                     return true;
                 }
+                Log.print("i am here" , Log.LEVEL.DEBUG);
             }
         }
 

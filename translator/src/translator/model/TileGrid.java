@@ -1,6 +1,7 @@
 package translator.model;
 
 import javafx.util.Pair;
+import model.Tile;
 
 import java.util.*;
 
