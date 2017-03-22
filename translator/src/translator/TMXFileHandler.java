@@ -21,7 +21,7 @@ import java.io.File;
  */
 public class TMXFileHandler {
     /**
-     * saves the given grid as 'level.tmx' in the given path
+     * saves the given grid as 'level.tmx' as path
      * @param grid
      * @param path
      */
@@ -82,7 +82,7 @@ public class TMXFileHandler {
             }
             elemLayer.appendChild(elemData);
             Transformer transformer = TransformerFactory.newInstance().newTransformer();
-            Result output = new StreamResult(new File(path+"level.tmx"));
+            Result output = new StreamResult(new File(path));
             Source input = new DOMSource(doc);
 
             transformer.transform(input, output);

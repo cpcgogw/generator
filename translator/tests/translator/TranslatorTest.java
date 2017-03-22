@@ -14,8 +14,20 @@ import java.util.Random;
  * Created by vilddjur on 3/21/17.
  */
 public class TranslatorTest {
-    private final int GRAPH_SIZE = 10;
+    private final int GRAPH_SIZE = 15;
     private final Random rand = new Random();
+    @Test
+    public void outPutRandomHighResGraph() throws Exception{
+        AbstractPattern pattern = getRandomPattern();
+        NodeGrid grid = new NodeGrid(pattern.getNodes().size());
+        Translator.placeGraphOnGrid(pattern, grid);
+        TileGrid lowRes = Translator.translateToLowRes(grid);
+        System.out.println(lowRes);
+        TileGrid highRes = Translator.translateToHighRes(lowRes);
+        System.out.println(highRes);
+        TMXFileHandler.saveGridAsTMX(highRes, "../saves/levels/test.tmx");
+
+    }
     @Test
     public void placeGraphOnGridDrawablePattern() throws Exception{
         DrawablePattern drawablePattern = getRandomDrawablePattern();
@@ -55,9 +67,7 @@ public class TranslatorTest {
                                 //assert !(Boolean)isNeighbour.invoke(grid, args);
                             }
                         }
-
                     }
-
                 }
             }
         }
@@ -143,6 +153,11 @@ public class TranslatorTest {
         AbstractPattern p = new AbstractPattern();
         for (int i = 0; i < GRAPH_SIZE; i++) {
             AbstractNode node = new AbstractNode();
+            if(rand.nextBoolean()){
+                node.setType(TILE_TYPE.TOWN);
+            }else{
+                node.setType(TILE_TYPE.TOWN);
+            }
             addRandomEdge(node, p);
             p.addNode(node);
         }

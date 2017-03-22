@@ -14,6 +14,7 @@ public class AbstractNode implements Node, Tile {
     private int id;
     private static int idCounter = 0;
     private ArrayList<Edge> edges = new ArrayList<>();
+    private TILE_TYPE type = TILE_TYPE.TOWN;
     public AbstractNode(){
         id = idCounter;
         idCounter++;
@@ -34,8 +35,11 @@ public class AbstractNode implements Node, Tile {
         return edges;
     }
 
+    public void setType(TILE_TYPE type) {
+        this.type = type;
+    }
     @Override
     public TILE_TYPE getTILE_TYPE() {
-        return TILE_TYPE.TOWN;
+        return type;
     }
 }

@@ -35,10 +35,10 @@ public class Translator {
         System.out.println(lowRes);
         highRes = translateToHighRes(lowRes);
         System.out.println(highRes);
-        TMXFileHandler.saveGridAsTMX(highRes, "saves/levels/");
+        TMXFileHandler.saveGridAsTMX(highRes, "saves/levels/level.tmx");
     }
 
-    private static TileGrid translateToHighRes(TileGrid lowRes) {
+    public static TileGrid translateToHighRes(TileGrid lowRes) {
         TranslationStrategy strategy = new SimpleTranslation();
         return strategy.apply(lowRes);
     }
