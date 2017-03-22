@@ -20,11 +20,6 @@ public class DrawableNode extends Circle implements Node, Tile {
         return TILE_TYPE.TOWN;
     }
 
-    @Override
-    public String getRepresentation() {
-        return ""+id;
-    }
-
     public enum NodeType{
         START, END, LOCK, KEY, ROOM, ANY
     }

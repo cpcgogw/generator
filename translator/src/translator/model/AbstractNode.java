@@ -38,9 +38,4 @@ public class AbstractNode implements Node, Tile {
     public TILE_TYPE getTILE_TYPE() {
         return TILE_TYPE.TOWN;
     }
-
-    @Override
-    public String getRepresentation() {
-        return ""+id;
-    }
 }
