@@ -15,7 +15,6 @@ public class TileGrid {
 
     public TileGrid(int size) {
         grid = new Tile[size][size];
-        //initGrid();
     }
 
     public int size() {
@@ -36,7 +35,7 @@ public class TileGrid {
         return placedPositions;
     }
 
-    private boolean isValidPosition(int x, int y) {
+    public boolean isValidPosition(int x, int y) {
         if (x >= 0 && x < grid.length &&
                 y >= 0 && y < grid[0].length) {
             return true;
@@ -174,9 +173,9 @@ public class TileGrid {
             for (int x=0; x<grid.length; x++) {
                 if (grid[x][y] != null) {
                     if (x==0) {
-                        s += getTile(x, y).getRepresentation();
+                        s += getTile(x, y).getTILE_TYPE().toString();
                     } else {
-                        s += " " + getTile(x, y).getRepresentation();
+                        s += " " + getTile(x, y).getTILE_TYPE().toString();
                     }
                 } else {
                     if (x==0)
