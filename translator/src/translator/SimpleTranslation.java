@@ -24,7 +24,7 @@ public class SimpleTranslation extends TranslationStrategy {
             for (int x = 0; x < grid.size(); x++) {
                 tile = grid.getTile(x, y);
                 if (tile == null) {
-                    copyFromPos(empty(10), highRes, x*10, y*10);
+                    copyFromPos(grass(10), highRes, x*10, y*10);
                 } else if (tile.getTILE_TYPE() == TILE_TYPE.TOWN) {
                     copyFromPos(town(10), highRes, x*10, y*10);
                 } else if (tile.getTILE_TYPE() == TILE_TYPE.ROAD) {
@@ -34,6 +34,17 @@ public class SimpleTranslation extends TranslationStrategy {
         }
 
         return highRes;
+    }
+
+    private TileGrid grass(int size) {
+        TileGrid grass = new TileGrid(size);
+
+        for (int y = 0; y < grass.size(); y++) {
+            for (int x = 0; x < grass.size(); x++) {
+                grass.addTile(new Grass(), x, y);
+            }
+        }
+        return grass;
     }
 
     private TileGrid road(TileGrid grid, int xPos, int yPos) {
@@ -67,6 +78,12 @@ public class SimpleTranslation extends TranslationStrategy {
         if (positions.contains(new Pair<>(xPos-1, yPos-1)) && positions.contains(new Pair<>(xPos+1, yPos+1))) {
             for (int i = 9; i >= 0; i--) {
                 road.addTile(new Road(), i, i);
+            }
+        }
+
+        if (positions.contains(new Pair<>(xPos-1, yPos+1)) && positions.contains(new Pair<>(xPos+1, yPos-1))) {
+            for (int i = 9; i >= 0; i--) {
+                road.addTile(new Road(), i, (9 - i));
             }
         }
 

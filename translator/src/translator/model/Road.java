@@ -12,9 +12,4 @@ public class Road implements Tile {
     public TILE_TYPE getTILE_TYPE() {
         return TILE_TYPE.ROAD;
     }
-
-    @Override
-    public String getRepresentation() {
-        return "R";
-    }
 }

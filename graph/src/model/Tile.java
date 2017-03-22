@@ -5,5 +5,4 @@ package model;
  */
 public interface Tile {
     TILE_TYPE getTILE_TYPE();
-    String getRepresentation();
 }
