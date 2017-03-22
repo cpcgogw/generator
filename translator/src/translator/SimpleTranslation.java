@@ -92,6 +92,11 @@ public class SimpleTranslation extends TranslationStrategy {
                 road.addTile(new Road(), i, (9 - i));
             }
         }
+        if (positions.contains(new Pair<>(xPos, yPos+1)) && positions.contains(new Pair<>(xPos, yPos-1))) {
+            for (int i = 9; i >= 0; i--) {
+                road.addTile(new Road(), 4, i);
+            }
+        }
 
         return road;
     }
