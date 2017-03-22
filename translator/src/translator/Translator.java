@@ -22,7 +22,8 @@ public class Translator {
         Log.level = Log.LEVEL.INFO;
         AbstractPattern graph = testGraph();
         NodeGrid grid = new NodeGrid(3);
-        NodeGrid res;
+        TileGrid lowRes;
+        TileGrid highRes;
 
         System.out.println("Grid before: ");
         System.out.println(grid);
@@ -30,8 +31,15 @@ public class Translator {
         System.out.println("Grid after: ");
         System.out.println(grid);
         System.out.println("Translated to low res: ");
-        res = translateToLowRes(grid);
-        System.out.println(res);
+        lowRes = translateToLowRes(grid);
+        System.out.println(lowRes);
+        highRes = translateToHighRes(lowRes);
+        System.out.println(highRes);
+    }
+
+    private static TileGrid translateToHighRes(TileGrid lowRes) {
+        TranslationStrategy strategy = new SimpleTranslation();
+        return strategy.apply(lowRes);
     }
 
     /**
@@ -121,8 +129,8 @@ public class Translator {
      * @return
      * The low res version of the grid.
      */
-    public static NodeGrid translateToLowRes(NodeGrid grid) {
-        NodeGrid lowResGrid = new NodeGrid(1+grid.size()*2);
+    public static TileGrid translateToLowRes(NodeGrid grid) {
+        TileGrid lowResGrid = new TileGrid(1+grid.size()*2);
 
         for (int y = 0; y < lowResGrid.size(); y++) {
             for (int x = 0; x < lowResGrid.size(); x++) {
@@ -132,7 +140,7 @@ public class Translator {
             }
         }
         //HashMap<Node, Pair<Integer, Integer>> placed = lowResGrid.getPlacedPositions();
-        List<Node> placed = lowResGrid.getNodes();
+        List<Node> placed = grid.getNodes();
         List<Pair<Integer, Integer>> toBePlaced = new ArrayList<>();
         Log.print("Translator: Translating "+placed.size()+" nodes.", Log.LEVEL.INFO);
         for (Node n : placed) {
