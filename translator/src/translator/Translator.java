@@ -37,7 +37,7 @@ public class Translator {
         System.out.println(highRes);
     }
 
-    private static TileGrid translateToHighRes(TileGrid lowRes) {
+    public static TileGrid translateToHighRes(TileGrid lowRes) {
         TranslationStrategy strategy = new SimpleTranslation();
         return strategy.apply(lowRes);
     }
@@ -50,7 +50,7 @@ public class Translator {
      * @param grid
      * Grid to place graph on.
      */
-    public static void placeGraphOnGrid(Pattern graph, NodeGrid grid) {
+    public static boolean placeGraphOnGrid(Pattern graph, NodeGrid grid) {
         Log.print("Translator: Placing graph on grid...", Log.LEVEL.INFO);
 
 
@@ -59,10 +59,11 @@ public class Translator {
         // Place all drawableNodes on graph
         if (!placeAll(tmpRest.remove(0), tmpRest, grid)) {
             Log.print("Translator: Unable to place graph on grid!", Log.LEVEL.ERROR);
-            return;
+            return false;
         }
 
         Log.print("Translator: Graph successfully placed on grid.", Log.LEVEL.INFO);
+        return true;
     }
 
     /**

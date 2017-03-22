@@ -4,6 +4,8 @@ import javafx.scene.paint.Color;
 import model.*;
 import org.junit.Test;
 import translator.model.*;
+import utils.Log;
+import static org.junit.Assert.*;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -66,6 +68,40 @@ public class TranslatorTest {
     }
 
     @Test
+    public void testSqrtSize() throws Exception {
+        int size;
+        int sqrt;
+        long time;
+        long delta;
+        long largestDelta = 0;
+        Pattern pattern;
+        Pattern largestPattern = null;
+        NodeGrid grid;
+        NodeGrid largestGrid = null;
+
+        for (int i = 0; i < 100; i++) {
+            time = System.currentTimeMillis();
+            size = rand.nextInt(5)+10;
+            sqrt = (int) (Math.sqrt(size)+1);
+            pattern = getRandomPattern(size);
+            grid = new NodeGrid(sqrt);
+            assertTrue(Translator.placeGraphOnGrid(pattern, grid));
+            delta = System.currentTimeMillis() - time;
+            time = System.currentTimeMillis();
+            if (delta > largestDelta) {
+                largestDelta = delta;
+                largestGrid = grid;
+                largestPattern = pattern;
+            }
+
+        }
+
+        Log.level = Log.LEVEL.DEBUG;
+        Log.print("TranslatorTest: It were possible to place all patterns on a grid with sqrt of size of number of nodes.", Log.LEVEL.DEBUG);
+        Log.print("TranslatorTest: Grid: "+largestGrid+", Pattern: "+largestPattern, Log.LEVEL.DEBUG);
+    }
+
+    @Test
     public void placeGraphOnGridAbstractPattern() throws Exception {
 
         /*
@@ -75,7 +111,7 @@ public class TranslatorTest {
 
         do same with view thingys
          */
-        AbstractPattern abstractPattern = getRandomPattern();
+        AbstractPattern abstractPattern = getRandomPattern(GRAPH_SIZE);
 
         int sizeBefore = abstractPattern.getNodes().size();
         NodeGrid grid = new NodeGrid(GRAPH_SIZE);
@@ -139,9 +175,9 @@ public class TranslatorTest {
         }
     }
 
-    public AbstractPattern getRandomPattern() {
+    public AbstractPattern getRandomPattern(int size) {
         AbstractPattern p = new AbstractPattern();
-        for (int i = 0; i < GRAPH_SIZE; i++) {
+        for (int i = 0; i < size; i++) {
             AbstractNode node = new AbstractNode();
             addRandomEdge(node, p);
             p.addNode(node);
