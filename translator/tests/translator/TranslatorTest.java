@@ -14,15 +14,16 @@ import java.util.Random;
  * Created by vilddjur on 3/21/17.
  */
 public class TranslatorTest {
-    private final int GRAPH_SIZE = 15;
+    private final int GRAPH_SIZE = 25;
     private final Random rand = new Random();
     @Test
     public void outPutRandomHighResGraph() throws Exception{
         AbstractPattern pattern = getRandomPattern();
-        NodeGrid grid = new NodeGrid(pattern.getNodes().size());
+        int size = (int)(Math.sqrt(pattern.getNodes().size())+1);
+        NodeGrid grid = new NodeGrid(size);
         Translator.placeGraphOnGrid(pattern, grid);
         System.out.println(grid);
-        TileGrid lowRes = Translator.translateToLowRes(Translator.trimGrid(grid));
+        TileGrid lowRes = Translator.translateToLowRes(grid);
         System.out.println(lowRes);
         TileGrid highRes = Translator.translateToHighRes(lowRes);
         System.out.println(highRes);
@@ -33,7 +34,8 @@ public class TranslatorTest {
     public void placeGraphOnGridDrawablePattern() throws Exception{
         DrawablePattern drawablePattern = getRandomDrawablePattern();
         int sizeBefore = drawablePattern.getNodes().size();
-        NodeGrid grid = new NodeGrid(GRAPH_SIZE);
+        int size = (int) Math.sqrt(GRAPH_SIZE);
+        NodeGrid grid = new NodeGrid(size);
         Translator.placeGraphOnGrid(drawablePattern, grid);
         int sizeAfter = drawablePattern.getNodes().size();
         assert sizeAfter == sizeBefore;
