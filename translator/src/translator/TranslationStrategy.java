@@ -1,6 +1,5 @@
 package translator;
 
-import model.TILE_TYPE;
 import model.Tile;
 import translator.model.TileGrid;
 
@@ -10,7 +9,7 @@ import translator.model.TileGrid;
 public abstract class TranslationStrategy {
     public abstract TileGrid apply(TileGrid grid);
 
-    protected void copyFromPos(TileGrid from, TileGrid to, int xPos, int yPos) {
+    public static void copyFromPos(TileGrid from, TileGrid to, int xPos, int yPos) {
         Tile tile;
         for (int y = 0; y < from.size(); y++) {
             for (int x = 0; x < from.size(); x++) {

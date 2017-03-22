@@ -21,7 +21,8 @@ public class TranslatorTest {
         AbstractPattern pattern = getRandomPattern();
         NodeGrid grid = new NodeGrid(pattern.getNodes().size());
         Translator.placeGraphOnGrid(pattern, grid);
-        TileGrid lowRes = Translator.translateToLowRes(grid);
+        System.out.println(grid);
+        TileGrid lowRes = Translator.translateToLowRes(Translator.trimGrid(grid));
         System.out.println(lowRes);
         TileGrid highRes = Translator.translateToHighRes(lowRes);
         System.out.println(highRes);
