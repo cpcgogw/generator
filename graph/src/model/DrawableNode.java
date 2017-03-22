@@ -16,6 +16,11 @@ public class DrawableNode extends Circle implements Node, Tile {
     public static final int DEFAULT_RADIUS = 40;
 
     @Override
+    public TILE_TYPE getTILE_TYPE() {
+        return TILE_TYPE.TOWN;
+    }
+
+    @Override
     public String getRepresentation() {
         return ""+id;
     }

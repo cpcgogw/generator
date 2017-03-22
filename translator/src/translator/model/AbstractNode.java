@@ -2,6 +2,7 @@ package translator.model;
 
 import model.Edge;
 import model.Node;
+import model.TILE_TYPE;
 import model.Tile;
 
 import java.util.ArrayList;
@@ -31,6 +32,11 @@ public class AbstractNode implements Node, Tile {
     @Override
     public ArrayList<Edge> getEdges() {
         return edges;
+    }
+
+    @Override
+    public TILE_TYPE getTILE_TYPE() {
+        return TILE_TYPE.TOWN;
     }
 
     @Override
