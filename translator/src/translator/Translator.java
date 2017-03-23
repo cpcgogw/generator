@@ -56,7 +56,7 @@ public class Translator {
 
         ArrayList<Node> tmpRest = (ArrayList<Node>) graph.getNodes().clone();
 
-        // Place all drawableNodes on graph
+        // Place all drawableAreaNodes on graph
         if (!placeAll(tmpRest.remove(0), tmpRest, grid)) {
             Log.print("Translator: Unable to place graph on grid!", Log.LEVEL.ERROR);
             return false;
@@ -67,16 +67,16 @@ public class Translator {
     }
 
     /**
-     * Tries to place a node and all drawableNodes after it on the grid.
+     * Tries to place a node and all drawableAreaNodes after it on the grid.
      *
      * @param node
-     * DrawableNode to be placed.
+     * DrawableAreaNode to be placed.
      * @param rest
-     * All other drawableNodes to be placed.
+     * All other drawableAreaNodes to be placed.
      * @param grid
-     * The grid to place the drawableNodes on.
+     * The grid to place the drawableAreaNodes on.
      * @return
-     * True if node and all other drawableNodes were placed successfully, otherwise False.
+     * True if node and all other drawableAreaNodes were placed successfully, otherwise False.
      */
     public static boolean placeAll(Node node, ArrayList<Node> rest, NodeGrid grid) {
         Log.print("----", Log.LEVEL.DEBUG);
@@ -96,9 +96,9 @@ public class Translator {
                     tmpGrid.addTile((Tile)node, x, y);
                     ArrayList<Node> tmpRest = (ArrayList<Node>) rest.clone();
 
-                    // Try to place the remaining drawableNodes.
+                    // Try to place the remaining drawableAreaNodes.
                     if (placeAll(tmpRest.remove(0),tmpRest,tmpGrid)) {
-                        // We were able to successfully place all drawableNodes using this configuration.
+                        // We were able to successfully place all drawableAreaNodes using this configuration.
                         // So copy all references so they will be saved further up the chain.
                         // The brute force is complete.
                         NodeGrid.copy(tmpGrid, grid);

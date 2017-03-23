@@ -92,7 +92,7 @@ public class TileGrid {
      * @param y
      * Y coordinate of origin.
      * @param node
-     * DrawableNode to be searched for.
+     * DrawableAreaNode to be searched for.
      * @return
      * True if node is neighbour to position (x,y), otherwise False.
      */

@@ -3,10 +3,7 @@ package graph_generator.test;
 import graph_generator.controller.GraphController;
 import javafx.scene.paint.Color;
 import javafx.util.Pair;
-import model.DrawableEdge;
-import model.DrawableNode;
-import model.DrawablePattern;
-import model.Rule;
+import model.*;
 import org.junit.Before;
 import org.junit.Test;
 import utils.Log;
@@ -27,11 +24,11 @@ public class GraphControllerTest {
         rules = new ArrayList<>();
 
         DrawablePattern matchingDrawablePattern = new DrawablePattern();
-        DrawableNode startDrawableNode = node("START");
-        DrawableNode endDrawableNode = node("END");
-        DrawableEdge e = new DrawableEdge(startDrawableNode, endDrawableNode);
-        matchingDrawablePattern.drawableNodes.add(startDrawableNode);
-        matchingDrawablePattern.drawableNodes.add(endDrawableNode);
+        DrawableAreaNode startDrawableAreaNode = node(AREA_TYPE.GRASSFIELD);
+        DrawableAreaNode endDrawableAreaNode = node(AREA_TYPE.TOWN);
+        DrawableEdge e = new DrawableEdge(startDrawableAreaNode, endDrawableAreaNode);
+        matchingDrawablePattern.drawableAreaNodes.add(startDrawableAreaNode);
+        matchingDrawablePattern.drawableAreaNodes.add(endDrawableAreaNode);
 
 
         Rule matchingRule = new Rule(matchingDrawablePattern);
@@ -46,25 +43,25 @@ public class GraphControllerTest {
             create n (random?) translations, maybe not needed?
         create pattern matching one of these rules
         expect output pair array have n/2 different rules, in reality it can have multiple matches on same subpattern
-            "starting" on different drawableNodes
+            "starting" on different drawableAreaNodes
          */
 
         DrawablePattern weirdDrawablePattern = new DrawablePattern();
-        DrawableNode lockDrawableNode = node("LOCK");
-        DrawableNode weirdDrawableNode = node("WEIRD");
-        DrawableEdge e2 = new DrawableEdge(lockDrawableNode, weirdDrawableNode);
-        weirdDrawablePattern.drawableNodes.add(lockDrawableNode);
-        weirdDrawablePattern.drawableNodes.add(weirdDrawableNode);
+        DrawableAreaNode lockDrawableAreaNode = node(AREA_TYPE.GRASSFIELD);
+        DrawableAreaNode weirdDrawableAreaNode = node(AREA_TYPE.DESERT);
+        DrawableEdge e2 = new DrawableEdge(lockDrawableAreaNode, weirdDrawableAreaNode);
+        weirdDrawablePattern.drawableAreaNodes.add(lockDrawableAreaNode);
+        weirdDrawablePattern.drawableAreaNodes.add(weirdDrawableAreaNode);
 
         DrawablePattern ourDrawablePattern = new DrawablePattern();
-        DrawableNode drawableNode1 = node("START");
-        DrawableNode drawableNode2 = node("END");
-        DrawableNode drawableNode3 = node("OTHER");
-        DrawableEdge e3 = new DrawableEdge(drawableNode1, drawableNode2);
-        DrawableEdge e4 = new DrawableEdge(drawableNode2, drawableNode3);
-        ourDrawablePattern.drawableNodes.add(drawableNode1);
-        ourDrawablePattern.drawableNodes.add(drawableNode2);
-        ourDrawablePattern.drawableNodes.add(drawableNode3);
+        DrawableAreaNode drawableAreaNode1 = node(AREA_TYPE.GRASSFIELD);
+        DrawableAreaNode drawableAreaNode2 = node(AREA_TYPE.TOWN);
+        DrawableAreaNode drawableAreaNode3 = node(AREA_TYPE.DESERT);
+        DrawableEdge e3 = new DrawableEdge(drawableAreaNode1, drawableAreaNode2);
+        DrawableEdge e4 = new DrawableEdge(drawableAreaNode2, drawableAreaNode3);
+        ourDrawablePattern.drawableAreaNodes.add(drawableAreaNode1);
+        ourDrawablePattern.drawableAreaNodes.add(drawableAreaNode2);
+        ourDrawablePattern.drawableAreaNodes.add(drawableAreaNode3);
 
         Rule weirdRule = new Rule(weirdDrawablePattern);
 
@@ -81,61 +78,20 @@ public class GraphControllerTest {
         make sure we get no rules matching
          */
         DrawablePattern overFullDrawablePattern = new DrawablePattern();
-        DrawableNode startOverFull = node("START");
-        DrawableNode endOverFull = node("END");
+        DrawableAreaNode startOverFull = node(AREA_TYPE.GRASSFIELD);
+        DrawableAreaNode endOverFull = node(AREA_TYPE.TOWN);
         DrawableEdge drawableEdgeOverfull = new DrawableEdge(startOverFull, endOverFull);
-        overFullDrawablePattern.drawableNodes.add(startOverFull);
-        overFullDrawablePattern.drawableNodes.add(endOverFull);
+        overFullDrawablePattern.drawableAreaNodes.add(startOverFull);
+        overFullDrawablePattern.drawableAreaNodes.add(endOverFull);
         for (int i = 0; i < 8; i++) {
-            DrawableNode n = node("LOL" + i);
+            DrawableAreaNode n = node(AREA_TYPE.DESERT);
             DrawableEdge eTmp = new DrawableEdge(n, startOverFull);
-            overFullDrawablePattern.drawableNodes.add(n);
+            overFullDrawablePattern.drawableAreaNodes.add(n);
         }
         Log.print("overfullPattern: " + overFullDrawablePattern, Log.LEVEL.DEBUG);
 
         ArrayList<Pair<Rule, DrawablePattern>> pairArrayList = graphController.rulesMatchingPattern(rules, overFullDrawablePattern);
         System.out.println(pairArrayList.size());
-        assert pairArrayList.size() == 0;
-    }
-    @Test
-    public void rulesMatchingPatternAnyNode() throws Exception {
-        /*
-        create rule using 'ANY' node type.
-        make sure we match correctly
-            start -> any : should work
-            start <- any : should not work
-         */
-        rules = new ArrayList<>();
-        DrawablePattern anyMatchingDrawablePattern = new DrawablePattern();
-        DrawableNode start = node("START");
-        DrawableNode any = node("ANY");
-        DrawableEdge matchDrawableEdge = new DrawableEdge(start, any);
-        anyMatchingDrawablePattern.drawableNodes.add(start);
-        anyMatchingDrawablePattern.drawableNodes.add(any);
-        rules.add(new Rule(anyMatchingDrawablePattern));
-
-        DrawablePattern validPatten = new DrawablePattern();
-        DrawableNode start1 = node("START");
-        DrawableNode any1 = node("ASDF");
-        DrawableEdge validDrawableEdge = new DrawableEdge(start1, any1);
-        validPatten.drawableNodes.add(start1);
-        validPatten.drawableNodes.add(any1);
-
-        DrawablePattern invalidDrawablePattern = new DrawablePattern();
-        DrawableNode start2 = node("START");
-        DrawableNode any2 = node("ASDF");
-        DrawableEdge invalidDrawableEdge = new DrawableEdge(any2, start2);
-        invalidDrawablePattern.drawableNodes.add(start2);
-        invalidDrawablePattern.drawableNodes.add(any2);
-
-        ArrayList<Pair<Rule, DrawablePattern>> pairArrayList = graphController.rulesMatchingPattern(rules, validPatten);
-        System.out.println(pairArrayList.size());
-
-        assert pairArrayList.size() == 2;
-
-        pairArrayList = graphController.rulesMatchingPattern(rules, invalidDrawablePattern);
-        System.out.println(pairArrayList.size());
-
         assert pairArrayList.size() == 0;
     }
 
@@ -144,31 +100,31 @@ public class GraphControllerTest {
     /*
     create rule with simple matching pattern,
         a = b->c->a
-    expect drawableNodes size to be 2n+1 after applyingRule n times
+    expect drawableAreaNodes size to be 2n+1 after applyingRule n times
      */
         int nodeId = 1337;
         DrawablePattern simpleDrawablePattern =  new DrawablePattern();
-        DrawableNode drawableNodeA = node("A");
-        drawableNodeA.setNodeId(nodeId);
-        simpleDrawablePattern.drawableNodes.add(drawableNodeA);
+        DrawableAreaNode drawableAreaNodeA = node(AREA_TYPE.GRASSFIELD);
+        drawableAreaNodeA.setNodeId(nodeId);
+        simpleDrawablePattern.drawableAreaNodes.add(drawableAreaNodeA);
 
         DrawablePattern trans =  new DrawablePattern();
-        DrawableNode drawableNodeA2 = node("A");
-        drawableNodeA2.setNodeId(nodeId);
-        DrawableNode drawableNodeB = node("B");
-        DrawableNode drawableNodeC = node("C");
-        DrawableEdge bToC = new DrawableEdge(drawableNodeB, drawableNodeC);
-        DrawableEdge cToA = new DrawableEdge(drawableNodeC, drawableNodeA2);
-        trans.drawableNodes.add(drawableNodeA2);
-        trans.drawableNodes.add(drawableNodeB);
-        trans.drawableNodes.add(drawableNodeC);
+        DrawableAreaNode drawableAreaNodeA2 = node(AREA_TYPE.GRASSFIELD);
+        drawableAreaNodeA2.setNodeId(nodeId);
+        DrawableAreaNode drawableAreaNodeB = node(AREA_TYPE.DESERT);
+        DrawableAreaNode drawableAreaNodeC = node(AREA_TYPE.TOWN);
+        DrawableEdge bToC = new DrawableEdge(drawableAreaNodeB, drawableAreaNodeC);
+        DrawableEdge cToA = new DrawableEdge(drawableAreaNodeC, drawableAreaNodeA2);
+        trans.drawableAreaNodes.add(drawableAreaNodeA2);
+        trans.drawableAreaNodes.add(drawableAreaNodeB);
+        trans.drawableAreaNodes.add(drawableAreaNodeC);
 
         Rule rule = new Rule(simpleDrawablePattern);
         rule.possibleTranslations.add(trans);
 
         DrawablePattern graph = new DrawablePattern();
-        DrawableNode drawableNodeA3 = node("A");
-        graph.drawableNodes.add(drawableNodeA3);
+        DrawableAreaNode drawableAreaNodeA3 = node(AREA_TYPE.GRASSFIELD);
+        graph.drawableAreaNodes.add(drawableAreaNodeA3);
 
         ArrayList<Rule> rules = new ArrayList<Rule>();
         rules.add(rule);
@@ -189,11 +145,11 @@ public class GraphControllerTest {
 
         Log.print(graph.toString(), Log.LEVEL.DEBUG);
 
-        assert graph.drawableNodes.size() == 2*n+1;
+        assert graph.drawableAreaNodes.size() == 2*n+1;
 
     }
 
-    private DrawableNode node(String type) {
-        return new DrawableNode(0,0,40, Color.AQUA, type);
+    private DrawableAreaNode node(AREA_TYPE type) {
+        return new DrawableAreaNode(0,0,40, Color.AQUA, type);
     }
 }

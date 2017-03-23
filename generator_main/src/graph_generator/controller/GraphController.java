@@ -1,8 +1,8 @@
 package graph_generator.controller;
 
 import javafx.util.Pair;
+import model.DrawableAreaNode;
 import model.DrawableEdge;
-import model.DrawableNode;
 import model.DrawablePattern;
 import model.Rule;
 import utils.Log;
@@ -55,15 +55,15 @@ public class GraphController {
 
     public ArrayList<Pair<Rule, DrawablePattern>> ruleMatchingPattern(Rule r, DrawablePattern graph) {
         ArrayList<Pair<Rule, DrawablePattern>> rulePatternList = new ArrayList<>();
-        for (int i = 0; i < graph.drawableNodes.size(); i++) {
+        for (int i = 0; i < graph.drawableAreaNodes.size(); i++) {
             Log.print("rulesMatchingPattern: checking subpattern:", Log.LEVEL.DEBUG);
-            Log.print("rulesMatchingPattern: " + graph.drawableNodes.get(i).toString(), Log.LEVEL.DEBUG);
+            Log.print("rulesMatchingPattern: " + graph.drawableAreaNodes.get(i).toString(), Log.LEVEL.DEBUG);
             Log.print("vs", Log.LEVEL.DEBUG);
-            Log.print(r.matchingDrawablePattern.drawableNodes.toString(), Log.LEVEL.DEBUG);
+            Log.print(r.matchingDrawablePattern.drawableAreaNodes.toString(), Log.LEVEL.DEBUG);
 
 
             DrawablePattern p = new DrawablePattern();
-            boolean result = insertValidSubPatternFromRule(graph.drawableNodes.get(i), new ArrayList<DrawableNode>(), p, r);
+            boolean result = insertValidSubPatternFromRule(graph.drawableAreaNodes.get(i), new ArrayList<DrawableAreaNode>(), p, r);
 
             if(result){
                 rulePatternList.add(new Pair<>(r,p));
@@ -71,7 +71,7 @@ public class GraphController {
 
             Log.print("rulesMatchingPattern: "+result, Log.LEVEL.DEBUG);
             Log.print("rulesMatchingPattern: found: ", Log.LEVEL.DEBUG);
-            Log.print(p.drawableNodes.toString(), Log.LEVEL.DEBUG);
+            Log.print(p.drawableAreaNodes.toString(), Log.LEVEL.DEBUG);
         }
         return rulePatternList;
     }
@@ -95,20 +95,20 @@ public class GraphController {
 
     public void insertAndReplace(DrawablePattern graph, DrawablePattern p, Rule rule) {
         DrawablePattern tr = rule.randomPossiblePattern();
-        for (DrawableNode drawableNode : p.drawableNodes) {
-            DrawableNode n = findCorrespondingNode(drawableNode, tr, rule);
+        for (DrawableAreaNode drawableAreaNode : p.drawableAreaNodes) {
+            DrawableAreaNode n = findCorrespondingNode(drawableAreaNode, tr, rule);
             if(n != null){
-                Log.print("insertAndReplace: found corresponding drawableNode; "+ n, Log.LEVEL.INFO);
+                Log.print("insertAndReplace: found corresponding drawableAreaNode; "+ n, Log.LEVEL.INFO);
                 n.removeEdgesToNodesWithType("ANY");
                 for (DrawableEdge e :
                         n.getDrawableEdges()) {
-                    e.replaceNode(n, drawableNode);
+                    e.replaceNode(n, drawableAreaNode);
                 }
-                drawableNode.setCenterX(n.getCenterX());
-                drawableNode.setCenterY(n.getCenterY());
-                drawableNode.addAllEdges(n.getDrawableEdges());
-                drawableNode.setType(n.getType());
-                drawableNode.setNodeId(n.getNodeId());
+                drawableAreaNode.setCenterX(n.getCenterX());
+                drawableAreaNode.setCenterY(n.getCenterY());
+                drawableAreaNode.addAllEdges(n.getDrawableEdges());
+                drawableAreaNode.setType(n.getType());
+                drawableAreaNode.setNodeId(n.getNodeId());
             }
         }
         addAllNotIn(p, tr);
@@ -116,36 +116,36 @@ public class GraphController {
     }
 
     /**
-     * adds all drawableNodes in tr that are not in p,
+     * adds all drawableAreaNodes in tr that are not in p,
      * @param p
      * pattern to add into
      * @param tr
-     * pattern to take drawableNodes from
+     * pattern to take drawableAreaNodes from
      */
     public void addAllNotIn(DrawablePattern p, DrawablePattern tr) {
-        for (DrawableNode drawableNode :
-                tr.drawableNodes) {
+        for (DrawableAreaNode drawableAreaNode :
+                tr.drawableAreaNodes) {
             boolean contains = false;
-            for (DrawableNode n : p.drawableNodes) {
-                if(n.getNodeId() == drawableNode.getNodeId()){
+            for (DrawableAreaNode n : p.drawableAreaNodes) {
+                if(n.getNodeId() == drawableAreaNode.getNodeId()){
                     contains = true;
                 }
             }
-            if(!contains && !drawableNode.getType().equals("ANY")){
-                Log.print("addAllNotIn: adding drawableNode; " + drawableNode, Log.LEVEL.DEBUG);
+            if(!contains && !drawableAreaNode.getType().equals("ANY")){
+                Log.print("addAllNotIn: adding drawableAreaNode; " + drawableAreaNode, Log.LEVEL.DEBUG);
 
-                p.drawableNodes.add(drawableNode.clone());
+                p.drawableAreaNodes.add(drawableAreaNode.clone());
             }
         }
     }
 
 
-    private DrawableNode findCorrespondingNode(DrawableNode drawableNode, DrawablePattern p, Rule rule) {
-        DrawableNode ret = null;
-        for (DrawableNode n :
-                rule.matchingDrawablePattern.drawableNodes) {
-            if (drawableNode.getType().equals(n.getType())){
-                for (DrawableNode n2 : p.drawableNodes) {
+    private DrawableAreaNode findCorrespondingNode(DrawableAreaNode drawableAreaNode, DrawablePattern p, Rule rule) {
+        DrawableAreaNode ret = null;
+        for (DrawableAreaNode n :
+                rule.matchingDrawablePattern.drawableAreaNodes) {
+            if (drawableAreaNode.getType().equals(n.getType())){
+                for (DrawableAreaNode n2 : p.drawableAreaNodes) {
                     if (n2.getNodeId() == n.getNodeId())
                         return n2;
                 }
@@ -155,52 +155,52 @@ public class GraphController {
     }
 
     /**
-     * Checks if drawableNode 'drawableNode' is a valid drawableNode in the given rules matchingpattern if that is the case its added to the
-     * pattern 'buildDrawablePattern' will return false if any valid 'drawableNode' found in matchingpattern has more than 8 edges.
-     * After checking a drawableNode, if its valid and has more drawableNodes to check it will call itself with the next drawableNode and
-     * add the checked drawableNode drawableNode to checkedNode list.
-     * @param drawableNode
-     * DrawableNode to check if valid in matchingDrawablePattern
-     * @param checkedDrawableNodes
-     * List of checked drawableNodes so we dont check same drawableNode twice
+     * Checks if drawableAreaNode 'drawableAreaNode' is a valid drawableAreaNode in the given rules matchingpattern if that is the case its added to the
+     * pattern 'buildDrawablePattern' will return false if any valid 'drawableAreaNode' found in matchingpattern has more than 8 edges.
+     * After checking a drawableAreaNode, if its valid and has more drawableAreaNodes to check it will call itself with the next drawableAreaNode and
+     * add the checked drawableAreaNode drawableAreaNode to checkedNode list.
+     * @param drawableAreaNode
+     * DrawableAreaNode to check if valid in matchingDrawablePattern
+     * @param checkedDrawableAreaNodes
+     * List of checked drawableAreaNodes so we dont check same drawableAreaNode twice
      * @param buildDrawablePattern
-     * Valid subpattern built from 'drawableNode'
+     * Valid subpattern built from 'drawableAreaNode'
      * @param rule
      * Rule with the pattern we are matching against
      * @return
      * returns true if we have found a valid subpattern
      */
-    private boolean insertValidSubPatternFromRule(DrawableNode drawableNode, ArrayList<DrawableNode> checkedDrawableNodes, DrawablePattern buildDrawablePattern, Rule rule){
+    private boolean insertValidSubPatternFromRule(DrawableAreaNode drawableAreaNode, ArrayList<DrawableAreaNode> checkedDrawableAreaNodes, DrawablePattern buildDrawablePattern, Rule rule){
         boolean returnBool = false;
-        if(checkedDrawableNodes.contains(drawableNode)){
+        if(checkedDrawableAreaNodes.contains(drawableAreaNode)){
             return true;
         }
-        for (DrawableNode n : rule.matchingDrawablePattern.drawableNodes) {
-            // find drawableNode in matching pattern with same type.
-            if(drawableNode.getType().equals(n.getType()) || n.getType().equals("ANY")) {
-                checkedDrawableNodes.add(drawableNode);
+        for (DrawableAreaNode n : rule.matchingDrawablePattern.drawableAreaNodes) {
+            // find drawableAreaNode in matching pattern with same type.
+            if(drawableAreaNode.getType().equals(n.getType()) || n.getType().equals("ANY")) {
+                checkedDrawableAreaNodes.add(drawableAreaNode);
                 Log.print("insertValidSubPatternFromRule: found matching type", Log.LEVEL.DEBUG);
 
                 /*
-                check so that drawableNode has less than 8 edges
+                check so that drawableAreaNode has less than 8 edges
                  */
-                if(drawableNode.getDrawableEdges().size()>8){
-                    Log.print("insertValidSubPatternFromRule: drawableNode has more than 8 edges; returning false", Log.LEVEL.DEBUG);
+                if(drawableAreaNode.getDrawableEdges().size()>8){
+                    Log.print("insertValidSubPatternFromRule: drawableAreaNode has more than 8 edges; returning false", Log.LEVEL.DEBUG);
                     return false;
                 }
                 /*
-                 * all edges in drawableNode n must be in drawableNode "drawableNode"
-                 * also traverses the drawableNodes to check
+                 * all edges in drawableAreaNode n must be in drawableAreaNode "drawableAreaNode"
+                 * also traverses the drawableAreaNodes to check
                  */
-                returnBool = allEdgeAreContainedIn(n, drawableNode, checkedDrawableNodes, buildDrawablePattern, rule);
+                returnBool = allEdgeAreContainedIn(n, drawableAreaNode, checkedDrawableAreaNodes, buildDrawablePattern, rule);
                 if(returnBool){
                     Log.print("insertValidSubPatternFromRule: edges were correct, adding to pattern", Log.LEVEL.DEBUG);
-                    buildDrawablePattern.drawableNodes.add(drawableNode);
+                    buildDrawablePattern.drawableAreaNodes.add(drawableAreaNode);
                 }
             }
             /*
-             * once we have found a drawableNode which has the correct edges we can check all the subnodes to that drawableNode.
-             * issue here is that we need to keep track of which drawableNodes we have check in order to not have a circular dep.
+             * once we have found a drawableAreaNode which has the correct edges we can check all the subnodes to that drawableAreaNode.
+             * issue here is that we need to keep track of which drawableAreaNodes we have check in order to not have a circular dep.
              */
 
         }
@@ -208,52 +208,52 @@ public class GraphController {
     }
 
     /**
-     * Checks so all that all edges that drawableNode 'n' has, drawableNode 'drawableNode' will have too.
+     * Checks so all that all edges that drawableAreaNode 'n' has, drawableAreaNode 'drawableAreaNode' will have too.
      * @param n
-     * @param drawableNode
-     * @param checkedDrawableNodes
+     * @param drawableAreaNode
+     * @param checkedDrawableAreaNodes
      * @param p
      * @param rule
      * @return
      */
-    private boolean allEdgeAreContainedIn(DrawableNode n, DrawableNode drawableNode, ArrayList<DrawableNode> checkedDrawableNodes, DrawablePattern p, Rule rule){
+    private boolean allEdgeAreContainedIn(DrawableAreaNode n, DrawableAreaNode drawableAreaNode, ArrayList<DrawableAreaNode> checkedDrawableAreaNodes, DrawablePattern p, Rule rule){
         boolean returnBool = true;
         boolean nooneChecked = false;
-        if(n.getDrawableEdges().size() > drawableNode.getDrawableEdges().size()){
-            Log.print("allEdgeAreContainedIn: given drawableNode had less edges than other given drawableNode", Log.LEVEL.DEBUG);
+        if(n.getDrawableEdges().size() > drawableAreaNode.getDrawableEdges().size()){
+            Log.print("allEdgeAreContainedIn: given drawableAreaNode had less edges than other given drawableAreaNode", Log.LEVEL.DEBUG);
             return false;
         }
-        for (DrawableEdge e : n.getDrawableEdges()) { // for each edge in drawableNode from matching pattern
-            for (DrawableEdge gE : drawableNode.getDrawableEdges()) { // for each edge in given drawableNode
+        for (DrawableEdge e : n.getDrawableEdges()) { // for each edge in drawableAreaNode from matching pattern
+            for (DrawableEdge gE : drawableAreaNode.getDrawableEdges()) { // for each edge in given drawableAreaNode
                 nooneChecked = true;
-                if(e.getStartDrawableNode() == n){ // if n is start drawableNode then we check end drawableNode
-                    if(gE.getStartDrawableNode() == drawableNode){ // if drawableNode is start drawableNode in its edge
+                if(e.getStartDrawableAreaNode() == n){ // if n is start drawableAreaNode then we check end drawableAreaNode
+                    if(gE.getStartDrawableAreaNode() == drawableAreaNode){ // if drawableAreaNode is start drawableAreaNode in its edge
                         nooneChecked = false;
-                        if(!gE.getEndDrawableNode().getType().equals(e.getEndDrawableNode().getType()) && !e.getEndDrawableNode().getType().equals("ANY")){
+                        if(!gE.getEndDrawableAreaNode().getType().equals(e.getEndDrawableAreaNode().getType()) && !e.getEndDrawableAreaNode().getType().equals("ANY")){
                             /*
                              * if they are not the same we need to continue to look, but we set flag to false to keep track
                              */
-                            Log.print("allEdgeAreContainedIn: found edge where end drawableNodes were not the same", Log.LEVEL.INFO);
+                            Log.print("allEdgeAreContainedIn: found edge where end drawableAreaNodes were not the same", Log.LEVEL.INFO);
                             returnBool = false;
                         }else{
                             /*
-                             * if we find a matching drawableNode-edge pair we can set flag to true and check this subnode for subpattern.
+                             * if we find a matching drawableAreaNode-edge pair we can set flag to true and check this subnode for subpattern.
                              * finally we break loop
                              */
                             Log.print("allEdgeAreContainedIn: found true case, checking subNode", Log.LEVEL.INFO);
-                            returnBool = insertValidSubPatternFromRule(gE.getEndDrawableNode(), checkedDrawableNodes, p, rule);
+                            returnBool = insertValidSubPatternFromRule(gE.getEndDrawableAreaNode(), checkedDrawableAreaNodes, p, rule);
                             break;
                         }
                     }
-                }else if(e.getEndDrawableNode() == n){
-                    if(gE.getEndDrawableNode() == drawableNode){
+                }else if(e.getEndDrawableAreaNode() == n){
+                    if(gE.getEndDrawableAreaNode() == drawableAreaNode){
                         nooneChecked = false;
-                        if(!gE.getStartDrawableNode().getType().equals(e.getStartDrawableNode().getType()) && !e.getStartDrawableNode().getType().equals("ANY")){
-                            Log.print("allEdgeAreContainedIn: found edge where start drawableNodes were not the same", Log.LEVEL.INFO);
+                        if(!gE.getStartDrawableAreaNode().getType().equals(e.getStartDrawableAreaNode().getType()) && !e.getStartDrawableAreaNode().getType().equals("ANY")){
+                            Log.print("allEdgeAreContainedIn: found edge where start drawableAreaNodes were not the same", Log.LEVEL.INFO);
                             returnBool = false;
                         }else{
                             Log.print("allEdgeAreContainedIn: found true case, checking subNode", Log.LEVEL.INFO);
-                            returnBool = insertValidSubPatternFromRule(gE.getStartDrawableNode(), checkedDrawableNodes, p, rule);
+                            returnBool = insertValidSubPatternFromRule(gE.getStartDrawableAreaNode(), checkedDrawableAreaNodes, p, rule);
                             break;
                         }
                     }

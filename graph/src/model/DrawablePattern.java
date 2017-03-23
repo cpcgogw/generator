@@ -10,37 +10,37 @@ import java.util.Random;
  * Created by vilddjur on 1/28/17.
  */
 public class DrawablePattern implements Pattern {
-    public ArrayList<DrawableNode> drawableNodes;
+    public ArrayList<DrawableAreaNode> drawableAreaNodes;
     private Random random;
     public DrawablePattern(){
-        drawableNodes = new ArrayList<DrawableNode>();
+        drawableAreaNodes = new ArrayList<DrawableAreaNode>();
         random = new Random();
     }
-    public DrawablePattern(Pair<ArrayList<DrawableNode>,ArrayList<DrawableEdge>> pair){
-        drawableNodes = new ArrayList<>();
-        drawableNodes.addAll(pair.getKey());
+    public DrawablePattern(Pair<ArrayList<DrawableAreaNode>,ArrayList<DrawableEdge>> pair){
+        drawableAreaNodes = new ArrayList<>();
+        drawableAreaNodes.addAll(pair.getKey());
         random = new Random();
     }
     @Override
     public int hashCode() {
-        return super.hashCode()+ drawableNodes.hashCode()*3;
+        return super.hashCode()+ drawableAreaNodes.hashCode()*3;
     }
 
     @Override
     public boolean equals(Object o) {
             if(o instanceof DrawablePattern){
                 DrawablePattern tmp = (DrawablePattern) o;
-                return drawableNodes.equals(tmp.drawableNodes); // maybe sort lists
+                return drawableAreaNodes.equals(tmp.drawableAreaNodes); // maybe sort lists
             }else{
                 return false;
             }
     }
 
     public void resetIds() {
-        int idCounter = DrawableNode.idCounter;
-        for (DrawableNode drawableNode :
-                drawableNodes) {
-            drawableNode.setNodeId(idCounter);
+        int idCounter = DrawableAreaNode.idCounter;
+        for (DrawableAreaNode drawableAreaNode :
+                drawableAreaNodes) {
+            drawableAreaNode.setNodeId(idCounter);
             idCounter++;
         }
     }
@@ -48,7 +48,7 @@ public class DrawablePattern implements Pattern {
     @Override
     public String toString() {
         String ret = "DrawablePattern : \n";
-        for (DrawableNode n : this.drawableNodes) {
+        for (DrawableAreaNode n : this.drawableAreaNodes) {
             ret += " node; " + n + "\n";
         }
         return ret;
@@ -56,19 +56,19 @@ public class DrawablePattern implements Pattern {
 
     @Override
     public void removeNode(Node node) {
-        drawableNodes.remove(node);
+        drawableAreaNodes.remove(node);
     }
     @Override
     public Node remove(int i) {
-        return drawableNodes.remove(i);
+        return drawableAreaNodes.remove(i);
     }
 
     @Override
     public void addNode(Node node) {
         String tmpPrefix = Log.prefix;
         Log.prefix = "addNode: ";
-        if(node instanceof DrawableNode) {
-            this.drawableNodes.add((DrawableNode) node);
+        if(node instanceof DrawableAreaNode) {
+            this.drawableAreaNodes.add((DrawableAreaNode) node);
         }else{
             Log.print("given node of incorrect type", Log.LEVEL.ERROR);
         }
@@ -78,7 +78,7 @@ public class DrawablePattern implements Pattern {
     @Override
     public ArrayList<Node> getNodes() {
         ArrayList<Node> nodes = new ArrayList<>();
-        nodes.addAll(drawableNodes);
+        nodes.addAll(drawableAreaNodes);
         return nodes;
     }
 }

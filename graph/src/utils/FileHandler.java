@@ -2,16 +2,12 @@ package utils;
 
 import javafx.scene.paint.Color;
 import javafx.util.Pair;
-import model.DrawableEdge;
-import model.DrawableNode;
-import model.DrawablePattern;
-import model.Rule;
+import model.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-import utils.Log;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -29,14 +25,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * This is to save and/or store drawableNodes & edges
+ * This is to save and/or store drawableAreaNodes & edges
  *
  *
  */
 
 public class FileHandler {
 
-    public static void SaveNodes(ArrayList<DrawableNode> drawableNodes, String path) {
+    public static void SaveNodes(ArrayList<DrawableAreaNode> drawableAreaNodes, String path) {
 
         try {
 
@@ -54,38 +50,38 @@ public class FileHandler {
 
 
 
-            for (DrawableNode drawableNode : drawableNodes) {
-                Element elemNode = doc.createElement("DrawableNode");
+            for (DrawableAreaNode drawableAreaNode : drawableAreaNodes) {
+                Element elemNode = doc.createElement("DrawableAreaNode");
                 elemNodes.appendChild(elemNode);
 
                 Element elemId = doc.createElement("ID");
-                elemId.appendChild(doc.createTextNode(String.valueOf(drawableNode.getNodeId())));
+                elemId.appendChild(doc.createTextNode(String.valueOf(drawableAreaNode.getNodeId())));
                 elemNode.appendChild(elemId);
 
                 Element elemTag = doc.createElement("Tag");
-                elemTag.appendChild(doc.createTextNode(String.valueOf(drawableNode.getType())));
+                elemTag.appendChild(doc.createTextNode(String.valueOf(drawableAreaNode.getType())));
                 elemNode.appendChild(elemTag);
 
                 Element elemX = doc.createElement("X");
-                elemX.appendChild(doc.createTextNode(String.valueOf(drawableNode.getCenterX())));
+                elemX.appendChild(doc.createTextNode(String.valueOf(drawableAreaNode.getCenterX())));
                 elemNode.appendChild(elemX);
 
                 Element elemY = doc.createElement("Y");
-                elemY.appendChild(doc.createTextNode(String.valueOf(drawableNode.getCenterY())));
+                elemY.appendChild(doc.createTextNode(String.valueOf(drawableAreaNode.getCenterY())));
                 elemNode.appendChild(elemY);
 
                 Element elemEdges = doc.createElement("Edges");
                 elemNode.appendChild(elemEdges);
-                for (DrawableEdge drawableEdge : drawableNode.getDrawableEdges()) {
+                for (DrawableEdge drawableEdge : drawableAreaNode.getDrawableEdges()) {
                     Element elemEdge = doc.createElement("DrawableEdge");
                     elemEdges.appendChild(elemEdge);
 
                     Element elemStart = doc.createElement("StartID");
-                    elemStart.appendChild(doc.createTextNode(String.valueOf(drawableEdge.getStartDrawableNode().getNodeId())));
+                    elemStart.appendChild(doc.createTextNode(String.valueOf(drawableEdge.getStartDrawableAreaNode().getNodeId())));
                     elemEdge.appendChild(elemStart);
 
                     Element elemEnd = doc.createElement("EndID");
-                    elemEnd.appendChild(doc.createTextNode(String.valueOf(drawableEdge.getEndDrawableNode().getNodeId())));
+                    elemEnd.appendChild(doc.createTextNode(String.valueOf(drawableEdge.getEndDrawableAreaNode().getNodeId())));
                     elemEdge.appendChild(elemEnd);
                 }
             }
@@ -118,8 +114,8 @@ public class FileHandler {
             System.out.println("Error building document");
         }
     }
-    public static Pair<ArrayList<DrawableNode>,ArrayList<DrawableEdge>> LoadNodes(File file){
-        HashMap<Integer, DrawableNode> nodeMap = new HashMap<>();
+    public static Pair<ArrayList<DrawableAreaNode>,ArrayList<DrawableEdge>> LoadNodes(File file){
+        HashMap<Integer, DrawableAreaNode> nodeMap = new HashMap<>();
         ArrayList<DrawableEdge> drawableEdges = new ArrayList<>();
 
         try {
@@ -130,9 +126,9 @@ public class FileHandler {
             doc.getDocumentElement().normalize(); //normalizes document
 
 
-            //Defines all drawableNodes...
+            //Defines all drawableAreaNodes...
 
-            NodeList xnodeList = doc.getElementsByTagName("DrawableNode"); //grab all "DrawableNode" from XML-file
+            NodeList xnodeList = doc.getElementsByTagName("DrawableAreaNode"); //grab all "DrawableAreaNode" from XML-file
             nodeMap = extractNodes(xnodeList);
 
 
@@ -159,7 +155,7 @@ public class FileHandler {
         return pair;
     }
 
-    private static HashMap<Integer, ArrayList<Integer>> extractEdges(NodeList xnodeList, HashMap<Integer, DrawableNode> nodeMap, ArrayList<DrawableEdge> drawableEdges) {
+    private static HashMap<Integer, ArrayList<Integer>> extractEdges(NodeList xnodeList, HashMap<Integer, DrawableAreaNode> nodeMap, ArrayList<DrawableEdge> drawableEdges) {
         HashMap<Integer,ArrayList<Integer>> edgeMap = new HashMap<>(); //HashMap used for easy fix of duplicate drawableEdges.
         for(int i = 0; i < xnodeList.getLength(); i++){
             Node xNode = xnodeList.item(i);
@@ -175,10 +171,10 @@ public class FileHandler {
                 }
                 if (!edgeMap.get(startID).contains(endID)) {
                     //Store the extracted DrawableEdge
-                    DrawableNode startDrawableNode = nodeMap.get(startID);
-                    DrawableNode endDrawableNode = nodeMap.get(endID);
+                    DrawableAreaNode startDrawableAreaNode = nodeMap.get(startID);
+                    DrawableAreaNode endDrawableAreaNode = nodeMap.get(endID);
 
-                    drawableEdges.add(new DrawableEdge(startDrawableNode, endDrawableNode));
+                    drawableEdges.add(new DrawableEdge(startDrawableAreaNode, endDrawableAreaNode));
 
                     edgeMap.get(startID).add(endID);
                 }
@@ -196,24 +192,24 @@ public class FileHandler {
             doc.getDocumentElement().normalize(); //normalizes document
 
 
-            //Defines all drawableNodes...
+            //Defines all drawableAreaNodes...
 /*
-            NodeList xnodeList = doc.getElementsByTagName("DrawableNode"); //grab all "DrawableNode" from XML-file
+            NodeList xnodeList = doc.getElementsByTagName("DrawableAreaNode"); //grab all "DrawableAreaNode" from XML-file
             for (int i = 0; i < xnodeList.getLength(); i++) {
-                DrawableNode xNode = xnodeList.item(i);
+                DrawableAreaNode xNode = xnodeList.item(i);
 
 
-                if (xNode.getNodeType() == DrawableNode.ELEMENT_NODE) {
+                if (xNode.getNodeType() == DrawableAreaNode.ELEMENT_NODE) {
                     Element element = (Element) xNode;
 
                     //Extract elements of node
                     int id = Integer.parseInt(element.getElementsByTagName("ID").item(0).getTextContent());
-                    model.DrawableNode.NodeType type = model.DrawableNode.NodeType.valueOf(element.getElementsByTagName("Tag").item(0).getTextContent());
+                    model.DrawableAreaNode.NodeType type = model.DrawableAreaNode.NodeType.valueOf(element.getElementsByTagName("Tag").item(0).getTextContent());
                     double x = Double.parseDouble(element.getElementsByTagName("X").item(0).getTextContent());
                     double y = Double.parseDouble(element.getElementsByTagName("Y").item(0).getTextContent());
-                    //Store the extracted DrawableNode
+                    //Store the extracted DrawableAreaNode
 
-                    model.DrawableNode node = new model.DrawableNode(id, x, y, model.DrawableNode.DEFAULT_RADIUS, Color.RED, type);
+                    model.DrawableAreaNode node = new model.DrawableAreaNode(id, x, y, model.DrawableAreaNode.DEFAULT_RADIUS, Color.RED, type);
 
                 }
 
@@ -276,8 +272,8 @@ public class FileHandler {
         catch (Exception e){e.printStackTrace();}
     }
 
-    public static ArrayList<Pair<ArrayList<DrawableNode>, ArrayList<DrawableEdge>>> LoadTranslations(File file) {
-        ArrayList<Pair<ArrayList<DrawableNode>, ArrayList<DrawableEdge>>> translations = new ArrayList<>();
+    public static ArrayList<Pair<ArrayList<DrawableAreaNode>, ArrayList<DrawableEdge>>> LoadTranslations(File file) {
+        ArrayList<Pair<ArrayList<DrawableAreaNode>, ArrayList<DrawableEdge>>> translations = new ArrayList<>();
         try {
 
             DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -290,11 +286,11 @@ public class FileHandler {
             //foreach translation
             for (NodeList list : translationNodes) {
                 //insert into translations
-                HashMap<Integer, DrawableNode> nodeMap = new HashMap<>();
+                HashMap<Integer, DrawableAreaNode> nodeMap = new HashMap<>();
                 ArrayList<DrawableEdge> drawableEdges = new ArrayList<>();
 
 
-                NodeList xnodeList = ((Element) list).getElementsByTagName("DrawableNode"); //grab all "DrawableNode" from matchingDrawablePattern
+                NodeList xnodeList = ((Element) list).getElementsByTagName("DrawableAreaNode"); //grab all "DrawableAreaNode" from matchingDrawablePattern
                 nodeMap = extractNodes(xnodeList);
 
                 //Defines all drawableEdges...
@@ -328,8 +324,8 @@ public class FileHandler {
         return nodeListList;
     }
 
-    public static Pair<ArrayList<DrawableNode>, ArrayList<DrawableEdge>> LoadMatchingPattern(File file) {
-        HashMap<Integer, DrawableNode> nodeMap = new HashMap<>();
+    public static Pair<ArrayList<DrawableAreaNode>, ArrayList<DrawableEdge>> LoadMatchingPattern(File file) {
+        HashMap<Integer, DrawableAreaNode> nodeMap = new HashMap<>();
         ArrayList<DrawableEdge> drawableEdges = new ArrayList<>();
 
         try {
@@ -340,9 +336,9 @@ public class FileHandler {
             doc.getDocumentElement().normalize(); //normalizes document
 
 
-            //Defines all drawableNodes...
+            //Defines all drawableAreaNodes...
             Node pattern = doc.getElementsByTagName("MatchingPattern").item(0);
-            NodeList xnodeList = ((Element) pattern).getElementsByTagName("DrawableNode"); //grab all "DrawableNode" from matchingDrawablePattern
+            NodeList xnodeList = ((Element) pattern).getElementsByTagName("DrawableAreaNode"); //grab all "DrawableAreaNode" from matchingDrawablePattern
             nodeMap = extractNodes(xnodeList);
 
 
@@ -370,8 +366,8 @@ public class FileHandler {
         return pair;
     }
 
-    private static HashMap<Integer, DrawableNode> extractNodes(NodeList xnodeList) {
-        HashMap<Integer, DrawableNode> nodeMap = new HashMap<>();
+    private static HashMap<Integer, DrawableAreaNode> extractNodes(NodeList xnodeList) {
+        HashMap<Integer, DrawableAreaNode> nodeMap = new HashMap<>();
         for(int i = 0; i < xnodeList.getLength(); i++){
             Node xNode = xnodeList.item(i);
 
@@ -380,15 +376,15 @@ public class FileHandler {
             if (xNode.getNodeType() == Node.ELEMENT_NODE) {
                 Element element = (Element) xNode;
 
-                //Extract elements of drawableNode
+                //Extract elements of drawableAreaNode
                 int id = Integer.parseInt(element.getElementsByTagName("ID").item(0).getTextContent());
-                DrawableNode.NodeType type = DrawableNode.NodeType.valueOf(element.getElementsByTagName("Tag").item(0).getTextContent());
+                AREA_TYPE type = AREA_TYPE.valueOf(element.getElementsByTagName("Tag").item(0).getTextContent());
                 double x = Double.parseDouble(element.getElementsByTagName("X").item(0).getTextContent());
                 double y = Double.parseDouble(element.getElementsByTagName("Y").item(0).getTextContent());
-                //Store the extracted DrawableNode
+                //Store the extracted DrawableAreaNode
 
-                DrawableNode drawableNode = new DrawableNode(id,x,y, DrawableNode.DEFAULT_RADIUS, Color.RED,type);
-                nodeMap.put(id, drawableNode);
+                DrawableAreaNode drawableAreaNode = new DrawableAreaNode(id,x,y, DrawableAreaNode.DEFAULT_RADIUS, Color.RED, type);
+                nodeMap.put(id, drawableAreaNode);
             }
         }
         return nodeMap;
@@ -410,7 +406,7 @@ public class FileHandler {
             Element elemNodes = doc.createElement("DrawablePattern");
             elemMatchingPattern.appendChild(elemNodes);
             //<Rule><MatchingPattern><DrawablePattern>...</DrawablePattern></MatchingPattern></Rule>
-            insertNodesInto(rule.matchingDrawablePattern.drawableNodes, elemNodes, doc);
+            insertNodesInto(rule.matchingDrawablePattern.drawableAreaNodes, elemNodes, doc);
 
 
             //<Rule><PossibleTranslations></PossibleTranslations></Rule>
@@ -421,7 +417,7 @@ public class FileHandler {
                 Element elemSinglePattern = doc.createElement("DrawablePattern");
                 elemPosTranslations.appendChild(elemSinglePattern);
                 //<Rule><PossibleTranslations><DrawablePattern>...</DrawablePattern>[..]</PossibleTranslations></Rule>
-                insertNodesInto(p.drawableNodes, elemSinglePattern, doc);
+                insertNodesInto(p.drawableAreaNodes, elemSinglePattern, doc);
             }
 
             /* Saves File at specific directory
@@ -463,40 +459,40 @@ public class FileHandler {
         }
     }
 
-    private static void insertNodesInto(ArrayList<DrawableNode> drawableNodes, Element elemNodes, Document doc) {
-        //<DrawableNode><ID>id</ID><Tag>tag</Tag><X>x</X><Y>y</Y></DrawableNode>
-        for (DrawableNode drawableNode : drawableNodes) {
-            Element elemNode = doc.createElement("DrawableNode");
+    private static void insertNodesInto(ArrayList<DrawableAreaNode> drawableAreaNodes, Element elemNodes, Document doc) {
+        //<DrawableAreaNode><ID>id</ID><Tag>tag</Tag><X>x</X><Y>y</Y></DrawableAreaNode>
+        for (DrawableAreaNode drawableAreaNode : drawableAreaNodes) {
+            Element elemNode = doc.createElement("DrawableAreaNode");
             elemNodes.appendChild(elemNode);
 
             Element elemId = doc.createElement("ID");
-            elemId.appendChild(doc.createTextNode(String.valueOf(drawableNode.getNodeId())));
+            elemId.appendChild(doc.createTextNode(String.valueOf(drawableAreaNode.getNodeId())));
             elemNode.appendChild(elemId);
 
             Element elemTag = doc.createElement("Tag");
-            elemTag.appendChild(doc.createTextNode(String.valueOf(drawableNode.getType())));
+            elemTag.appendChild(doc.createTextNode(String.valueOf(drawableAreaNode.getType())));
             elemNode.appendChild(elemTag);
 
             Element elemX = doc.createElement("X");
-            elemX.appendChild(doc.createTextNode(String.valueOf(drawableNode.getCenterX())));
+            elemX.appendChild(doc.createTextNode(String.valueOf(drawableAreaNode.getCenterX())));
             elemNode.appendChild(elemX);
 
             Element elemY = doc.createElement("Y");
-            elemY.appendChild(doc.createTextNode(String.valueOf(drawableNode.getCenterY())));
+            elemY.appendChild(doc.createTextNode(String.valueOf(drawableAreaNode.getCenterY())));
             elemNode.appendChild(elemY);
 
             Element elemEdges = doc.createElement("Edges");
             elemNode.appendChild(elemEdges);
-            for (DrawableEdge drawableEdge : drawableNode.getDrawableEdges()) {
+            for (DrawableEdge drawableEdge : drawableAreaNode.getDrawableEdges()) {
                 Element elemEdge = doc.createElement("DrawableEdge");
                 elemEdges.appendChild(elemEdge);
 
                 Element elemStart = doc.createElement("StartID");
-                elemStart.appendChild(doc.createTextNode(String.valueOf(drawableEdge.getStartDrawableNode().getNodeId())));
+                elemStart.appendChild(doc.createTextNode(String.valueOf(drawableEdge.getStartDrawableAreaNode().getNodeId())));
                 elemEdge.appendChild(elemStart);
 
                 Element elemEnd = doc.createElement("EndID");
-                elemEnd.appendChild(doc.createTextNode(String.valueOf(drawableEdge.getEndDrawableNode().getNodeId())));
+                elemEnd.appendChild(doc.createTextNode(String.valueOf(drawableEdge.getEndDrawableAreaNode().getNodeId())));
                 elemEdge.appendChild(elemEnd);
             }
 

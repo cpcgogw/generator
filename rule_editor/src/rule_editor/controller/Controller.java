@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static model.DrawableNode.DEFAULT_RADIUS;
+import static model.DrawableAreaNode.DEFAULT_RADIUS;
 import static rule_editor.controller.Controller.tools.*;
 
 public class Controller {
@@ -111,15 +111,15 @@ public class Controller {
     public TextField active_node_id_field;
     @FXML
     private Button active_node_save_button;
-    public DrawableNode activeDrawableNode;
+    public DrawableAreaNode activeDrawableAreaNode;
 
     private HashMap<Pane, DrawablePattern> scenarios;
     private DrawablePattern matchingDrawablePattern;
     private DrawablePattern currentLevel;
 
-    public void setActiveDrawableNode(DrawableNode activeDrawableNode) {
-        this.activeDrawableNode = activeDrawableNode;
-        active_node_id_field.setText(String.valueOf(activeDrawableNode.getNodeId()));
+    public void setActiveDrawableAreaNode(DrawableAreaNode activeDrawableAreaNode) {
+        this.activeDrawableAreaNode = activeDrawableAreaNode;
+        active_node_id_field.setText(String.valueOf(activeDrawableAreaNode.getNodeId()));
     }
 
 
@@ -127,7 +127,7 @@ public class Controller {
         return activeTool;
     }
 
-    public DrawableNode.NodeType getActiveType(){
+    public AREA_TYPE getActiveType(){
         return activeType;
     }
     private GraphController graphController;
@@ -147,7 +147,7 @@ public class Controller {
     }
     private FileChooser fileChooser = new FileChooser();
     public static tools activeTool;
-    public static DrawableNode.NodeType activeType;
+    public static AREA_TYPE activeType;
 
     public static Pane activeCanvas;
 
@@ -155,7 +155,7 @@ public class Controller {
     public void initialize(){
         GraphController graphController = new GraphController();
         scenarios = new HashMap<Pane, DrawablePattern>();
-        activeType = DrawableNode.NodeType.START;
+        activeType = AREA_TYPE.TOWN;
         activeTool = NODE;
         activeCanvas = rule_canvas;
         currentLevel = new DrawablePattern();
@@ -166,12 +166,6 @@ public class Controller {
         move_button.setOnMouseClicked(mouseEvent -> activeTool = MOVE);
         select_node_button.setOnMouseClicked(mouseEvent -> activeTool = SELECT);
         // init node buttons
-        start_node_button.setOnMouseClicked(mouseEvent -> activateType(DrawableNode.NodeType.START));
-        end_node_button.setOnMouseClicked(mouseEvent -> activateType(DrawableNode.NodeType.END));
-        key_node_button.setOnMouseClicked(mouseEvent -> activateType(DrawableNode.NodeType.KEY));
-        lock_node_button.setOnMouseClicked(mouseEvent -> activateType(DrawableNode.NodeType.LOCK));
-        room_node_button.setOnMouseClicked(mouseEvent -> activateType(DrawableNode.NodeType.ROOM));
-        any_node_button.setOnMouseClicked(mouseEvent -> activateType(DrawableNode.NodeType.ANY));
         // init top menu
         save_button.setOnAction(actionEvent -> PrepareSave());
         load_level_button.setOnAction(actionEvent -> PrepareLoadLevel());
@@ -206,14 +200,14 @@ public class Controller {
     }
 
     private void currentLevelToGrid() {
-        NodeGrid grid = new NodeGrid(currentLevel.drawableNodes.size());
+        NodeGrid grid = new NodeGrid(currentLevel.drawableAreaNodes.size());
         System.out.println(currentLevel);
         Translator.placeGraphOnGrid(currentLevel, grid);
         for (int x = 0; x < grid.size(); x++) {
             for (int y = 0; y < grid.size(); y++) {
                 Node n = (Node) grid.getTile(x,y);
                 if(n != null){
-                    DrawableNode node = (DrawableNode) n;
+                    DrawableAreaNode node = (DrawableAreaNode) n;
                     node.setCenterX(x*150+50);
                     node.setCenterY(y*150+50);
                     node.updateEdges();
@@ -223,7 +217,7 @@ public class Controller {
     }
 
     private void saveActiveNode() {
-        activeDrawableNode.setNodeId(Integer.parseInt(active_node_id_field.getText()));
+        activeDrawableAreaNode.setNodeId(Integer.parseInt(active_node_id_field.getText()));
     }
 
 
@@ -240,7 +234,7 @@ public class Controller {
         translateLevel(currentLevel, rules);
 
         Log.print("Dumping generated level: ", Log.LEVEL.DEBUG);
-        for (DrawableNode n : currentLevel.drawableNodes) {
+        for (DrawableAreaNode n : currentLevel.drawableAreaNodes) {
             Log.print("  node: Type: " + n.getType() + ", id:" + n.getNodeId() + ", #edges: " + n.getDrawableEdges().size(), Log.LEVEL.DEBUG);
         }
 
@@ -252,7 +246,7 @@ public class Controller {
      * Updates the currentLevel.
      */
     private void updateDisplayedGraph() {
-        for(DrawableNode n : currentLevel.drawableNodes){
+        for(DrawableAreaNode n : currentLevel.drawableAreaNodes){
             nodeController.addNode(n);
             canvas.getChildren().add(n);
             for(DrawableEdge e : n.getDrawableEdges()){
@@ -300,13 +294,13 @@ public class Controller {
         activeCanvas = rule_canvas;
 
         Log.print("Dumping current rule: \n MatchingPattern: ", Log.LEVEL.INFO);
-        for (DrawableNode n : activeRule.matchingDrawablePattern.drawableNodes) {
+        for (DrawableAreaNode n : activeRule.matchingDrawablePattern.drawableAreaNodes) {
             Log.print("  node: " + n.getType().toString(), Log.LEVEL.INFO);
         }
         Log.print(" possibleOutcomes: ", Log.LEVEL.INFO);
         for (DrawablePattern p : activeRule.possibleTranslations){
             Log.print("  outcome: ", Log.LEVEL.INFO);
-            for (DrawableNode n : p.drawableNodes) {
+            for (DrawableAreaNode n : p.drawableAreaNodes) {
                 Log.print("   node: " + n.getType().toString(), Log.LEVEL.INFO);
             }
         }
@@ -319,7 +313,7 @@ public class Controller {
         activeCanvas = canvas;
     }
 
-    private void activateType(DrawableNode.NodeType type) {
+    private void activateType(AREA_TYPE type) {
         activeType = type;
         activeTool = NODE;
     }
@@ -349,23 +343,23 @@ public class Controller {
         activeRule = new Rule(matchingDrawablePattern);
 
 
-        Pair<ArrayList<DrawableNode>,ArrayList<DrawableEdge>> pair = FileHandler.LoadMatchingPattern(file);
-        ArrayList<Pair<ArrayList<DrawableNode>,ArrayList<DrawableEdge>>> translations = FileHandler.LoadTranslations(file);
+        Pair<ArrayList<DrawableAreaNode>,ArrayList<DrawableEdge>> pair = FileHandler.LoadMatchingPattern(file);
+        ArrayList<Pair<ArrayList<DrawableAreaNode>,ArrayList<DrawableEdge>>> translations = FileHandler.LoadTranslations(file);
         activeCanvas = rule_canvas;
-        insertIntoCanvasAndList(rule_canvas, matchingDrawablePattern.drawableNodes, pair);
+        insertIntoCanvasAndList(rule_canvas, matchingDrawablePattern.drawableAreaNodes, pair);
 
-        for (Pair<ArrayList<DrawableNode>, ArrayList<DrawableEdge>> p : translations){
+        for (Pair<ArrayList<DrawableAreaNode>, ArrayList<DrawableEdge>> p : translations){
 
             Pair<Pane, DrawablePattern> panePatternPair = addTab("saved tab");
-            insertIntoCanvasAndList(panePatternPair.getKey(), panePatternPair.getValue().drawableNodes, p);
+            insertIntoCanvasAndList(panePatternPair.getKey(), panePatternPair.getValue().drawableAreaNodes, p);
         }
     }
 
-    private void insertIntoCanvasAndList(Pane canvas, ArrayList<DrawableNode> drawableNodes, Pair<ArrayList<DrawableNode>, ArrayList<DrawableEdge>> pair) {
-        for(DrawableNode drawableNode : pair.getKey()){
-            drawableNodes.add(drawableNode);
-            canvas.getChildren().add(drawableNode);
-            nodeController.addNode(drawableNode);
+    private void insertIntoCanvasAndList(Pane canvas, ArrayList<DrawableAreaNode> drawableAreaNodes, Pair<ArrayList<DrawableAreaNode>, ArrayList<DrawableEdge>> pair) {
+        for(DrawableAreaNode drawableAreaNode : pair.getKey()){
+            drawableAreaNodes.add(drawableAreaNode);
+            canvas.getChildren().add(drawableAreaNode);
+            nodeController.addNode(drawableAreaNode);
         }
         for(DrawableEdge e : pair.getValue()){
             DrawableEdge c = nodeController.getEdgeController().addEdge(e);
@@ -420,9 +414,9 @@ public class Controller {
         canvas.getChildren().clear();
 
 
-        Pair<ArrayList<DrawableNode>,ArrayList<DrawableEdge>> pair = FileHandler.LoadNodes(file);
-        for(DrawableNode drawableNode : pair.getKey()){
-            DrawableNode c = nodeController.addNode(drawableNode);
+        Pair<ArrayList<DrawableAreaNode>,ArrayList<DrawableEdge>> pair = FileHandler.LoadNodes(file);
+        for(DrawableAreaNode drawableAreaNode : pair.getKey()){
+            DrawableAreaNode c = nodeController.addNode(drawableAreaNode);
             canvas.getChildren().add(c);
         }
         for(DrawableEdge e : pair.getValue()){
@@ -443,21 +437,21 @@ public class Controller {
         if(rule_pane.isVisible()){
             FileHandler.saveRule(activeRule,"saves/rules/"+path);
         }else {
-            FileHandler.SaveNodes(nodeController.getDrawableNodes(), "saves/levels/" + path);
+            FileHandler.SaveNodes(nodeController.getDrawableAreaNodes(), "saves/levels/" + path);
         }
     }
 
     private void handlePress(MouseEvent event, Pane c) {
         if(activeTool == NODE){
-            DrawableNode drawableNode = nodeController.addNode(event.getX(), event.getY(), DEFAULT_RADIUS, Color.BLUE);
+            DrawableAreaNode drawableAreaNode = nodeController.addNode(event.getX(), event.getY(), DEFAULT_RADIUS, Color.BLUE);
 
-            c.getChildren().add(drawableNode);
+            c.getChildren().add(drawableAreaNode);
             if(c == rule_canvas){
-                matchingDrawablePattern.drawableNodes.add(drawableNode);
+                matchingDrawablePattern.drawableAreaNodes.add(drawableAreaNode);
             }else if(c == canvas){
-                currentLevel.drawableNodes.add(drawableNode);
+                currentLevel.drawableAreaNodes.add(drawableAreaNode);
             } else {
-                scenarios.get(c).drawableNodes.add(drawableNode);
+                scenarios.get(c).drawableAreaNodes.add(drawableAreaNode);
             }
         }
     }

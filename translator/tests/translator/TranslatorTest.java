@@ -285,16 +285,16 @@ public class TranslatorTest {
     public DrawablePattern getRandomDrawablePattern() {
         DrawablePattern pattern = new DrawablePattern();
         for (int i = 0; i < GRAPH_SIZE; i++) {
-            DrawableNode node = new DrawableNode(0,0,0, Color.AQUA, "asddf");
+            DrawableAreaNode node = new DrawableAreaNode(0,0,0, Color.AQUA, AREA_TYPE.GRASSFIELD);
             addRandomDrawableEdge(node, pattern);
             pattern.addNode(node);
         }
         return pattern;
     }
 
-    private void addRandomDrawableEdge(DrawableNode node, DrawablePattern pattern) {
+    private void addRandomDrawableEdge(DrawableAreaNode node, DrawablePattern pattern) {
         if(pattern.getNodes().size()>0) {
-            DrawableNode randNode = (DrawableNode) pattern.getNodes().get(rand.nextInt(pattern.getNodes().size()));
+            DrawableAreaNode randNode = (DrawableAreaNode) pattern.getNodes().get(rand.nextInt(pattern.getNodes().size()));
             if(randNode != node){
                 if(rand.nextBoolean() && randNode.getEdges().size()<8 && node.getEdges().size()<8) {
                     DrawableEdge e = new DrawableEdge(randNode, node);

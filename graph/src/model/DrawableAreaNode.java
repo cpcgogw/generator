@@ -5,27 +5,27 @@ import javafx.scene.shape.Circle;
 import utils.Log;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by vilddjur on 1/24/17.
  */
-public class DrawableNode extends Circle implements Node, Tile {
+public class DrawableAreaNode extends Circle implements AreaNode, Tile {
     private ArrayList<DrawableEdge> drawableEdges;
+    private ArrayList<ObjectNode> objects = new ArrayList<>();
     private int id;
     public static int idCounter=0;
     public static final int DEFAULT_RADIUS = 40;
+
 
     @Override
     public TILE_TYPE getTILE_TYPE() {
         return TILE_TYPE.TOWN;
     }
 
-    public enum NodeType{
-        START, END, LOCK, KEY, ROOM, ANY
-    }
-    private String type;
+    private AREA_TYPE type;
 
-    public DrawableNode(DrawableNode n) {
+    public DrawableAreaNode(DrawableAreaNode n) {
         super(n.getCenterX(), n.getCenterY(), n.getRadius(), n.getFill());
         drawableEdges = new ArrayList<>();
         id = n.id;
@@ -53,12 +53,12 @@ public class DrawableNode extends Circle implements Node, Tile {
     public ArrayList<DrawableEdge> extractOutgoingEdges(DrawablePattern p) {
         ArrayList<DrawableEdge> outgoingDrawableEdges = new ArrayList<>();
         for (DrawableEdge e : drawableEdges) {
-            if(this == e.getEndDrawableNode()){ // we are end node, check if start node is in given pattern
-                if(!p.drawableNodes.contains(e.getStartDrawableNode())){
+            if(this == e.getEndDrawableAreaNode()){ // we are end node, check if start node is in given pattern
+                if(!p.drawableAreaNodes.contains(e.getStartDrawableAreaNode())){
                     outgoingDrawableEdges.add(e);
                 }
             }else{ // we are start node, check if end node is in given pattern
-                if(!p.drawableNodes.contains(e.getEndDrawableNode())){
+                if(!p.drawableAreaNodes.contains(e.getEndDrawableAreaNode())){
                     outgoingDrawableEdges.add(e);
                 }
             }
@@ -70,63 +70,40 @@ public class DrawableNode extends Circle implements Node, Tile {
         this.drawableEdges = drawableEdges;
     }
 
-    public void setType(NodeType type) {
-        this.type = type.toString();
-        setColor();
-    }
-    public void setType(String  type) {
+    public void setType(AREA_TYPE type) {
         this.type = type;
         setColor();
     }
 
-    public DrawableNode(double x, double y, int radius, Color color, String type){
+    public DrawableAreaNode(double x, double y, int radius, Color color, AREA_TYPE type){
         super(x, y, radius, color);
         drawableEdges = new ArrayList<DrawableEdge>();
         id = idCounter++;
         this.type = type;
         setColor();
     }
-    public DrawableNode(double x, double y, int radius, Color color, NodeType type){
-        super(x, y, radius, color);
-        drawableEdges = new ArrayList<DrawableEdge>();
-        id = idCounter++;
-        this.type = type.toString();
-        setColor();
-    }
-    public DrawableNode(int id, double x, double y, int radius, Color color, NodeType type){
+    public DrawableAreaNode(int id, double x, double y, int radius, Color color, AREA_TYPE type){
         this(x, y, radius, color, type);
         this.id = id;
         if(id>=idCounter){
             idCounter = id+1;
         }
     }
-    public DrawableNode(int id, double x, double y, int radius, Color color, String type){
-        this(x, y, radius, color, type);
-        this.id = id;
-        if(id>=idCounter){
-            idCounter = id+1;
-        }
-    }
+
 
     private void setColor() {
         switch (type){
-            case "END":
+            case GRASSFIELD:
                 this.setFill(Color.FORESTGREEN);
                 break;
-            case "KEY":
-                this.setFill(Color.ORANGE);
+            case TOWN:
+                this.setFill(Color.GRAY);
                 break;
-            case "LOCK":
-                this.setFill(Color.RED);
-                break;
-            case "ROOM":
-                this.setFill(Color.PINK);
-                break;
-            case "START":
-                this.setFill(Color.DEEPSKYBLUE);
-                break;
-            case "ANY":
+            case DESERT:
                 this.setFill(Color.DARKKHAKI);
+                break;
+            default:
+                this.setFill(Color.BLACK);
                 break;
         }
     }
@@ -154,12 +131,12 @@ public class DrawableNode extends Circle implements Node, Tile {
         ArrayList<DrawableEdge> newDrawableEdges = new ArrayList<>();
         for (DrawableEdge e :
                 drawableEdges) {
-            if (e.getStartDrawableNode() == this){
-                if(!e.getEndDrawableNode().getType().equals(type)){
+            if (e.getStartDrawableAreaNode() == this){
+                if(!e.getEndDrawableAreaNode().getType().equals(type)){
                     newDrawableEdges.add(e);
                 }
-            }else if(e.getEndDrawableNode() == this){
-                if(!e.getStartDrawableNode().getType().equals(type)){
+            }else if(e.getEndDrawableAreaNode() == this){
+                if(!e.getStartDrawableAreaNode().getType().equals(type)){
                     newDrawableEdges.add(e);
                 }
             }
@@ -190,8 +167,18 @@ public class DrawableNode extends Circle implements Node, Tile {
         return edges;
     }
 
-    public String getType(){
+    public AREA_TYPE getType(){
         return type;
+    }
+
+    @Override
+    public List<ObjectNode> getObjects() {
+        return objects;
+    }
+
+    @Override
+    public void addObject(ObjectNode node) {
+        objects.add(node);
     }
 
     public void removeEdge(DrawableEdge drawableEdge) {
@@ -203,16 +190,16 @@ public class DrawableNode extends Circle implements Node, Tile {
         return super.hashCode()+id*5+type.hashCode()*7;
     }
 
-    public DrawableNode clone(){
-        DrawableNode drawableNode = new DrawableNode(this.getCenterX(), this.getCenterY(), (int)this.getRadius(), Color.AQUA, this.getType());
+    public DrawableAreaNode clone(){
+        DrawableAreaNode drawableAreaNode = new DrawableAreaNode(this.getCenterX(), this.getCenterY(), (int)this.getRadius(), Color.AQUA, this.getType());
         for (DrawableEdge e: this.drawableEdges){
-            if(e.getStartDrawableNode().getNodeId() == this.id)
-                e.setStartDrawableNode(drawableNode);
-            if(e.getEndDrawableNode().getNodeId() == this.id)
-                e.setEndNode(drawableNode);
-            drawableNode.drawableEdges.add(e);
+            if(e.getStartDrawableAreaNode().getNodeId() == this.id)
+                e.setStartDrawableAreaNode(drawableAreaNode);
+            if(e.getEndDrawableAreaNode().getNodeId() == this.id)
+                e.setEndNode(drawableAreaNode);
+            drawableAreaNode.drawableEdges.add(e);
         }
-        return drawableNode;
+        return drawableAreaNode;
     }
 
     @Override

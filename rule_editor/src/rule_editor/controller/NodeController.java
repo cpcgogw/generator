@@ -4,7 +4,7 @@ package rule_editor.controller;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import model.DrawableEdge;
-import model.DrawableNode;
+import model.DrawableAreaNode;
 
 import java.util.ArrayList;
 
@@ -19,7 +19,7 @@ public class NodeController {
     private EdgeController edgeController;
     private Controller controller;
     private boolean dragging;
-    private ArrayList<DrawableNode> drawableNodes;
+    private ArrayList<DrawableAreaNode> drawableAreaNodes;
 
     /**
      *
@@ -29,17 +29,17 @@ public class NodeController {
         dragging = false;
         this.controller = controller;
         this.edgeController = new EdgeController();
-        this.drawableNodes = new ArrayList<DrawableNode>();
+        this.drawableAreaNodes = new ArrayList<DrawableAreaNode>();
     }
 
     /**
      * Removes all Nodes and Edges
      */
     public void clear() {
-        drawableNodes.clear();
+        drawableAreaNodes.clear();
     }
 
-    private void handlePressNode(MouseEvent event, DrawableNode c) {
+    private void handlePressNode(MouseEvent event, DrawableAreaNode c) {
         if(Controller.activeTool == DELETE){
             Controller.getActiveCanvas().getChildren().remove(c);
             Controller.getActiveCanvas().getChildren().removeAll(c.getDrawableEdges());
@@ -57,10 +57,10 @@ public class NodeController {
         }else if(Controller.activeTool == MOVE){
             dragging = true;
         }else if(Controller.activeTool == SELECT){
-            controller.setActiveDrawableNode(c);
+            controller.setActiveDrawableAreaNode(c);
         }
     }
-    public DrawableNode addNode(DrawableNode c) {
+    public DrawableAreaNode addNode(DrawableAreaNode c) {
         c.setOnMousePressed(mouseEvent -> handlePressNode(mouseEvent, c));
         c.setOnMouseReleased(event -> {
             dragging = false;
@@ -71,11 +71,11 @@ public class NodeController {
                 c.updateEdges();
             }
         });
-        drawableNodes.add(c);
+        drawableAreaNodes.add(c);
         return c;
     }
-    public DrawableNode addNode(double x, double y, int radius, Color color) {
-        DrawableNode c = new DrawableNode(x,y,radius,color, Controller.activeType);
+    public DrawableAreaNode addNode(double x, double y, int radius, Color color) {
+        DrawableAreaNode c = new DrawableAreaNode(x,y,radius,color, Controller.activeType);
         c.setOnMousePressed(mouseEvent -> handlePressNode(mouseEvent, c));
         c.setOnMouseReleased(event -> {
             dragging = false;
@@ -86,12 +86,12 @@ public class NodeController {
                 c.updateEdges();
             }
         });
-        drawableNodes.add(c);
+        drawableAreaNodes.add(c);
         return c;
     }
 
-    public  ArrayList<DrawableNode> getDrawableNodes(){
-        return drawableNodes;
+    public  ArrayList<DrawableAreaNode> getDrawableAreaNodes(){
+        return drawableAreaNodes;
     }
 
     public  EdgeController getEdgeController(){

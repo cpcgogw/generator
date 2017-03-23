@@ -2,7 +2,7 @@ package rule_editor.controller;
 
 
 import model.DrawableEdge;
-import model.DrawableNode;
+import model.DrawableAreaNode;
 
 /**
  * Created by vilddjur on 1/25/17.
@@ -13,7 +13,7 @@ public class EdgeController {
         dragging = false;
     }
 
-    public DrawableEdge addEdge(DrawableNode c, DrawableNode s) {
+    public DrawableEdge addEdge(DrawableAreaNode c, DrawableAreaNode s) {
         DrawableEdge e = new DrawableEdge(c, s);
 
         e.setOnMousePressed(mouseEvent -> handlePress(mouseEvent, e));
