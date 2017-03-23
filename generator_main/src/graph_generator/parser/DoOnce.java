@@ -6,7 +6,7 @@ import model.DrawableEdge;
 import model.DrawableNode;
 import model.DrawablePattern;
 import model.Rule;
-import rule_editor.FileHandler;
+import utils.FileHandler;
 import utils.Log;
 
 import java.io.File;

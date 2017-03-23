@@ -15,7 +15,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 import model.*;
-import rule_editor.FileHandler;
+import utils.FileHandler;
 import translator.Translator;
 import translator.model.NodeGrid;
 import utils.Log;

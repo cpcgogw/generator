@@ -1,4 +1,4 @@
-package rule_editor;
+package utils;
 
 import javafx.scene.paint.Color;
 import javafx.util.Pair;

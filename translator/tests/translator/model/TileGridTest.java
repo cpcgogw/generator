@@ -189,15 +189,4 @@ public class TileGridTest {
         assertEquals(tiles.get(1), r2);
         assertEquals(tiles.get(2), r3);
     }
-
-    @Test
-    public void toStringTest() throws Exception {
-        assertTrue(tileGrid.addTile(new Road(), 0, 0));
-        assertTrue(tileGrid.addTile(new Road(), GRID_SIZE-1, GRID_SIZE-1));
-        assertTrue(tileGrid.addTile(new Road(), GRID_SIZE/2, GRID_SIZE/2-1));
-        assertTrue(tileGrid.addTile(new Road(), GRID_SIZE-1, 0));
-
-        assertEquals(tileGrid.toString(), "R R R\n* * *\n* * R\n");
-    }
-
 }

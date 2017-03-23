@@ -98,7 +98,7 @@ public class TranslatorTest {
 
         Log.level = Log.LEVEL.DEBUG;
         Log.print("TranslatorTest: It were possible to place all patterns on a grid with sqrt of size of number of nodes.", Log.LEVEL.DEBUG);
-        Log.print("TranslatorTest: Grid: "+largestGrid+", Pattern: "+largestPattern, Log.LEVEL.DEBUG);
+        Log.print("TranslatorTest: Grid: \n"+largestGrid+"Pattern: "+largestPattern, Log.LEVEL.DEBUG);
     }
 
     @Test
