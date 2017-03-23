@@ -5,12 +5,13 @@ import model.*;
 import org.junit.Test;
 import translator.model.*;
 import utils.Log;
-import static org.junit.Assert.*;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Random;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by vilddjur on 3/21/17.
@@ -20,7 +21,7 @@ public class TranslatorTest {
     private final Random rand = new Random();
     @Test
     public void outPutRandomHighResGraph() throws Exception{
-        AbstractPattern pattern = getRandomPattern();
+        AbstractPattern pattern = getRandomPattern(GRAPH_SIZE);
         int size = (int)(Math.sqrt(pattern.getNodes().size())+1);
         NodeGrid grid = new NodeGrid(size);
         Translator.placeGraphOnGrid(pattern, grid);
