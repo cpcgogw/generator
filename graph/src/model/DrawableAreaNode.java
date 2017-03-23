@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class DrawableAreaNode extends Circle implements AreaNode, Tile {
     private ArrayList<DrawableEdge> drawableEdges;
-    private ArrayList<ObjectNode> objects = new ArrayList<>();
+    private ArrayList<DrawableObjectNode> objects = new ArrayList<>();
     private int id;
     public static int idCounter=0;
     public static final int DEFAULT_RADIUS = 40;
@@ -88,6 +88,7 @@ public class DrawableAreaNode extends Circle implements AreaNode, Tile {
         if(id>=idCounter){
             idCounter = id+1;
         }
+        setColor();
     }
 
 
@@ -173,12 +174,18 @@ public class DrawableAreaNode extends Circle implements AreaNode, Tile {
 
     @Override
     public List<ObjectNode> getObjects() {
-        return objects;
+        return null;
     }
 
     @Override
     public void addObject(ObjectNode node) {
+    }
+
+    public void addObject(DrawableObjectNode node) {
         objects.add(node);
+        Log.print("DrawableAreaNode: Added a subnode of type: "+node.getType()
+                +" to area node: "+this.getType(), Log.LEVEL.DEBUG);
+        updateSubnodes();
     }
 
     public void removeEdge(DrawableEdge drawableEdge) {
@@ -205,5 +212,16 @@ public class DrawableAreaNode extends Circle implements AreaNode, Tile {
     @Override
     public String toString() {
         return "Type: " + this.getType() + ", id:" + this.getNodeId() + ", #drawableEdges: " + this.getDrawableEdges().size();
+    }
+
+    public void updateSubnodes() {
+        int i = objects.size();
+        double r;
+
+        for (DrawableObjectNode node : objects) {
+            r = node.getRadius()+this.getRadius();
+            node.setPosition(this.getCenterX()+Math.cos(Math.toRadians(30*i))*r, this.getCenterY()+Math.sin(Math.toRadians(30*i))*r);
+            i--;
+        }
     }
 }

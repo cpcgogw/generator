@@ -11,6 +11,8 @@ import java.util.Random;
  */
 public class DrawablePattern implements Pattern {
     public ArrayList<DrawableAreaNode> drawableAreaNodes;
+    public ArrayList<DrawableObjectNode> drawableObjectNodes;
+
     private Random random;
     public DrawablePattern(){
         drawableAreaNodes = new ArrayList<DrawableAreaNode>();
