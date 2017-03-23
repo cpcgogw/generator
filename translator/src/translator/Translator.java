@@ -23,7 +23,7 @@ public class Translator {
         AbstractPattern graph = testGraph();
         NodeGrid grid = new NodeGrid(3);
         TileGrid lowRes;
-        TileGrid highRes;
+        PopulatedTileGrid highRes;
 
         System.out.println("Grid before: ");
         System.out.println(grid);
@@ -32,12 +32,12 @@ public class Translator {
         System.out.println(grid);
         System.out.println("Translated to low res: ");
         lowRes = translateToLowRes(grid);
-        highRes = translateToHighRes(lowRes);
+        highRes = translateToPopulatedGrid(lowRes);
         System.out.println(highRes);
         TMXFileHandler.saveGridAsTMX(highRes, "saves/levels/level.tmx");
     }
 
-    public static TileGrid translateToHighRes(TileGrid lowRes) {
+    public static PopulatedTileGrid translateToPopulatedGrid(TileGrid lowRes) {
         TranslationStrategy strategy = new SimpleTranslation();
         return strategy.apply(lowRes);
     }
