@@ -1,15 +1,19 @@
 package translator;
 
 import javafx.util.Pair;
+import model.AreaNode;
+import model.ObjectNode;
 import model.TILE_TYPE;
 import model.Tile;
 import translator.model.AbstractNode;
+import translator.model.PopulatedTileGrid;
 import translator.model.Road;
 import translator.model.TileGrid;
 import utils.Log;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Simple translation strategy which expands the grid by 10 and performs a simple translation.
@@ -18,11 +22,11 @@ import java.util.List;
  */
 public class SimpleTranslation extends TranslationStrategy {
     final int TILE_SIZE = 10;
-
+    private final Random rand = new Random();
     @Override
-    public TileGrid apply(TileGrid grid) {
-        TileGrid highRes = new TileGrid(grid.size()*TILE_SIZE);
-        Tile tile;
+    public PopulatedTileGrid apply(TileGrid grid) {
+        PopulatedTileGrid popGrid = new PopulatedTileGrid(grid.size()*TILE_SIZE);
+        Tile tile = null;
 
         for (int y = 0; y < grid.size(); y++) {
             for (int x = 0; x < grid.size(); x++) {
@@ -30,15 +34,15 @@ public class SimpleTranslation extends TranslationStrategy {
                 if (tile == null) {
                     continue;
                 } else if (tile.getTILE_TYPE() == TILE_TYPE.TOWN) {
-                    copyFromPos(town(10), highRes, x*TILE_SIZE, y*TILE_SIZE);
+                    copyFromPos(town(10, tile), popGrid, x*TILE_SIZE, y*TILE_SIZE);
                 } else if (tile.getTILE_TYPE() == TILE_TYPE.ROAD) {
-                    copyFromPos(road(grid, x, y), highRes, x*TILE_SIZE, y*TILE_SIZE);
+                    copyFromPos(road(grid, x, y), popGrid, x*TILE_SIZE, y*TILE_SIZE);
                 }
             }
         }
-        grass(highRes);
+        grass(popGrid);
 
-        return highRes;
+        return popGrid;
     }
 
     /**
@@ -46,6 +50,7 @@ public class SimpleTranslation extends TranslationStrategy {
      *
      */
     private void grass(TileGrid grid) {
+
         for (int y = 0; y < grid.size(); y++) {
             for (int x = 0; x < grid.size(); x++) {
                 if (grid.getTile(x, y) == null)
@@ -66,8 +71,8 @@ public class SimpleTranslation extends TranslationStrategy {
      * @return
      * The road TileGrid with size TILE_SIZE which has valid paths to neighbours in input grid.
      */
-    private TileGrid road(TileGrid grid, int xPos, int yPos) {
-        TileGrid road = new TileGrid(TILE_SIZE);
+    private PopulatedTileGrid road(TileGrid grid, int xPos, int yPos) {
+        PopulatedTileGrid road = new PopulatedTileGrid(TILE_SIZE);
         List<Pair<Integer, Integer>> neighbours = getNeighbours(grid, xPos, yPos);
 
         if (neighbours.isEmpty())
@@ -155,14 +160,28 @@ public class SimpleTranslation extends TranslationStrategy {
         return positions;
     }
 
-    private TileGrid town(int size) {
-        TileGrid town = new TileGrid(size);
+    private PopulatedTileGrid town(int size, Tile tile) {
+
+        PopulatedTileGrid town = new PopulatedTileGrid(size);
+        if(tile instanceof AreaNode){
+            placeObjectsRandomly((AreaNode) tile, town);
+        }
         for (int y = 0; y < town.size(); y++) {
             for (int x = 0; x < town.size(); x++) {
                 town.addTile(new AbstractNode(), x, y);
             }
         }
         return town;
+    }
+
+    private void placeObjectsRandomly(AreaNode tile, PopulatedTileGrid grid) {
+        for (ObjectNode node :
+                tile.getObjects()) {
+            boolean placed = false;
+            while(!placed){
+                placed = grid.addObject(node, rand.nextInt(grid.size()), rand.nextInt(grid.size()));
+            }
+        }
     }
 
     private TileGrid empty(int size) {

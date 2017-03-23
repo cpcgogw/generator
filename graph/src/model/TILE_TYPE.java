@@ -4,7 +4,7 @@ package model;
  * Created by time on 3/22/17.
  */
 public enum TILE_TYPE {
-    ROAD('R'), DESART('D'), FOREST('F'), LAKE('L'), TOWN('T'), GRAVEYARD('g'), GRASS('G');
+    ROAD('R'), DESART('D'), FOREST('F'), LAKE('L'), TOWN('T'), GRAVEYARD('g'), GRASS('G'), MONSTER('M'), TRAP('t'), DANGER('d'), UNKOWN('U');
 
     char value;
 

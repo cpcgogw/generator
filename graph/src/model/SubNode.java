@@ -39,4 +39,9 @@ public class SubNode implements ObjectNode {
     public ArrayList<Edge> getEdges() {
         return edges;
     }
+
+    @Override
+    public TILE_TYPE getTILE_TYPE() {
+        return type.toTile();
+    }
 }

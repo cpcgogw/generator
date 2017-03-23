@@ -17,7 +17,7 @@ import static org.junit.Assert.assertTrue;
  * Created by vilddjur on 3/21/17.
  */
 public class TranslatorTest {
-    private final int GRAPH_SIZE = 25;
+    private final int GRAPH_SIZE = 15;
     private final Random rand = new Random();
     @Test
     public void outPutRandomHighResGraph() throws Exception{
@@ -28,9 +28,9 @@ public class TranslatorTest {
         System.out.println(grid);
         TileGrid lowRes = Translator.translateToLowRes(grid);
         System.out.println(lowRes);
-        TileGrid highRes = Translator.translateToHighRes(lowRes);
-        System.out.println(highRes);
-        TMXFileHandler.saveGridAsTMX(highRes, "../saves/levels/test.tmx");
+        PopulatedTileGrid popGrid = Translator.translateToPopulatedGrid(lowRes);
+        System.out.println(popGrid);
+        TMXFileHandler.saveGridAsTMX(popGrid, "../saves/levels/test.tmx");
 
     }
     @Test
@@ -193,15 +193,26 @@ public class TranslatorTest {
         AbstractPattern p = new AbstractPattern();
         for (int i = 0; i < size; i++) {
             AbstractNode node = new AbstractNode();
-            if(rand.nextBoolean()){
-                node.setType(TILE_TYPE.TOWN);
-            }else{
-                node.setType(TILE_TYPE.TOWN);
-            }
+            node.setType(TILE_TYPE.TOWN);
+            randomObjects(node);
             addRandomEdge(node, p);
             p.addNode(node);
         }
         return p;
+    }
+
+    private void randomObjects(AreaNode node) {
+        int numberOfObjects = rand.nextInt(5)+2;
+        for (int i = 0; i < numberOfObjects; i++) {
+            int num = rand.nextInt(3);
+            if(num == 0){
+                node.addObject(new SubNode(OBJECT_TYPE.MONSTER));
+            }else if(num == 1){
+                node.addObject(new SubNode(OBJECT_TYPE.DANGER));
+            }else if(num == 2){
+                node.addObject(new SubNode(OBJECT_TYPE.TRAP));
+            }
+        }
     }
 
     /**

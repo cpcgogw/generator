@@ -1,10 +1,11 @@
 package translator;
 
+import model.ObjectNode;
 import model.TILE_TYPE;
 import model.Tile;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import translator.model.TileGrid;
+import translator.model.PopulatedTileGrid;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -25,7 +26,7 @@ public class TMXFileHandler {
      * @param grid
      * @param path
      */
-    public static void saveGridAsTMX(TileGrid grid, String path) {
+    public static void saveGridAsTMX(PopulatedTileGrid grid, String path) {
         try{
             DocumentBuilderFactory dFact = DocumentBuilderFactory.newInstance();
             DocumentBuilder build = dFact.newDocumentBuilder();
@@ -62,25 +63,59 @@ public class TMXFileHandler {
             elemLayer.setAttribute("height", ""+grid.size());
             elemMap.appendChild(elemLayer);
 
+            Element elemLayerObj = doc.createElement("layer");
+            elemLayerObj.setAttribute("name", "objects");
+            elemLayerObj.setAttribute("width", ""+grid.size());
+            elemLayerObj.setAttribute("height", ""+grid.size());
+            elemMap.appendChild(elemLayerObj);
+
             //<map><layer><data><tile /> <tile /> .. </data></layer></map>
             Element elemData = doc.createElement("data");
+            Element elemDataObj = doc.createElement("data");
             for (int y = 0; y < grid.size(); y++) {
                 for (int x = 0; x < grid.size(); x++) {
                     Tile tile = grid.getTile(x,y);
                     Element elemTile = doc.createElement("tile");
-                    int gid = 1;
+                    int gid = 0;
                     if(tile == null) {
-                        gid = 1;
+                        gid = 0;
                     }else if(tile.getTILE_TYPE() == TILE_TYPE.ROAD){
                         gid = 2;
                     }else if(tile.getTILE_TYPE() == TILE_TYPE.TOWN){
                         gid = 3;
+                    }else if(tile.getTILE_TYPE() == TILE_TYPE.MONSTER){
+                        gid = 4;
+                    }else if(tile.getTILE_TYPE() == TILE_TYPE.DANGER){
+                        gid = 5;
+                    }else if(tile.getTILE_TYPE() == TILE_TYPE.TRAP){
+                        gid = 6;
                     }
                     elemTile.setAttribute("gid", ""+gid);
                     elemData.appendChild(elemTile);
+
+                    Element elemObj = doc.createElement("tile");
+                    ObjectNode object = grid.getObject(x,y);
+                    if(object == null) {
+                        gid = 0;
+                    }else if(object.getTILE_TYPE() == TILE_TYPE.ROAD){
+                        gid = 2;
+                    }else if(object.getTILE_TYPE() == TILE_TYPE.TOWN){
+                        gid = 3;
+                    }else if(object.getTILE_TYPE() == TILE_TYPE.MONSTER){
+                        gid = 4;
+                    }else if(object.getTILE_TYPE() == TILE_TYPE.DANGER){
+                        gid = 5;
+                    }else if(object.getTILE_TYPE() == TILE_TYPE.TRAP){
+                        gid = 6;
+                    }
+                    elemObj.setAttribute("gid", ""+gid);
+                    elemDataObj.appendChild(elemObj);
+
                 }
             }
             elemLayer.appendChild(elemData);
+            elemLayerObj.appendChild(elemDataObj);
+
             Transformer transformer = TransformerFactory.newInstance().newTransformer();
             Result output = new StreamResult(new File(path));
             Source input = new DOMSource(doc);
