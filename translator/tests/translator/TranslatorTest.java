@@ -16,13 +16,28 @@ import java.util.Random;
  * Created by vilddjur on 3/21/17.
  */
 public class TranslatorTest {
-    private final int GRAPH_SIZE = 10;
+    private final int GRAPH_SIZE = 25;
     private final Random rand = new Random();
+    @Test
+    public void outPutRandomHighResGraph() throws Exception{
+        AbstractPattern pattern = getRandomPattern();
+        int size = (int)(Math.sqrt(pattern.getNodes().size())+1);
+        NodeGrid grid = new NodeGrid(size);
+        Translator.placeGraphOnGrid(pattern, grid);
+        System.out.println(grid);
+        TileGrid lowRes = Translator.translateToLowRes(grid);
+        System.out.println(lowRes);
+        TileGrid highRes = Translator.translateToHighRes(lowRes);
+        System.out.println(highRes);
+        TMXFileHandler.saveGridAsTMX(highRes, "../saves/levels/test.tmx");
+
+    }
     @Test
     public void placeGraphOnGridDrawablePattern() throws Exception{
         DrawablePattern drawablePattern = getRandomDrawablePattern();
         int sizeBefore = drawablePattern.getNodes().size();
-        NodeGrid grid = new NodeGrid(GRAPH_SIZE);
+        int size = (int) Math.sqrt(GRAPH_SIZE);
+        NodeGrid grid = new NodeGrid(size);
         Translator.placeGraphOnGrid(drawablePattern, grid);
         int sizeAfter = drawablePattern.getNodes().size();
         assert sizeAfter == sizeBefore;
@@ -57,9 +72,7 @@ public class TranslatorTest {
                                 //assert !(Boolean)isNeighbour.invoke(grid, args);
                             }
                         }
-
                     }
-
                 }
             }
         }
@@ -179,6 +192,11 @@ public class TranslatorTest {
         AbstractPattern p = new AbstractPattern();
         for (int i = 0; i < size; i++) {
             AbstractNode node = new AbstractNode();
+            if(rand.nextBoolean()){
+                node.setType(TILE_TYPE.TOWN);
+            }else{
+                node.setType(TILE_TYPE.TOWN);
+            }
             addRandomEdge(node, p);
             p.addNode(node);
         }

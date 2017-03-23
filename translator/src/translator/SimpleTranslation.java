@@ -124,6 +124,11 @@ public class SimpleTranslation extends TranslationStrategy {
             }
             placed = true;
         }
+        if (positions.contains(new Pair<>(xPos, yPos+1)) && positions.contains(new Pair<>(xPos, yPos-1))) {
+            for (int i = 9; i >= 0; i--) {
+                road.addTile(new Road(), 4, i);
+            }
+        }
 
         return placed;
     }

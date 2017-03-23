@@ -32,9 +32,9 @@ public class Translator {
         System.out.println(grid);
         System.out.println("Translated to low res: ");
         lowRes = translateToLowRes(grid);
-        System.out.println(lowRes);
         highRes = translateToHighRes(lowRes);
         System.out.println(highRes);
+        TMXFileHandler.saveGridAsTMX(highRes, "saves/levels/level.tmx");
     }
 
     public static TileGrid translateToHighRes(TileGrid lowRes) {
@@ -167,6 +167,27 @@ public class Translator {
         }
 
         return lowResGrid;
+    }
+
+    public static NodeGrid trimGrid(TileGrid grid){
+        int maxPos = 0;
+        for (int x = 0; x < grid.size(); x++) {
+            for (int y = 0; y < grid.size(); y++) {
+                if(grid.getTile(x,y)!=null){
+                    if(x>maxPos){
+                        maxPos = x;
+                    }
+                    if(y>maxPos){
+                        maxPos = y;
+                    }
+                }
+            }
+        }
+
+        NodeGrid newGrid = new NodeGrid(maxPos+1);
+        TranslationStrategy.copyFromPos(grid, newGrid, 0,0);
+        Log.print("Trimming grid from " + grid.size() + " to " + newGrid.size(), Log.LEVEL.INFO);
+        return newGrid;
     }
 
     private static Pair<Integer,Integer> midPoint(Pair<Integer, Integer> from, Pair<Integer, Integer> to) {
