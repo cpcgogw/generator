@@ -1,5 +1,6 @@
 package translator.model;
 
+import model.AreaNode;
 import model.Node;
 import model.Pattern;
 
@@ -9,7 +10,7 @@ import java.util.ArrayList;
  * Created by vilddjur on 3/11/17.
  */
 public class AbstractPattern implements Pattern {
-    public ArrayList<Node> nodes = new ArrayList<>();
+    public ArrayList<AreaNode> nodes = new ArrayList<>();
 
     @Override
     public void removeNode(Node node) {
@@ -22,12 +23,12 @@ public class AbstractPattern implements Pattern {
     }
 
     @Override
-    public void addNode(Node node) {
+    public void addNode(AreaNode node) {
         nodes.add(node);
     }
 
     @Override
-    public ArrayList<Node> getNodes() {
+    public ArrayList<AreaNode> getNodes() {
         return nodes;
     }
 }

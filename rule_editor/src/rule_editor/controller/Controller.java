@@ -272,8 +272,8 @@ public class Controller {
 
         for (File f : folder.listFiles()) {
             if(!f.isDirectory()){
-                DrawablePattern match = new DrawablePattern(FileHandler.LoadMatchingPattern(f));
-                rules.add(new Rule(match, FileHandler.LoadTranslations(f)));
+                DrawablePattern match = new DrawablePattern(FileHandler.loadMatchingPattern(f));
+                rules.add(new Rule(match, FileHandler.loadTranslations(f)));
             }
         }
 
@@ -343,8 +343,8 @@ public class Controller {
         activeRule = new Rule(matchingDrawablePattern);
 
 
-        Pair<ArrayList<DrawableAreaNode>,ArrayList<DrawableEdge>> pair = FileHandler.LoadMatchingPattern(file);
-        ArrayList<Pair<ArrayList<DrawableAreaNode>,ArrayList<DrawableEdge>>> translations = FileHandler.LoadTranslations(file);
+        Pair<ArrayList<DrawableAreaNode>,ArrayList<DrawableEdge>> pair = FileHandler.loadMatchingPattern(file);
+        ArrayList<Pair<ArrayList<DrawableAreaNode>,ArrayList<DrawableEdge>>> translations = FileHandler.loadTranslations(file);
         activeCanvas = rule_canvas;
         insertIntoCanvasAndList(rule_canvas, matchingDrawablePattern.drawableAreaNodes, pair);
 
@@ -414,7 +414,7 @@ public class Controller {
         canvas.getChildren().clear();
 
 
-        Pair<ArrayList<DrawableAreaNode>,ArrayList<DrawableEdge>> pair = FileHandler.LoadNodes(file);
+        Pair<ArrayList<DrawableAreaNode>,ArrayList<DrawableEdge>> pair = FileHandler.loadNodes(file);
         for(DrawableAreaNode drawableAreaNode : pair.getKey()){
             DrawableAreaNode c = nodeController.addNode(drawableAreaNode);
             canvas.getChildren().add(c);
@@ -437,7 +437,7 @@ public class Controller {
         if(rule_pane.isVisible()){
             FileHandler.saveRule(activeRule,"saves/rules/"+path);
         }else {
-            FileHandler.SaveNodes(nodeController.getDrawableAreaNodes(), "saves/levels/" + path);
+            FileHandler.saveNodes(nodeController.getDrawableAreaNodes(), "saves/levels/" + path);
         }
     }
 

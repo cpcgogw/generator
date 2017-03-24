@@ -64,7 +64,7 @@ public class DrawablePattern implements Pattern {
     }
 
     @Override
-    public void addNode(Node node) {
+    public void addNode(AreaNode node) {
         String tmpPrefix = Log.prefix;
         Log.prefix = "addNode: ";
         if(node instanceof DrawableAreaNode) {
@@ -76,8 +76,8 @@ public class DrawablePattern implements Pattern {
     }
 
     @Override
-    public ArrayList<Node> getNodes() {
-        ArrayList<Node> nodes = new ArrayList<>();
+    public ArrayList<AreaNode> getNodes() {
+        ArrayList<AreaNode> nodes = new ArrayList<>();
         nodes.addAll(drawableAreaNodes);
         return nodes;
     }
