@@ -60,9 +60,10 @@ public class NodeController {
             controller.setActiveDrawableAreaNode(c);
         } else if (Controller.activeTool == SUBNODE) {
             DrawableObjectNode node = new DrawableObjectNode(c.getCenterX(), c.getCenterY(), 10, (OBJECT_TYPE) Controller.activeType);
-            c.addObject(node);
-            c.updateSubnodes();
-            Controller.getActiveCanvas().getChildren().add(node);
+            if (c.addObject(node)) {
+                Controller.getActiveCanvas().getChildren().add(node);
+                Controller.getActiveCanvas().getChildren().add(node.text);
+            }
         }
     }
 

@@ -2,6 +2,7 @@ package model;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Text;
 import utils.Log;
 
 import java.util.ArrayList;
@@ -181,11 +182,17 @@ public class DrawableAreaNode extends Circle implements AreaNode, Tile {
     public void addObject(ObjectNode node) {
     }
 
-    public void addObject(DrawableObjectNode node) {
-        objects.add(node);
-        Log.print("DrawableAreaNode: Added a subnode of type: "+node.getType()
-                +" to area node: "+this.getType(), Log.LEVEL.DEBUG);
-        updateSubnodes();
+    public boolean addObject(DrawableObjectNode node) {
+        if (objects.size() < 12) {
+            objects.add(node);
+            Log.print("DrawableAreaNode: Added a subnode of type: "+node.getType()
+                    +" to area node: "+this.getType(), Log.LEVEL.DEBUG);
+            updateSubnodes();
+            return true;
+        } else {
+            Log.print("DrawableAreaNode: Couldn't add subnode to node! Too many subnodes already.", Log.LEVEL.DEBUG);
+            return false;
+        }
     }
 
     public void removeEdge(DrawableEdge drawableEdge) {

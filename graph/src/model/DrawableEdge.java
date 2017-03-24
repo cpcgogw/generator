@@ -30,6 +30,10 @@ public class DrawableEdge extends Line implements Edge{
 
     }
 
+    public DrawableEdge(DrawableObjectNode from, DrawableObjectNode to) {
+
+    }
+
     /**
      * Sets the startDrawableAreaNode to the given DrawableAreaNode
      * @param startDrawableAreaNode

@@ -3,6 +3,7 @@ package rule_editor.controller;
 
 import model.DrawableEdge;
 import model.DrawableAreaNode;
+import model.DrawableObjectNode;
 
 /**
  * Created by vilddjur on 1/25/17.
@@ -28,6 +29,10 @@ public class EdgeController {
         });
 
         return e;
+    }
+
+    public void addEdge(DrawableObjectNode from, DrawableObjectNode to) {
+        DrawableEdge edge = new DrawableEdge(from, to);
     }
 
     private void handlePress(javafx.scene.input.MouseEvent mouseEvent, DrawableEdge e) {
