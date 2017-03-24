@@ -63,6 +63,10 @@ public class Controller {
     private Button room_node_button;
     @FXML
     private Button any_node_button;
+    @FXML
+    private Button grass_node_button;
+    @FXML
+    private Button desert_node_button;
 
 
     @FXML
@@ -127,7 +131,7 @@ public class Controller {
         return activeTool;
     }
 
-    public AREA_TYPE getActiveType(){
+    public TYPE getActiveType(){
         return activeType;
     }
     private GraphController graphController;
@@ -143,11 +147,13 @@ public class Controller {
      * Enum to keep track of which tool is active
      */
     public enum tools {
-        EDGE, NODE, DELETE, MOVE, SELECT
+        EDGE, NODE, SUBNODE, DELETE, MOVE, SELECT
     }
+
     private FileChooser fileChooser = new FileChooser();
     public static tools activeTool;
-    public static AREA_TYPE activeType;
+    //public static AREA_TYPE activeType;
+    public static TYPE activeType;
 
     public static Pane activeCanvas;
 
@@ -166,6 +172,14 @@ public class Controller {
         move_button.setOnMouseClicked(mouseEvent -> activeTool = MOVE);
         select_node_button.setOnMouseClicked(mouseEvent -> activeTool = SELECT);
         // init node buttons
+        start_node_button.setOnMouseClicked(mouseEvent -> activateType(OBJECT_TYPE.START));
+        end_node_button.setOnMouseClicked(mouseEvent -> activateType(OBJECT_TYPE.END));
+        key_node_button.setOnMouseClicked(mouseEvent -> activateType(OBJECT_TYPE.KEY));
+        lock_node_button.setOnMouseClicked(mouseEvent -> activateType(OBJECT_TYPE.LOCK)); //SHOULD BE EDGE
+        room_node_button.setOnMouseClicked(mouseEvent -> activateType(AREA_TYPE.TOWN));
+        grass_node_button.setOnMouseClicked(mouseEvent -> activateType(AREA_TYPE.GRASSFIELD));
+        desert_node_button.setOnMouseClicked(mouseEvent -> activateType(AREA_TYPE.DESERT));
+
         // init top menu
         save_button.setOnAction(actionEvent -> PrepareSave());
         load_level_button.setOnAction(actionEvent -> PrepareLoadLevel());
@@ -197,6 +211,13 @@ public class Controller {
         // initialize currentRule;
         matchingDrawablePattern = new DrawablePattern();
         activeRule = new Rule(matchingDrawablePattern);
+    }
+
+    private void activateType(OBJECT_TYPE type) {
+        Log.level = Log.LEVEL.DEBUG;
+        activeTool = SUBNODE;
+        activeType = type;
+        Log.print("Controller: Setting type to "+type, Log.LEVEL.DEBUG);
     }
 
     private void currentLevelToGrid() {
@@ -257,6 +278,9 @@ public class Controller {
                     canvas.getChildren().add(c);
                 e.updateNodes();
             }
+        }
+        for(DrawableObjectNode n : currentLevel.drawableObjectNodes) {
+            //nodeController.addNode(n);
         }
     }
 
@@ -443,7 +467,7 @@ public class Controller {
 
     private void handlePress(MouseEvent event, Pane c) {
         if(activeTool == NODE){
-            DrawableAreaNode drawableAreaNode = nodeController.addNode(event.getX(), event.getY(), DEFAULT_RADIUS, Color.BLUE);
+            DrawableAreaNode drawableAreaNode = nodeController.addNode(event.getX(), event.getY(), DEFAULT_RADIUS, Color.BLUE, (AREA_TYPE) activeType);
 
             c.getChildren().add(drawableAreaNode);
             if(c == rule_canvas){

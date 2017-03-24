@@ -3,10 +3,10 @@ package rule_editor.controller;
 
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import model.DrawableEdge;
-import model.DrawableAreaNode;
+import model.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static rule_editor.controller.Controller.tools.*;
 
@@ -56,10 +56,16 @@ public class NodeController {
             }
         }else if(Controller.activeTool == MOVE){
             dragging = true;
-        }else if(Controller.activeTool == SELECT){
+        }else if(Controller.activeTool == SELECT) {
             controller.setActiveDrawableAreaNode(c);
+        } else if (Controller.activeTool == SUBNODE) {
+            DrawableObjectNode node = new DrawableObjectNode(c.getCenterX(), c.getCenterY(), 10, (OBJECT_TYPE) Controller.activeType);
+            c.addObject(node);
+            c.updateSubnodes();
+            Controller.getActiveCanvas().getChildren().add(node);
         }
     }
+
     public DrawableAreaNode addNode(DrawableAreaNode c) {
         c.setOnMousePressed(mouseEvent -> handlePressNode(mouseEvent, c));
         c.setOnMouseReleased(event -> {
@@ -74,20 +80,10 @@ public class NodeController {
         drawableAreaNodes.add(c);
         return c;
     }
-    public DrawableAreaNode addNode(double x, double y, int radius, Color color) {
-        DrawableAreaNode c = new DrawableAreaNode(x,y,radius,color, Controller.activeType);
-        c.setOnMousePressed(mouseEvent -> handlePressNode(mouseEvent, c));
-        c.setOnMouseReleased(event -> {
-            dragging = false;
-        });
-        c.setOnMouseDragged(event -> {
-            if(dragging){
-                c.setPos(event.getX(),event.getY());
-                c.updateEdges();
-            }
-        });
-        drawableAreaNodes.add(c);
-        return c;
+
+    public DrawableAreaNode addNode(double x, double y, int radius, Color color, AREA_TYPE type) {
+        DrawableAreaNode c = new DrawableAreaNode(x,y,radius,color, type);
+        return addNode(c);
     }
 
     public  ArrayList<DrawableAreaNode> getDrawableAreaNodes(){
