@@ -1,6 +1,5 @@
 package rule_editor.controller;
 
-
 import model.DrawableEdge;
 import model.DrawableAreaNode;
 import model.DrawableObjectNode;
@@ -16,23 +15,27 @@ public class EdgeController {
 
     public DrawableEdge addEdge(DrawableAreaNode c, DrawableAreaNode s) {
         DrawableEdge e = new DrawableEdge(c, s);
+        setDragable(e);
+        return e;
+    }
 
+    private void setDragable(DrawableEdge e) {
         e.setOnMousePressed(mouseEvent -> handlePress(mouseEvent, e));
         e.setOnMouseReleased(event -> {
             dragging = false;
         });
 
         e.setOnMouseDragged(event -> {
-                if(dragging){
-                    e.makeArrow();
-                }
+            if(dragging){
+                e.makeArrow();
+            }
         });
-
-        return e;
     }
 
-    public void addEdge(DrawableObjectNode from, DrawableObjectNode to) {
+    public DrawableEdge addEdge(DrawableObjectNode from, DrawableObjectNode to) {
         DrawableEdge edge = new DrawableEdge(from, to);
+        setDragable(edge);
+        return edge;
     }
 
     private void handlePress(javafx.scene.input.MouseEvent mouseEvent, DrawableEdge e) {

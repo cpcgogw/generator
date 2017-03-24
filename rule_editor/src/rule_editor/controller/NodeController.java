@@ -4,6 +4,7 @@ package rule_editor.controller;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import model.*;
+import utils.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,7 @@ public class NodeController {
     /**
      *
      */
-    public NodeController(Controller controller){
+    public NodeController(Controller controller) {
         currentDrawableEdge = null;
         dragging = false;
         this.controller = controller;
@@ -40,9 +41,9 @@ public class NodeController {
     }
 
     private void handlePressNode(MouseEvent event, DrawableAreaNode c) {
-        if (Controller.activeTool == NODE) {
+        /*if (Controller.activeTool == NODE) {
             Controller.activeTool = SELECT;
-        }
+        }*/
 
         if(Controller.activeTool == DELETE){
             Controller.getActiveCanvas().getChildren().remove(c);
@@ -50,10 +51,10 @@ public class NodeController {
             for (DrawableEdge e: c.getDrawableEdges()) {
                 Controller.getActiveCanvas().getChildren().removeAll(e.getArrow());
             }
-        }else if(Controller.activeTool == EDGE){
-            if(currentDrawableEdge == null){
+        }else if(Controller.activeTool == EDGE) {
+            if (currentDrawableEdge == null) {
                 currentDrawableEdge = edgeController.addEdge(c, null);
-            }else{
+            } else {
                 Controller.getActiveCanvas().getChildren().add(currentDrawableEdge.setEndNode(c));
                 Controller.getActiveCanvas().getChildren().add(currentDrawableEdge);
                 currentDrawableEdge = null;
@@ -65,8 +66,28 @@ public class NodeController {
         } else if (Controller.activeTool == SUBNODE) {
             DrawableObjectNode node = new DrawableObjectNode(c.getCenterX(), c.getCenterY(), 10, (OBJECT_TYPE) Controller.activeType);
             if (c.addObject(node)) {
+                node.setOnMouseClicked(mouseEvent -> handlePressSubnode(node));
                 Controller.getActiveCanvas().getChildren().add(node);
                 Controller.getActiveCanvas().getChildren().add(node.text);
+            }
+        }
+    }
+
+    private void handlePressSubnode(DrawableObjectNode node) {
+        Log.level = Log.LEVEL.DEBUG;
+        Log.print("NodeController: Subnode pressed: "+node.getType(), Log.LEVEL.DEBUG);
+        if (Controller.activeTool == SUBEDGE) {
+            if (currentDrawableEdge == null) {
+                Log.print("NodeController: No current edge adding new.", Log.LEVEL.DEBUG);
+                currentDrawableEdge = new DrawableEdge(node, null);
+                node.addEdge(currentDrawableEdge);
+            } else {
+                Log.print("NodeController: Setting end node for current edge.", Log.LEVEL.DEBUG);
+                currentDrawableEdge.setEndNode(node);
+                node.addEdge(currentDrawableEdge);
+                Log.print("NodeController: Adding edge to canvas "+currentDrawableEdge, Log.LEVEL.DEBUG);
+                Controller.getActiveCanvas().getChildren().add(currentDrawableEdge);
+                currentDrawableEdge = null;
             }
         }
     }

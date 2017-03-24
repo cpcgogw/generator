@@ -4,12 +4,17 @@ package model;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 
+import java.util.List;
+
 /**
  * Created by vilddjur on 1/24/17.
  */
 public class DrawableEdge extends Line implements Edge{
     private DrawableAreaNode startDrawableAreaNode;
     private DrawableAreaNode endDrawableAreaNode;
+    private DrawableObjectNode start;
+    private DrawableObjectNode end;
+
     private Path arrowHead;
     public static final double STROKE_WIDTH = 3;
     /**
@@ -31,7 +36,13 @@ public class DrawableEdge extends Line implements Edge{
     }
 
     public DrawableEdge(DrawableObjectNode from, DrawableObjectNode to) {
-
+        start = from;
+        end = to;
+        this.setStartX(from.getCenterX());
+        this.setStartY(from.getCenterY());
+        this.setFill(Color.BLACK);
+        this.setStroke(Color.BLACK);
+        this.setStrokeWidth(3);
     }
 
     /**
@@ -89,7 +100,17 @@ public class DrawableEdge extends Line implements Edge{
             this.setEndX(endDrawableAreaNode.getCenterX());
             this.setEndY(endDrawableAreaNode.getCenterY());
         }
-        makeArrow();
+        if(start != null) {
+            this.setStartX(start.getCenterX());
+            this.setStartY(start.getCenterY());
+        }
+        if(end != null) {
+            this.setEndX(end.getCenterX());
+            this.setEndY(end.getCenterY());
+        }
+        if (startDrawableAreaNode != null && endDrawableAreaNode != null) {
+            makeArrow();
+        }
     }
     public Shape getArrow(){
         return arrowHead;
@@ -124,5 +145,20 @@ public class DrawableEdge extends Line implements Edge{
     @Override
     public Node getTo() {
         return endDrawableAreaNode;
+    }
+
+    public Node getDrawFrom() {
+        return start;
+    }
+
+    public Node getDrawTo() {
+        return end;
+    }
+
+    public Shape setEndNode(DrawableObjectNode node) {
+        end = node;
+        this.setEndX(end.getCenterX());
+        this.setEndY(end.getCenterY());
+        return null;
     }
 }

@@ -67,6 +67,8 @@ public class Controller {
     private Button grass_node_button;
     @FXML
     private Button desert_node_button;
+    @FXML
+    private Button subedge_button;
 
 
     @FXML
@@ -147,7 +149,7 @@ public class Controller {
      * Enum to keep track of which tool is active
      */
     public enum tools {
-        EDGE, NODE, SUBNODE, DELETE, MOVE, SELECT
+        EDGE, NODE, SUBNODE, DELETE, MOVE, SELECT, SUBEDGE
     }
 
     private FileChooser fileChooser = new FileChooser();
@@ -179,6 +181,7 @@ public class Controller {
         room_node_button.setOnMouseClicked(mouseEvent -> activateType(AREA_TYPE.TOWN));
         grass_node_button.setOnMouseClicked(mouseEvent -> activateType(AREA_TYPE.GRASSFIELD));
         desert_node_button.setOnMouseClicked(mouseEvent -> activateType(AREA_TYPE.DESERT));
+        subedge_button.setOnMouseClicked(mouseEvent -> activeTool = SUBEDGE);
 
         // init top menu
         save_button.setOnAction(actionEvent -> PrepareSave());

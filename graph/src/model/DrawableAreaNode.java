@@ -78,7 +78,7 @@ public class DrawableAreaNode extends Circle implements AreaNode, Tile {
 
     public DrawableAreaNode(double x, double y, int radius, Color color, AREA_TYPE type){
         super(x, y, radius, color);
-        drawableEdges = new ArrayList<DrawableEdge>();
+        drawableEdges = new ArrayList<>();
         id = idCounter++;
         this.type = type;
         setColor();
@@ -123,6 +123,10 @@ public class DrawableAreaNode extends Circle implements AreaNode, Tile {
         for (DrawableEdge e : drawableEdges) {
             e.updateNodes();
         }
+        if (this.getType() == AREA_TYPE.DESERT) {
+            Log.print("DrawableAreaNode: Updating desert node. It has "+objects.size()+" subnodes.", Log.LEVEL.DEBUG);
+        }
+        updateSubnodes();
     }
 
     public void addEdge(DrawableEdge e){
@@ -223,11 +227,17 @@ public class DrawableAreaNode extends Circle implements AreaNode, Tile {
 
     public void updateSubnodes() {
         int i = objects.size();
-        double r;
+        double r = 0;
 
         for (DrawableObjectNode node : objects) {
+            Log.print("DrawableAreaNode: Updating subnode: "+node.getType(), Log.LEVEL.DEBUG);
+            Log.print("DrawableAreaNode: edges: "+node.getDrawableEdges().size(), Log.LEVEL.DEBUG);
+            Log.print("DrawableAreaNode: radius: "+node.getRadius(), Log.LEVEL.DEBUG);
             r = node.getRadius()+this.getRadius();
             node.setPosition(this.getCenterX()+Math.cos(Math.toRadians(30*i))*r, this.getCenterY()+Math.sin(Math.toRadians(30*i))*r);
+            for (DrawableEdge edge : node.getDrawableEdges()) {
+                edge.updateNodes();
+            }
             i--;
         }
     }

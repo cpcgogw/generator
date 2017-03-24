@@ -17,6 +17,7 @@ public class DrawableObjectNode extends Circle implements ObjectNode, Tile {
     public Text text;
     private int ID;
     private static int IDcount = 0;
+    private ArrayList<DrawableEdge> drawableEdges = new ArrayList<>();
 
     public DrawableObjectNode(double x, double y, int radius, OBJECT_TYPE type) {
         super(x, y, radius);
@@ -81,4 +82,11 @@ public class DrawableObjectNode extends Circle implements ObjectNode, Tile {
         return null;
     }
 
+    public void addEdge(DrawableEdge e) {
+        drawableEdges.add(e);
+    }
+
+    public ArrayList<DrawableEdge> getDrawableEdges() {
+        return drawableEdges;
+    }
 }
