@@ -9,6 +9,7 @@ public class SubNode implements ObjectNode {
     private int id;
     private ArrayList<Edge> edges = new ArrayList<>();
     private OBJECT_TYPE type;
+
     public SubNode(int id, OBJECT_TYPE type){
         this.id = id;
         this.type = type;

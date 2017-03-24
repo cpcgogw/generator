@@ -40,6 +40,10 @@ public class NodeController {
     }
 
     private void handlePressNode(MouseEvent event, DrawableAreaNode c) {
+        if (Controller.activeTool == NODE) {
+            Controller.activeTool = SELECT;
+        }
+
         if(Controller.activeTool == DELETE){
             Controller.getActiveCanvas().getChildren().remove(c);
             Controller.getActiveCanvas().getChildren().removeAll(c.getDrawableEdges());
@@ -72,12 +76,15 @@ public class NodeController {
         c.setOnMouseReleased(event -> {
             dragging = false;
         });
+
         c.setOnMouseDragged(event -> {
             if(dragging){
                 c.setPos(event.getX(),event.getY());
                 c.updateEdges();
+                c.updateSubnodes();
             }
         });
+
         drawableAreaNodes.add(c);
         return c;
     }
