@@ -182,6 +182,10 @@ public class DrawableAreaNode extends Circle implements AreaNode, Tile {
         return null;
     }
 
+    public List<DrawableObjectNode> getDrawableObjects() {
+        return objects;
+    }
+
     @Override
     public void addObject(ObjectNode node) {
     }

@@ -70,6 +70,17 @@ public class FileHandler {
                 elemY.appendChild(doc.createTextNode(String.valueOf(drawableAreaNode.getCenterY())));
                 elemNode.appendChild(elemY);
 
+                Element elemSubnodes = doc.createElement("Subnodes");
+                elemNode.appendChild(elemSubnodes);
+                for (DrawableObjectNode subnode : drawableAreaNode.getDrawableObjects()) {
+                    Element elemSubnode = doc.createElement("DrawableSubnode");
+                    elemSubnodes.appendChild(elemSubnode);
+
+                    Element subnodeType = doc.createElement("Type");
+                    subnodeType.appendChild(doc.createTextNode(String.valueOf(subnode.getType())));
+                    elemSubnode.appendChild(subnodeType);
+                }
+
                 Element elemEdges = doc.createElement("Edges");
                 elemNode.appendChild(elemEdges);
                 for (DrawableEdge drawableEdge : drawableAreaNode.getDrawableEdges()) {
@@ -494,6 +505,33 @@ public class FileHandler {
                 Element elemEnd = doc.createElement("EndID");
                 elemEnd.appendChild(doc.createTextNode(String.valueOf(drawableEdge.getEndDrawableAreaNode().getNodeId())));
                 elemEdge.appendChild(elemEnd);
+            }
+
+            Element elemSubnodes = doc.createElement("Subnodes");
+            elemNode.appendChild(elemSubnodes);
+
+            for (DrawableObjectNode subnode : drawableAreaNode.getDrawableObjects()) {
+                Element elemSubnode = doc.createElement("Subnode");
+                elemSubnodes.appendChild(elemSubnode);
+
+                Element elemType = doc.createElement("Type");
+                elemType.appendChild(doc.createTextNode(String.valueOf(subnode.getType())));
+                elemSubnode.appendChild(elemType);
+
+                Element elemSubEdges = doc.createElement("SubEdges");
+                elemSubnode.appendChild(elemSubEdges);
+                for (DrawableEdge edge : subnode.getDrawableEdges()) {
+                    Element elemSubEdge = doc.createElement("SubEdge");
+                    elemSubEdges.appendChild(elemSubEdge);
+
+                    Element elemStart = doc.createElement("StartID");
+                    elemStart.appendChild(doc.createTextNode(String.valueOf(edge.getStartObject().getNodeId())));
+                    elemSubEdge.appendChild(elemStart);
+
+                    Element elemEnd = doc.createElement("EndID");
+                    elemEnd.appendChild(doc.createTextNode(String.valueOf(edge.getEndObject().getNodeId())));
+                    elemSubEdge.appendChild(elemEnd);
+                }
             }
 
         }

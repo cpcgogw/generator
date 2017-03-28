@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by vilddjur on 1/24/17.
  */
-public class DrawableEdge extends Line implements Edge{
+public class DrawableEdge extends Line implements Edge {
     private DrawableAreaNode startDrawableAreaNode;
     private DrawableAreaNode endDrawableAreaNode;
     private DrawableObjectNode start;
@@ -17,6 +17,8 @@ public class DrawableEdge extends Line implements Edge{
 
     private Path arrowHead;
     public static final double STROKE_WIDTH = 3;
+    private Node startObject;
+
     /**
      * Takes a start DrawableAreaNode and an end DrawableAreaNode, draws a line between the center of the two.
      * @param startDrawableAreaNode
@@ -160,5 +162,13 @@ public class DrawableEdge extends Line implements Edge{
         this.setEndX(end.getCenterX());
         this.setEndY(end.getCenterY());
         return null;
+    }
+
+    public Node getStartObject() {
+        return start;
+    }
+
+    public Node getEndObject() {
+        return end;
     }
 }

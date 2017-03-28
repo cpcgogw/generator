@@ -21,8 +21,8 @@ public class DrawableObjectNode extends Circle implements ObjectNode, Tile {
 
     public DrawableObjectNode(double x, double y, int radius, OBJECT_TYPE type) {
         super(x, y, radius);
-        this.ID = this.IDcount;
-        this.IDcount++;
+        this.ID = IDcount;
+        IDcount++;
         this.type = type;
         text = new Text(x, y, ""+type.toString().charAt(0));
         text.setTextOrigin(VPos.CENTER);
@@ -69,7 +69,7 @@ public class DrawableObjectNode extends Circle implements ObjectNode, Tile {
 
     @Override
     public int getNodeId() {
-        return 0;
+        return ID;
     }
 
     @Override

@@ -69,6 +69,8 @@ public class Controller {
     private Button desert_node_button;
     @FXML
     private Button subedge_button;
+    @FXML
+    private Button enemy_subnode;
 
 
     @FXML
@@ -177,6 +179,7 @@ public class Controller {
         start_node_button.setOnMouseClicked(mouseEvent -> activateType(OBJECT_TYPE.START));
         end_node_button.setOnMouseClicked(mouseEvent -> activateType(OBJECT_TYPE.END));
         key_node_button.setOnMouseClicked(mouseEvent -> activateType(OBJECT_TYPE.KEY));
+        enemy_subnode.setOnMouseClicked(mouseEvent -> activateType(OBJECT_TYPE.MONSTER));
         lock_node_button.setOnMouseClicked(mouseEvent -> activateType(OBJECT_TYPE.LOCK)); //SHOULD BE EDGE
         room_node_button.setOnMouseClicked(mouseEvent -> activateType(AREA_TYPE.TOWN));
         grass_node_button.setOnMouseClicked(mouseEvent -> activateType(AREA_TYPE.GRASSFIELD));
