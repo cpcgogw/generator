@@ -2,10 +2,7 @@ package translator;
 
 
 import javafx.util.Pair;
-import model.Edge;
-import model.Node;
-import model.Pattern;
-import model.Tile;
+import model.*;
 import translator.model.*;
 import utils.Log;
 
@@ -202,12 +199,12 @@ public class Translator {
      */
     public static AbstractPattern testGraph() {
         AbstractPattern pattern = new AbstractPattern();
-        ArrayList<Node> graph = new ArrayList<>();
+        ArrayList<AreaNode> graph = new ArrayList<>();
 
-        Node n1 = new AbstractNode();
-        Node n2 = new AbstractNode();
-        Node n3 = new AbstractNode();
-        Node n4 = new AbstractNode();
+        AreaNode n1 = new AbstractNode();
+        AreaNode n2 = new AbstractNode();
+        AreaNode n3 = new AbstractNode();
+        AreaNode n4 = new AbstractNode();
 
         graph.add(n1);
         graph.add(n2);

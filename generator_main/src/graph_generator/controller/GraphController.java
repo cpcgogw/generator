@@ -16,9 +16,19 @@ import java.util.Random;
  */
 public class GraphController {
     private Random random;
-    public GraphController(){
+    private static GraphController graphController = null;
+
+    private GraphController(){
         random = new Random();
     }
+
+    public static GraphController getInstance() {
+        if (graphController == null) {
+            graphController = new GraphController();
+        }
+        return graphController;
+    }
+
     /**
      * Calls applyRandomRule n number of times
      * @param rules

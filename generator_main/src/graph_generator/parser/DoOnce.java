@@ -34,8 +34,8 @@ public class DoOnce extends Command {
             return false;
         }
 
-        Pair<ArrayList<DrawableAreaNode>,ArrayList<DrawableEdge>> ruleR = FileHandler.LoadNodes(file);
-        Rule r = new Rule(new DrawablePattern(FileHandler.LoadMatchingPattern(file)), FileHandler.LoadTranslations(file));
+        Pair<ArrayList<DrawableAreaNode>,ArrayList<DrawableEdge>> ruleR = FileHandler.loadNodes(file);
+        Rule r = new Rule(new DrawablePattern(FileHandler.loadMatchingPattern(file)), FileHandler.loadTranslations(file));
         ArrayList<Rule> rl = new ArrayList<>();
         rl.add(r);
 

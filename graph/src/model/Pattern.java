@@ -9,6 +9,6 @@ public interface Pattern {
 
     void removeNode(Node node);
     Node remove(int i);
-    void addNode(Node node);
-    ArrayList<Node> getNodes();
+    void addNode(AreaNode node);
+    ArrayList<AreaNode> getNodes();
 }
