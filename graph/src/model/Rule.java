@@ -1,8 +1,7 @@
 package model;
 
-import javafx.util.Pair;
-
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -13,19 +12,17 @@ public class Rule {
     public DrawablePattern matchingDrawablePattern;
     public ArrayList<DrawablePattern> possibleTranslations;
     private Random rand;
+
     public Rule(DrawablePattern matchingDrawablePattern){
         rand = new Random();
         this.matchingDrawablePattern = matchingDrawablePattern;
         possibleTranslations = new ArrayList<DrawablePattern>();
     }
 
-    public Rule(DrawablePattern match, ArrayList<Pair<ArrayList<DrawableAreaNode>, ArrayList<DrawableEdge>>> translations) {
-        this.matchingDrawablePattern = match;
-        possibleTranslations = new ArrayList<DrawablePattern>();
-        rand = new Random();
-        for (Pair<ArrayList<DrawableAreaNode>, ArrayList<DrawableEdge>> pair : translations) {
-            DrawablePattern p = new DrawablePattern(pair);
-            possibleTranslations.add(p);
+    public Rule(DrawablePattern match, List<DrawablePattern> translations) {
+        this(match);
+        for (DrawablePattern pattern : translations) {
+            possibleTranslations.add(pattern);
         }
     }
 

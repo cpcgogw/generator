@@ -99,19 +99,19 @@ public class DrawableEdge extends Line implements Edge {
     }
 
     public void updateNodes() {
-        if(startDrawableAreaNode != null){
+        if (startDrawableAreaNode != null){
             this.setStartX(startDrawableAreaNode.getCenterX());
             this.setStartY(startDrawableAreaNode.getCenterY());
         }
-        if(endDrawableAreaNode != null) {
+        if (endDrawableAreaNode != null) {
             this.setEndX(endDrawableAreaNode.getCenterX());
             this.setEndY(endDrawableAreaNode.getCenterY());
         }
-        if(start != null) {
+        if (start != null) {
             this.setStartX(start.getCenterX());
             this.setStartY(start.getCenterY());
         }
-        if(end != null) {
+        if (end != null) {
             this.setEndX(end.getCenterX());
             this.setEndY(end.getCenterY());
         }

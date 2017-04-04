@@ -11,21 +11,17 @@ import java.util.Random;
  * Created by vilddjur on 1/28/17.
  */
 public class DrawablePattern implements Pattern {
-    //TODO: Refactor so DrawablePattern only uses drawableAreaNodes?
-    public List<DrawableAreaNode> drawableAreaNodes;
-    public List<DrawableSubnode> drawableSubnodes;
+    //TODO: Refactor so DrawablePattern isn't used at all
+    public List<DrawableAreaNode> drawableAreaNodes = new ArrayList<>();
 
-    private Random random;
-    public DrawablePattern(){
-        drawableAreaNodes = new ArrayList<DrawableAreaNode>();
-        drawableSubnodes = new ArrayList<DrawableSubnode>();
-        random = new Random();
+    private Random random = new Random();
+
+    public DrawablePattern() {}
+
+    public DrawablePattern(ArrayList<DrawableAreaNode> pattern) {
+        drawableAreaNodes.addAll(pattern);
     }
-    public DrawablePattern(Pair<ArrayList<DrawableAreaNode>,ArrayList<DrawableEdge>> pair){
-        drawableAreaNodes = new ArrayList<>();
-        drawableAreaNodes.addAll(pair.getKey());
-        random = new Random();
-    }
+
     @Override
     public int hashCode() {
         return super.hashCode()+ drawableAreaNodes.hashCode()*3;

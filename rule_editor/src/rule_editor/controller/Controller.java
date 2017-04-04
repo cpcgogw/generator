@@ -81,7 +81,6 @@ public class Controller {
     private TabPane rule_tab_pane;
     @FXML
     private Button new_scenario_button;
-    private Rule activeRule;
 
 
     @FXML
@@ -109,8 +108,10 @@ public class Controller {
     private Button active_node_save_button;
 
     private HashMap<Pane, DrawablePattern> scenarios;
-    private DrawablePattern matchingDrawablePattern;
+
     private DrawablePattern currentLevel;
+    private Rule activeRule;
+
     private FileChooser fileChooser;
     private NodeController nodeController;
     private GraphController graphController;
@@ -133,7 +134,7 @@ public class Controller {
         fileChooser = new FileChooser();
         graphController = GraphController.getInstance();
         nodeController = NodeController.getInstance(this);
-        scenarios = new HashMap<Pane, DrawablePattern>();
+        scenarios = new HashMap<>();
         activeType = AREA_TYPE.TOWN;
         activeTool = NODE;
         activeCanvas = rule_canvas;
@@ -164,7 +165,7 @@ public class Controller {
         edge_button.setOnMouseClicked(mouseEvent -> activeTool = EDGE);
 
         // Init top menu
-        save_button.setOnAction(actionEvent -> PrepareSave());
+        save_button.setOnAction(actionEvent -> prepareSave());
         load_level_button.setOnAction(actionEvent -> prepareLoadLevel());
         load_rule_button.setOnAction(actionEvent -> prepareLoadRule());
         rule_menu_item.setOnAction(actionEvent -> showRules());
@@ -185,9 +186,7 @@ public class Controller {
         // init inspector pane
         active_node_save_button.setOnMouseClicked(mouseEvent -> saveActiveNode());
 
-        // initialize currentRule;
-        matchingDrawablePattern = new DrawablePattern();
-        activeRule = new Rule(matchingDrawablePattern);
+        activeRule = new Rule(new DrawablePattern());
     }
 
     private void exportCurrentLevel() {
@@ -256,6 +255,8 @@ public class Controller {
     private void generateLevel() {
         List<Rule> rules = loadAllRules();
 
+        Log.level = Log.LEVEL.DEBUG;
+
         canvas.getChildren().clear();
 
         translateLevel(currentLevel, rules);
@@ -265,14 +266,12 @@ public class Controller {
             Log.print("  node: Type: " + n.getType() + ", id:" + n.getNodeId() + ", #edges: " + n.getDrawableEdges().size(), Log.LEVEL.DEBUG);
         }
 
-        updateDisplayedGraph();
+        showLevel();
     }
 
     /**
      * Updates the currentLevel.
      */
-    //TODO: Add updating for subnodes
-    //TODO: Not sure this is even needed
     private void updateDisplayedGraph() {
         for (DrawableAreaNode node : currentLevel.drawableAreaNodes){
             nodeController.addNode(node);
@@ -289,12 +288,6 @@ public class Controller {
         }
     }
 
-    /**
-     * Loads all available rules.
-     *
-     * @return
-     * List of all rules.
-     */
     private List<Rule> loadAllRules() {
         File folder = new File("saves/rules");
         List<Rule> rules = new ArrayList<>();
@@ -302,8 +295,13 @@ public class Controller {
         for (File f : folder.listFiles()) {
             if(!f.isDirectory()){
                 //TODO: Refactor so FileHandler is used correctly
-                /*DrawablePattern match = new DrawablePattern(FileHandler.loadMatch(f));
-                rules.add(new Rule(match, FileHandler.loadTranslations(f)));*/
+                DrawablePattern match = new DrawablePattern((ArrayList<DrawableAreaNode>) FileHandler.loadMatch(f));
+                ArrayList<DrawablePattern> p = new ArrayList<>();
+                for (List<DrawableAreaNode> list : FileHandler.loadTranslations(f)) {
+                    p.add(new DrawablePattern((ArrayList<DrawableAreaNode>) list));
+                }
+
+                rules.add(new Rule(match, p));
             }
         }
 
@@ -319,16 +317,10 @@ public class Controller {
         rule_pane.setVisible(true);
         activeCanvas = rule_canvas;
 
-        Log.print("Dumping current rule: \n MatchingPattern: ", Log.LEVEL.INFO);
-        for (DrawableAreaNode n : activeRule.matchingDrawablePattern.drawableAreaNodes) {
-            Log.print("  node: " + n.getType().toString(), Log.LEVEL.INFO);
-        }
-        Log.print(" possibleOutcomes: ", Log.LEVEL.INFO);
+        addToCanvas(activeRule.matchingDrawablePattern.drawableAreaNodes);
+
         for (DrawablePattern p : activeRule.possibleTranslations) {
-            Log.print("  outcome: ", Log.LEVEL.INFO);
-            for (DrawableAreaNode n : p.drawableAreaNodes) {
-                Log.print("   node: " + n.getType().toString(), Log.LEVEL.INFO);
-            }
+            addToCanvas(p.drawableAreaNodes);
         }
     }
 
@@ -337,6 +329,8 @@ public class Controller {
         rule_pane.setVisible(false);
 
         activeCanvas = canvas;
+
+        updateDisplayedGraph();
     }
 
     private void activateType(AREA_TYPE type) {
@@ -348,6 +342,11 @@ public class Controller {
         activeCanvas = p;
     }
 
+    /**
+     * This will be used to add things to canvas at a later time when all refactoring is done.
+     *
+     * @param nodes
+     */
     private void addToCanvas(List<DrawableAreaNode> nodes) {
         Set<DrawableEdge> edgeSet = new HashSet<>();
 
@@ -377,6 +376,7 @@ public class Controller {
         }
     }
 
+    //TODO: Should likely change name to something more descriptive
     private File loadRule() {
         File file;
         Stage stage;
@@ -384,6 +384,19 @@ public class Controller {
         fileChooser.setTitle("Explorer");
         stage = (Stage) window.getScene().getWindow();
         fileChooser.setInitialDirectory(new File("./saves/rules/"));
+        file = fileChooser.showOpenDialog(stage);
+
+        return file;
+    }
+
+    //TODO: Should likely change name to something more descriptive
+    private File loadLevel() {
+        File file;
+        Stage stage;
+
+        fileChooser.setTitle("Explorer");
+        stage = (Stage) window.getScene().getWindow();
+        fileChooser.setInitialDirectory(new File("./saves/levels/"));
         file = fileChooser.showOpenDialog(stage);
 
         return file;
@@ -399,46 +412,30 @@ public class Controller {
         clearCanvases();
 
         //new rule
-        matchingDrawablePattern = new DrawablePattern();
-        activeRule = new Rule(matchingDrawablePattern);
+        activeRule = new Rule(new DrawablePattern());
 
+        // Extract matching pattern and possible translations
         List<DrawableAreaNode> match = FileHandler.loadMatch(file);
         List<List<DrawableAreaNode>> translations = FileHandler.loadTranslations(file);
 
-        activeCanvas = rule_canvas;
+        DrawablePattern p = new DrawablePattern((ArrayList<DrawableAreaNode>) match);
+        activeRule.matchingDrawablePattern = p;
 
-        activeCanvas.getChildren().clear();
-
-        //TODO: Rewrite to use currentLevel instead of manual adding to canvas
-        //TODO: Or dont have DrawablePattern? Discuss.
-        addToCanvas(match);
-        for (List<DrawableAreaNode> pattern : translations) {
-            addToCanvas(pattern);
+        // Conversion to DrawablePattern
+        ArrayList<DrawablePattern> translationPatterns = new ArrayList<>();
+        for (List<DrawableAreaNode> translation : translations) {
+            translationPatterns.add(new DrawablePattern((ArrayList<DrawableAreaNode>) translation));
         }
 
+        activeRule.possibleTranslations = translationPatterns;
+
         showRules();
-        updateDisplayedGraph();
     }
 
     private void clearCanvases() {
         rule_canvas.getChildren().clear();
         rule_tab_pane.getTabs().clear();
         scenarios.clear();
-    }
-
-    private void insertIntoCanvasAndList(Pane canvas, ArrayList<DrawableAreaNode> drawableAreaNodes, Pair<ArrayList<DrawableAreaNode>, ArrayList<DrawableEdge>> pair) {
-        Log.print("Controller: InsertIntoCanvasAndList: "+pair.getKey(), Log.LEVEL.DEBUG);
-        for (DrawableAreaNode node : pair.getKey()) {
-            drawableAreaNodes.add(node);
-            canvas.getChildren().add(node);
-            nodeController.addNode(node);
-        }
-
-        for(DrawableEdge edge : pair.getValue()){
-            nodeController.getEdgeController().setDraggable(edge);
-            canvas.getChildren().add(edge.getArrow());
-            canvas.getChildren().add(edge);
-        }
     }
 
     /**
@@ -472,14 +469,8 @@ public class Controller {
      */
     //TODO: Rewrite
     private void prepareLoadLevel() {
-        File file;
-        Stage stage;
+        File file = loadLevel();
         Pair<ArrayList<DrawableAreaNode>,ArrayList<DrawableEdge>> pair;
-
-        fileChooser.setTitle("Explorer");
-        stage = (Stage) window.getScene().getWindow();
-        fileChooser.setInitialDirectory(new File("./saves/levels/"));
-        file = fileChooser.showOpenDialog(stage);
 
         //No file selected, don't do anything
         if (file == null) {return;}
@@ -505,7 +496,7 @@ public class Controller {
     /**
      * Saves level state in file
      */
-    private void PrepareSave() {
+    private void prepareSave() {
         String path = JOptionPane.showInputDialog("Save","newfile");
 
         if (path == "" || path == null) {
@@ -526,7 +517,7 @@ public class Controller {
             c.getChildren().add(node);
 
             if (c == rule_canvas) {
-                matchingDrawablePattern.drawableAreaNodes.add(node);
+                activeRule.matchingDrawablePattern.drawableAreaNodes.add(node);
             } else if (c == canvas) {
                 currentLevel.drawableAreaNodes.add(node);
             } else {

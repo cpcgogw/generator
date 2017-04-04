@@ -120,6 +120,12 @@ public class FileHandler {
 
             Element elemTranslations = (Element) doc.getElementsByTagName("PossibleTranslations").item(0);
             translations = extractTranslations(elemTranslations);
+
+            for (List<DrawableAreaNode> translation : translations) {
+                for (DrawableAreaNode node : translation) {
+                    node.updateSubnodes();
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -181,6 +187,10 @@ public class FileHandler {
 
             nodes = extractNodes(pattern);
             edges = extractEdges(pattern, nodes);
+
+            for (DrawableAreaNode node : nodes) {
+                node.updateSubnodes();
+            }
 
         } catch (Exception e) {
             Log.print("FileHandler: Match failed to load!", Log.LEVEL.ERROR);
