@@ -18,21 +18,17 @@ import java.util.*;
 
 /**
  * This is to save and/or store drawableAreaNodes & edges
- *
- *
  */
 
 public class FileHandler {
 
     public static void saveNodes(ArrayList<? extends AreaNode> areaNodes, String path) {
-
         try {
-
             DocumentBuilderFactory dFact = DocumentBuilderFactory.newInstance();
             DocumentBuilder build = dFact.newDocumentBuilder();
             Document doc = build.newDocument();
 
-            Element elemNodes = doc.createElement("Nodes");
+            Element elemNodes = doc.createElement("Level");
 
             doc.appendChild(elemNodes);
 
@@ -107,6 +103,26 @@ public class FileHandler {
         //Returns the entries as an ArrayList
         Pair pair = new Pair(new ArrayList<>(nodeMap.values()), drawableEdges);
         return pair;
+    }
+
+    public static List<DrawableAreaNode> loadLevel(File file) {
+        List<DrawableAreaNode> nodes = null;
+
+        try {
+            DocumentBuilder document = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            Document doc = document.parse(file);
+
+            doc.getDocumentElement().normalize();
+
+            Element level = (Element) doc.getElementsByTagName("Level").item(0);
+            nodes = extractNodes(level);
+            extractEdges(level, nodes);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return nodes;
     }
 
     public static List<List<DrawableAreaNode>> loadTranslations(File file) {
@@ -321,8 +337,7 @@ public class FileHandler {
         DrawableSubnode endS = null;
 
         for (DrawableEdge edge : edges) {
-            if (edge.getFrom().getNodeId() == startID
-                    && edge.getTo().getNodeId() == endID) {
+            if (edge.getFrom().getNodeId() == startID && edge.getTo().getNodeId() == endID) {
                 return null;
             }
         }

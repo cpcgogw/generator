@@ -187,6 +187,7 @@ public class Controller {
         active_node_save_button.setOnMouseClicked(mouseEvent -> saveActiveNode());
 
         activeRule = new Rule(new DrawablePattern());
+        showLevel();
     }
 
     private void exportCurrentLevel() {
@@ -273,18 +274,28 @@ public class Controller {
      * Updates the currentLevel.
      */
     private void updateDisplayedGraph() {
-        for (DrawableAreaNode node : currentLevel.drawableAreaNodes){
+        Set<DrawableEdge> edges = new HashSet<>();
+        for (DrawableAreaNode node : currentLevel.drawableAreaNodes) {
             nodeController.addNode(node);
             canvas.getChildren().add(node);
+            node.updateSubnodes();
 
-            for (DrawableEdge edge : node.getDrawableEdges()){
-                nodeController.getEdgeController().setDraggable(edge);
-                if (!canvas.getChildren().contains(edge.getArrow()))
-                    canvas.getChildren().add(edge.getArrow());
-                if (!canvas.getChildren().contains(edge))
-                    canvas.getChildren().add(edge);
-                edge.updateNodes();
+            for (DrawableEdge edge : node.getDrawableEdges()) {
+                edges.add(edge);
             }
+
+            for (DrawableSubnode subnode : node.getDrawableSubnodes()) {
+                canvas.getChildren().add(subnode);
+                canvas.getChildren().add(subnode.text);
+
+                for (DrawableEdge edge : subnode.getDrawableEdges()) {
+                    edges.add(edge);
+                }
+            }
+        }
+
+        for (DrawableEdge edge : edges) {
+            canvas.getChildren().add(edge);
         }
     }
 
@@ -470,7 +481,7 @@ public class Controller {
     //TODO: Rewrite
     private void prepareLoadLevel() {
         File file = loadLevel();
-        Pair<ArrayList<DrawableAreaNode>,ArrayList<DrawableEdge>> pair;
+        List<DrawableAreaNode> nodes;
 
         //No file selected, don't do anything
         if (file == null) {return;}
@@ -479,18 +490,10 @@ public class Controller {
         nodeController.clear();
         canvas.getChildren().clear();
 
-        pair = FileHandler.loadNodes(file);
+        nodes = FileHandler.loadLevel(file);
+        currentLevel.drawableAreaNodes = nodes;
 
-        for (DrawableAreaNode node : pair.getKey()) {
-            nodeController.addNode(node);
-            canvas.getChildren().add(node);
-        }
-
-        for (DrawableEdge edge : pair.getValue()) {
-            nodeController.getEdgeController().setDraggable(edge);
-            canvas.getChildren().add(edge.getArrow());
-            canvas.getChildren().add(edge);
-        }
+        showLevel();
     }
 
     /**
