@@ -8,13 +8,14 @@ import javafx.scene.shape.*;
  * Created by vilddjur on 1/24/17.
  */
 public class DrawableEdge extends Line implements Edge {
+    public static final double STROKE_WIDTH = 3;
+
     private DrawableAreaNode startDrawableAreaNode;
     private DrawableAreaNode endDrawableAreaNode;
     private DrawableSubnode start;
     private DrawableSubnode end;
 
     private Path arrowHead;
-    public static final double STROKE_WIDTH = 3;
     private Node startObject;
 
     /**
@@ -119,6 +120,7 @@ public class DrawableEdge extends Line implements Edge {
             makeArrow();
         }
     }
+
     public Shape getArrow(){
         return arrowHead;
     }

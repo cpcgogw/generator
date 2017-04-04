@@ -24,7 +24,7 @@ public class DrawablePattern implements Pattern {
 
     @Override
     public int hashCode() {
-        return super.hashCode()+ drawableAreaNodes.hashCode()*3;
+        return super.hashCode() + drawableAreaNodes.hashCode() * 3;
     }
 
     @Override

@@ -162,16 +162,6 @@ public class FileHandler {
         return translations;
     }
 
-    private static ArrayList<NodeList> extractTranslations(Document doc) {
-        ArrayList<NodeList> nodeListList = new ArrayList<NodeList>();
-        Element posTrans = (Element) doc.getElementsByTagName("PossibleTranslations").item(0);
-        NodeList patterns = posTrans.getElementsByTagName("Pattern");
-        for (int i = 0; i < patterns.getLength(); i++) {
-            nodeListList.add((NodeList) patterns.item(i));
-        }
-        return nodeListList;
-    }
-
     public static List<DrawableAreaNode> loadMatch(File file) {
         List<DrawableAreaNode> nodes = new ArrayList<>();
         Set<DrawableEdge> edges = new HashSet<>();
@@ -304,8 +294,9 @@ public class FileHandler {
 
         for (int i = 0; i < edgeNodes.getLength(); i++) {
             Element elemEdge = (Element) edgeNodes.item(i);
-            DrawableEdge edge = extractEdge(elemEdge, nodes);
-            edges.add(edge);
+            DrawableEdge edge = extractEdge(elemEdge, nodes, edges);
+            if (edge != null)
+                edges.add(edge);
         }
 
         return edges;
@@ -319,14 +310,22 @@ public class FileHandler {
      * @return
      * The extracted DrawableEdge.
      */
-    private static DrawableEdge extractEdge(Element element, List<DrawableAreaNode> nodes) {
+    private static DrawableEdge extractEdge(Element element, List<DrawableAreaNode> nodes, Set<DrawableEdge> edges) {
         int startID = Integer.parseInt(element.getAttribute("StartID"));
         int endID = Integer.parseInt(element.getAttribute("EndID"));
         //TODO: Fix so Node is used instead of DrawableAreaNode/DrawableSubnode
         DrawableAreaNode start = null;
         DrawableAreaNode end = null;
+
         DrawableSubnode startS = null;
         DrawableSubnode endS = null;
+
+        for (DrawableEdge edge : edges) {
+            if (edge.getFrom().getNodeId() == startID
+                    && edge.getTo().getNodeId() == endID) {
+                return null;
+            }
+        }
 
         for (DrawableAreaNode node : nodes) {
             if (node.getNodeId() == startID) {
@@ -348,7 +347,7 @@ public class FileHandler {
 
         // Absolute cancer
         if (start == null && end == null) {
-            edge = new DrawableEdge(endS, startS);
+            edge = new DrawableEdge(startS, endS);
         } else {
             edge = new DrawableEdge(start, end);
         }
