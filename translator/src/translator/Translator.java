@@ -18,7 +18,7 @@ public class Translator {
     public static void main(String[] args) {
         Log.level = Log.LEVEL.INFO;
         AbstractPattern graph = testGraph();
-        NodeGrid grid = new NodeGrid(3);
+        NodeGrid grid = new NodeGrid(testGraph().getNodes().size());
         TileGrid lowRes;
         PopulatedTileGrid highRes;
 
@@ -210,6 +210,7 @@ public class Translator {
         graph.add(n2);
         graph.add(n3);
         graph.add(n4);
+        graph.add(new AbstractNode());
 
         Edge e1 = new AbstractEdge(n1, n2);
         Edge e2 = new AbstractEdge(n2, n3);
