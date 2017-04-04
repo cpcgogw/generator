@@ -22,9 +22,7 @@ import utils.Log;
 
 import javax.swing.*;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import static model.DrawableAreaNode.DEFAULT_RADIUS;
 import static rule_editor.controller.Controller.tools.*;
@@ -131,8 +129,11 @@ public class Controller {
     }
 
     public void initialize(){
+        Log.level = Log.LEVEL.INFO;
+
         fileChooser = new FileChooser();
         graphController = GraphController.getInstance();
+        nodeController = NodeController.getInstance(this);
         scenarios = new HashMap<Pane, DrawablePattern>();
         activeType = AREA_TYPE.TOWN;
         activeTool = NODE;
@@ -164,8 +165,8 @@ public class Controller {
 
         // Init top menu
         save_button.setOnAction(actionEvent -> PrepareSave());
-        load_level_button.setOnAction(actionEvent -> PrepareLoadLevel());
-        load_rule_button.setOnAction(actionEvent -> PrepareLoadRule());
+        load_level_button.setOnAction(actionEvent -> prepareLoadLevel());
+        load_rule_button.setOnAction(actionEvent -> prepareLoadRule());
         rule_menu_item.setOnAction(actionEvent -> showRules());
         level_menu_item.setOnAction(actionEvent -> showLevel());
         close_button.setOnAction(actionEvent -> Platform.exit());
@@ -180,7 +181,6 @@ public class Controller {
         rule_canvas.setOnMouseClicked(mouseEvent -> handlePress(mouseEvent, rule_canvas));
         rule_canvas.setOnMouseEntered(mouseEvent -> requestFocus(rule_canvas));
         new_scenario_button.setOnMouseClicked(mouseEvent -> addTab("new tab"));
-        nodeController = new NodeController(this);
 
         // init inspector pane
         active_node_save_button.setOnMouseClicked(mouseEvent -> saveActiveNode());
@@ -263,18 +263,19 @@ public class Controller {
      * Updates the currentLevel.
      */
     //TODO: Add updating for subnodes
+    //TODO: Not sure this is even needed
     private void updateDisplayedGraph() {
-        for (DrawableAreaNode n : currentLevel.drawableAreaNodes){
-            nodeController.addNode(n);
-            canvas.getChildren().add(n);
+        for (DrawableAreaNode node : currentLevel.drawableAreaNodes){
+            nodeController.addNode(node);
+            canvas.getChildren().add(node);
 
-            for (DrawableEdge e : n.getDrawableEdges()){
-                DrawableEdge c = nodeController.getEdgeController().addEdge(e);
-                if(!canvas.getChildren().contains(c.getArrow()))
-                    canvas.getChildren().add(c.getArrow());
-                if(!canvas.getChildren().contains(c))
-                    canvas.getChildren().add(c);
-                e.updateNodes();
+            for (DrawableEdge edge : node.getDrawableEdges()){
+                nodeController.getEdgeController().setDraggable(edge);
+                if (!canvas.getChildren().contains(edge.getArrow()))
+                    canvas.getChildren().add(edge.getArrow());
+                if (!canvas.getChildren().contains(edge))
+                    canvas.getChildren().add(edge);
+                edge.updateNodes();
             }
         }
     }
@@ -291,8 +292,9 @@ public class Controller {
 
         for (File f : folder.listFiles()) {
             if(!f.isDirectory()){
-                DrawablePattern match = new DrawablePattern(FileHandler.loadMatchingPattern(f));
-                rules.add(new Rule(match, FileHandler.loadTranslations(f)));
+                //TODO: Refactor so FileHandler is used correctly
+                /*DrawablePattern match = new DrawablePattern(FileHandler.loadMatch(f));
+                rules.add(new Rule(match, FileHandler.loadTranslations(f)));*/
             }
         }
 
@@ -337,51 +339,96 @@ public class Controller {
         activeCanvas = p;
     }
 
-    private void PrepareLoadRule() {
+    private void addToCanvas(List<DrawableAreaNode> nodes) {
+        Set<DrawableEdge> edgeSet = new HashSet<>();
+
+        for (DrawableAreaNode node : nodes) {
+            Log.print("Controller: Loaded node "+node, Log.LEVEL.DEBUG);
+            activeCanvas.getChildren().add(node);
+            nodeController.addNode(node);
+            for (DrawableSubnode subnode : node.getDrawableSubnodes()) {
+                Log.print("Controller: Loaded rule subnode "+subnode.getNodeId(), Log.LEVEL.DEBUG);
+                activeCanvas.getChildren().add(subnode);
+                activeCanvas.getChildren().add(subnode.text);
+
+                for (DrawableEdge edge : subnode.getDrawableEdges()) {
+                    Log.print("Controller: Loaded subedge ("+edge.getFrom().getNodeId()+", "+edge.getTo().getNodeId()+")", Log.LEVEL.DEBUG);
+                    edgeSet.add(edge);
+                }
+            }
+
+            for (DrawableEdge edge : node.getDrawableEdges()) {
+                Log.print("Controller: Loaded edge "+edge, Log.LEVEL.DEBUG);
+                edgeSet.add(edge);
+            }
+        }
+
+        for (DrawableEdge edge : edgeSet) {
+            activeCanvas.getChildren().add(edge);
+        }
+    }
+
+    private File loadRule() {
         File file;
         Stage stage;
 
         fileChooser.setTitle("Explorer");
         stage = (Stage) window.getScene().getWindow();
-        fileChooser.setInitialDirectory(new File("."));
+        fileChooser.setInitialDirectory(new File("./saves/rules/"));
         file = fileChooser.showOpenDialog(stage);
+
+        return file;
+    }
+
+    private void prepareLoadRule() {
+        File file = loadRule();
 
         //No file selected, don't do anything
         if (file == null) {return;}
 
         //Clear canavases before loading in elements
-        rule_canvas.getChildren().clear();
-        rule_tab_pane.getTabs().clear();
-        scenarios.clear();
+        clearCanvases();
 
         //new rule
         matchingDrawablePattern = new DrawablePattern();
         activeRule = new Rule(matchingDrawablePattern);
 
+        List<DrawableAreaNode> match = FileHandler.loadMatch(file);
+        List<List<DrawableAreaNode>> translations = FileHandler.loadTranslations(file);
 
-        Pair<ArrayList<DrawableAreaNode>,ArrayList<DrawableEdge>> pair = FileHandler.loadMatchingPattern(file);
-        ArrayList<Pair<ArrayList<DrawableAreaNode>,ArrayList<DrawableEdge>>> translations = FileHandler.loadTranslations(file);
         activeCanvas = rule_canvas;
-        insertIntoCanvasAndList(rule_canvas, matchingDrawablePattern.drawableAreaNodes, pair);
 
-        for (Pair<ArrayList<DrawableAreaNode>, ArrayList<DrawableEdge>> p : translations){
+        activeCanvas.getChildren().clear();
 
-            Pair<Pane, DrawablePattern> panePatternPair = addTab("saved tab");
-            insertIntoCanvasAndList(panePatternPair.getKey(), panePatternPair.getValue().drawableAreaNodes, p);
+        //TODO: Rewrite to use currentLevel instead of manual adding to canvas
+        //TODO: Or dont have DrawablePattern? Discuss.
+        addToCanvas(match);
+        for (List<DrawableAreaNode> pattern : translations) {
+            addToCanvas(pattern);
         }
+
+        showRules();
+        updateDisplayedGraph();
+    }
+
+    private void clearCanvases() {
+        rule_canvas.getChildren().clear();
+        rule_tab_pane.getTabs().clear();
+        scenarios.clear();
     }
 
     private void insertIntoCanvasAndList(Pane canvas, ArrayList<DrawableAreaNode> drawableAreaNodes, Pair<ArrayList<DrawableAreaNode>, ArrayList<DrawableEdge>> pair) {
-        for (DrawableAreaNode drawableAreaNode : pair.getKey()) {
-            drawableAreaNodes.add(drawableAreaNode);
-            canvas.getChildren().add(drawableAreaNode);
-            nodeController.addNode(drawableAreaNode);
+        Log.print("Controller: InsertIntoCanvasAndList: "+pair.getKey(), Log.LEVEL.DEBUG);
+        for (DrawableAreaNode node : pair.getKey()) {
+            drawableAreaNodes.add(node);
+            canvas.getChildren().add(node);
+            nodeController.addNode(node);
         }
 
-        for(DrawableEdge e : pair.getValue()){
-            DrawableEdge c = nodeController.getEdgeController().addEdge(e);
-            canvas.getChildren().add(c.getArrow());
-            canvas.getChildren().add(c);
+        for(DrawableEdge edge : pair.getValue()){
+            nodeController.getEdgeController().setDraggable(edge);
+            canvas.getChildren().add(edge.getArrow());
+            canvas.getChildren().add(edge);
         }
     }
 
@@ -414,14 +461,15 @@ public class Controller {
     /**
      * Loads file and appends elements to canvas
      */
-    private void PrepareLoadLevel() {
+    //TODO: Rewrite
+    private void prepareLoadLevel() {
         File file;
         Stage stage;
         Pair<ArrayList<DrawableAreaNode>,ArrayList<DrawableEdge>> pair;
 
         fileChooser.setTitle("Explorer");
         stage = (Stage) window.getScene().getWindow();
-        fileChooser.setInitialDirectory(new File("."));
+        fileChooser.setInitialDirectory(new File("./saves/levels/"));
         file = fileChooser.showOpenDialog(stage);
 
         //No file selected, don't do anything
@@ -431,18 +479,17 @@ public class Controller {
         nodeController.clear();
         canvas.getChildren().clear();
 
-
         pair = FileHandler.loadNodes(file);
 
-        for(DrawableAreaNode drawableAreaNode : pair.getKey()){
-            DrawableAreaNode c = nodeController.addNode(drawableAreaNode);
-            canvas.getChildren().add(c);
+        for (DrawableAreaNode node : pair.getKey()) {
+            nodeController.addNode(node);
+            canvas.getChildren().add(node);
         }
 
-        for(DrawableEdge e : pair.getValue()){
-            DrawableEdge c = nodeController.getEdgeController().addEdge(e);
-            canvas.getChildren().add(c.getArrow());
-            canvas.getChildren().add(c);
+        for (DrawableEdge edge : pair.getValue()) {
+            nodeController.getEdgeController().setDraggable(edge);
+            canvas.getChildren().add(edge.getArrow());
+            canvas.getChildren().add(edge);
         }
     }
 
@@ -464,16 +511,17 @@ public class Controller {
     }
 
     private void handlePress(MouseEvent event, Pane c) {
-        if(activeTool == NODE){
-            DrawableAreaNode drawableAreaNode = nodeController.addNode(event.getX(), event.getY(), DEFAULT_RADIUS, Color.BLUE, (AREA_TYPE) activeType);
-            c.getChildren().add(drawableAreaNode);
+        if (activeTool == NODE) {
+            DrawableAreaNode node = new DrawableAreaNode(event.getX(), event.getY(), (AREA_TYPE) activeType);
+            nodeController.addNode(node);
+            c.getChildren().add(node);
 
             if (c == rule_canvas) {
-                matchingDrawablePattern.drawableAreaNodes.add(drawableAreaNode);
-            } else if(c == canvas) {
-                currentLevel.drawableAreaNodes.add(drawableAreaNode);
+                matchingDrawablePattern.drawableAreaNodes.add(node);
+            } else if (c == canvas) {
+                currentLevel.drawableAreaNodes.add(node);
             } else {
-                scenarios.get(c).drawableAreaNodes.add(drawableAreaNode);
+                scenarios.get(c).drawableAreaNodes.add(node);
             }
         }
     }

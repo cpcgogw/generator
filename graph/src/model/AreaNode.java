@@ -7,6 +7,6 @@ import java.util.List;
  */
 public interface AreaNode extends Node {
     AREA_TYPE getType();
-    List<ObjectNode> getObjects();
-    void addObject(ObjectNode node);
+    List<? extends Subnode> getSubnodes();
+    void addObject(Subnode node);
 }

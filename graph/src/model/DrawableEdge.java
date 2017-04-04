@@ -4,16 +4,14 @@ package model;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 
-import java.util.List;
-
 /**
  * Created by vilddjur on 1/24/17.
  */
 public class DrawableEdge extends Line implements Edge {
     private DrawableAreaNode startDrawableAreaNode;
     private DrawableAreaNode endDrawableAreaNode;
-    private DrawableObjectNode start;
-    private DrawableObjectNode end;
+    private DrawableSubnode start;
+    private DrawableSubnode end;
 
     private Path arrowHead;
     public static final double STROKE_WIDTH = 3;
@@ -28,18 +26,25 @@ public class DrawableEdge extends Line implements Edge {
         arrowHead = new Path();
         this.arrowHead.setStrokeWidth(STROKE_WIDTH);
         this.setStartDrawableAreaNode(startDrawableAreaNode);
-        if(endDrawableAreaNode != null){
+
+        if (endDrawableAreaNode != null) {
             this.setEndNode(endDrawableAreaNode);
         }
+
         this.setFill(new Color(0,0,0,0));
         this.setStroke(Color.BLACK);
         this.setStrokeWidth(STROKE_WIDTH);
-
     }
 
-    public DrawableEdge(DrawableObjectNode from, DrawableObjectNode to) {
+    public DrawableEdge(DrawableSubnode from, DrawableSubnode to) {
         start = from;
         end = to;
+
+        from.getDrawableEdges().add(this);
+        if (to != null) {
+            to.getDrawableEdges().add(this);
+        }
+
         this.setStartX(from.getCenterX());
         this.setStartY(from.getCenterY());
         this.setFill(Color.BLACK);
@@ -141,34 +146,22 @@ public class DrawableEdge extends Line implements Edge {
 
     @Override
     public Node getFrom() {
+        if (startDrawableAreaNode == null)
+            return start;
         return startDrawableAreaNode;
     }
 
     @Override
     public Node getTo() {
+        if (endDrawableAreaNode == null)
+            return end;
         return endDrawableAreaNode;
     }
 
-    public Node getDrawFrom() {
-        return start;
-    }
-
-    public Node getDrawTo() {
-        return end;
-    }
-
-    public Shape setEndNode(DrawableObjectNode node) {
+    public Shape setEndNode(DrawableSubnode node) {
         end = node;
         this.setEndX(end.getCenterX());
         this.setEndY(end.getCenterY());
         return null;
-    }
-
-    public Node getStartObject() {
-        return start;
-    }
-
-    public Node getEndObject() {
-        return end;
     }
 }

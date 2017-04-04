@@ -15,18 +15,19 @@ import java.util.Random;
  * Created by vilddjur on 2/28/17.
  */
 public class GraphController {
+
     private Random random;
-    private static GraphController graphController = null;
+    private static GraphController instance = null;
 
     private GraphController(){
         random = new Random();
     }
 
     public static GraphController getInstance() {
-        if (graphController == null) {
-            graphController = new GraphController();
+        if (instance == null) {
+            instance = new GraphController();
         }
-        return graphController;
+        return instance;
     }
 
     /**
@@ -56,6 +57,7 @@ public class GraphController {
      */
     public ArrayList<Pair<Rule, DrawablePattern>> rulesMatchingPattern(List<Rule> rules, DrawablePattern graph) {
         ArrayList<Pair<Rule, DrawablePattern>> rulePatternList = new ArrayList<>();
+
         for (Rule r : rules) {
             rulePatternList.addAll(ruleMatchingPattern(r, graph));
         }

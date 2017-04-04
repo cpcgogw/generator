@@ -1,28 +1,32 @@
 package model;
 
-import com.sun.org.apache.bcel.internal.generic.ObjectType;
 import javafx.geometry.VPos;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
 
 /**
  * Created by time on 3/23/17.
  */
-public class DrawableObjectNode extends Circle implements ObjectNode, Tile {
+public class DrawableSubnode extends Circle implements Subnode, Tile {
+    private static final int DEFAULT_RADIUS = 10;
     private OBJECT_TYPE type;
     private Color color = Color.YELLOW;
     public Text text;
     private int ID;
-    private static int IDcount = 0;
+    private static int IDcount = 1000;
     private ArrayList<DrawableEdge> drawableEdges = new ArrayList<>();
 
-    public DrawableObjectNode(double x, double y, int radius, OBJECT_TYPE type) {
-        super(x, y, radius);
-        this.ID = IDcount;
-        IDcount++;
+    public DrawableSubnode(double x, double y, OBJECT_TYPE type) {
+        this(x, y, IDcount++, type);
+    }
+
+    public DrawableSubnode(double x, double y, int id, OBJECT_TYPE type) {
+        super(x, y, DEFAULT_RADIUS);
+        this.ID = id;
         this.type = type;
         text = new Text(x, y, ""+type.toString().charAt(0));
         text.setTextOrigin(VPos.CENTER);
@@ -74,12 +78,12 @@ public class DrawableObjectNode extends Circle implements ObjectNode, Tile {
 
     @Override
     public void addEdge(Edge e) {
-
+        throw new NotImplementedException();
     }
 
     @Override
-    public ArrayList<Edge> getEdges() {
-        return null;
+    public ArrayList<? extends Edge> getEdges() {
+        return drawableEdges;
     }
 
     public void addEdge(DrawableEdge e) {

@@ -20,8 +20,7 @@ public class DoOnce extends Command {
     //TODO: Make actual Rule instead of String
     String rule = null;
     final int numOfParams = 1;
-    //TODO: should be a singleton so graph cant get into a weird state.
-    GraphController graphController = new GraphController();
+    GraphController graphController = GraphController.getInstance();
 
     //TODO: all the parsing for the rule should be done before usage,
     // preferably in setParams or class calling this function.
@@ -35,9 +34,10 @@ public class DoOnce extends Command {
         }
 
         Pair<ArrayList<DrawableAreaNode>,ArrayList<DrawableEdge>> ruleR = FileHandler.loadNodes(file);
-        Rule r = new Rule(new DrawablePattern(FileHandler.loadMatchingPattern(file)), FileHandler.loadTranslations(file));
+        //TODO: Fix so rule accommodates recent changes
+        //Rule r = new Rule(new DrawablePattern(FileHandler.loadMatch(file)), FileHandler.loadTranslations(file));
         ArrayList<Rule> rl = new ArrayList<>();
-        rl.add(r);
+        //rl.add(r);
 
         Log.print("Matching pattern to graph...", Log.LEVEL.INFO);
         Log.print("Graph: "+graph,Log.LEVEL.DEBUG);
@@ -47,7 +47,8 @@ public class DoOnce extends Command {
             Log.print("DoOnce: No rules matching pattern.", Log.LEVEL.WARNING);
             return false;
         } else {
-            graphController.applyRule(graph, rulePatternList.get(0).getValue(), r);
+            //TODO: Fix so rule accommodates recent changes
+            //graphController.applyRule(graph, rulePatternList.get(0).getValue(), r);
             Log.print("Updated graph: "+graph,Log.LEVEL.DEBUG);
             return true;
         }
