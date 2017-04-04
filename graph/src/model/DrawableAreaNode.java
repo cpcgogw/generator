@@ -11,26 +11,18 @@ import java.util.List;
  * Created by vilddjur on 1/24/17.
  */
 public class DrawableAreaNode extends Circle implements AreaNode, Tile {
-    private ArrayList<DrawableEdge> drawableEdges;
-    private ArrayList<DrawableObjectNode> objects = new ArrayList<>();
+    //TODO: change name drawableEdges->edges
+    private List<DrawableEdge> drawableEdges;
+    private List<DrawableSubnode> subnodes = new ArrayList<>();
+    private AREA_TYPE type;
     private int id;
-    public static int idCounter=0;
-    public static final int DEFAULT_RADIUS = 40;
 
+    public static int idCounter = 0;
+    public static final int DEFAULT_RADIUS = 40;
 
     @Override
     public TILE_TYPE getTILE_TYPE() {
         return TILE_TYPE.TOWN;
-    }
-
-    private AREA_TYPE type;
-
-    public DrawableAreaNode(DrawableAreaNode n) {
-        super(n.getCenterX(), n.getCenterY(), n.getRadius(), n.getFill());
-        drawableEdges = new ArrayList<>();
-        id = n.id;
-        this.type = n.getType();
-        setColor();
     }
 
     /**
@@ -46,7 +38,7 @@ public class DrawableAreaNode extends Circle implements AreaNode, Tile {
         }
     }
 
-    public void addAllEdges(ArrayList<DrawableEdge> drawableEdges) {
+    public void addAllEdges(List<DrawableEdge> drawableEdges) {
         this.drawableEdges.addAll(drawableEdges);
     }
 
@@ -75,22 +67,17 @@ public class DrawableAreaNode extends Circle implements AreaNode, Tile {
         setColor();
     }
 
-    public DrawableAreaNode(double x, double y, int radius, Color color, AREA_TYPE type){
-        super(x, y, radius, color);
-        drawableEdges = new ArrayList<DrawableEdge>();
-        id = idCounter++;
-        this.type = type;
-        setColor();
-    }
-    public DrawableAreaNode(int id, double x, double y, int radius, Color color, AREA_TYPE type){
-        this(x, y, radius, color, type);
-        this.id = id;
-        if(id>=idCounter){
-            idCounter = id+1;
-        }
-        setColor();
+    public DrawableAreaNode(double x, double y, AREA_TYPE type) {
+        this(x, y, idCounter++, type);
     }
 
+    public DrawableAreaNode(double x, double y, int id, AREA_TYPE type) {
+        super(x, y, DEFAULT_RADIUS, Color.YELLOW);
+        this.type = type;
+        this.id = id;
+        drawableEdges = new ArrayList<>();
+        setColor();
+    }
 
     private void setColor() {
         switch (type){
@@ -114,7 +101,7 @@ public class DrawableAreaNode extends Circle implements AreaNode, Tile {
         super.setCenterY(y);
     }
 
-    public ArrayList<DrawableEdge> getDrawableEdges() {
+    public List<DrawableEdge> getDrawableEdges() {
         return drawableEdges;
     }
 
@@ -122,6 +109,7 @@ public class DrawableAreaNode extends Circle implements AreaNode, Tile {
         for (DrawableEdge e : drawableEdges) {
             e.updateNodes();
         }
+        updateSubnodes();
     }
 
     public void addEdge(DrawableEdge e){
@@ -172,20 +160,25 @@ public class DrawableAreaNode extends Circle implements AreaNode, Tile {
         return type;
     }
 
-    @Override
-    public List<ObjectNode> getObjects() {
-        return null;
+    public List<? extends Subnode> getSubnodes() {
+        return subnodes;
     }
 
     @Override
-    public void addObject(ObjectNode node) {
+    public void addObject(Subnode node) {
     }
 
-    public void addObject(DrawableObjectNode node) {
-        objects.add(node);
-        Log.print("DrawableAreaNode: Added a subnode of type: "+node.getType()
-                +" to area node: "+this.getType(), Log.LEVEL.DEBUG);
-        updateSubnodes();
+    public boolean addObject(DrawableSubnode node) {
+        if (subnodes.size() < 12) {
+            subnodes.add(node);
+            Log.print("DrawableAreaNode: Added a subnode of type: "+node.getType()
+                    +" to area node: "+this.getType(), Log.LEVEL.DEBUG);
+            updateSubnodes();
+            return true;
+        } else {
+            Log.print("DrawableAreaNode: Couldn't add subnode to node! Too many subnodes already.", Log.LEVEL.DEBUG);
+            return false;
+        }
     }
 
     public void removeEdge(DrawableEdge drawableEdge) {
@@ -198,7 +191,7 @@ public class DrawableAreaNode extends Circle implements AreaNode, Tile {
     }
 
     public DrawableAreaNode clone(){
-        DrawableAreaNode drawableAreaNode = new DrawableAreaNode(this.getCenterX(), this.getCenterY(), (int)this.getRadius(), Color.AQUA, this.getType());
+        DrawableAreaNode drawableAreaNode = new DrawableAreaNode(this.getCenterX(), this.getCenterY(), this.getType());
         for (DrawableEdge e: this.drawableEdges){
             if(e.getStartDrawableAreaNode().getNodeId() == this.id)
                 e.setStartDrawableAreaNode(drawableAreaNode);
@@ -215,13 +208,31 @@ public class DrawableAreaNode extends Circle implements AreaNode, Tile {
     }
 
     public void updateSubnodes() {
-        int i = objects.size();
-        double r;
+        int i = subnodes.size();
+        double r = 0;
 
-        for (DrawableObjectNode node : objects) {
+        for (DrawableSubnode node : subnodes) {
+            Log.print("DrawableAreaNode: Updating subnode: "+node.getType(), Log.LEVEL.INFO);
+            Log.print("DrawableAreaNode: edges: "+node.getDrawableEdges().size(), Log.LEVEL.INFO);
+            Log.print("DrawableAreaNode: radius: "+node.getRadius(), Log.LEVEL.INFO);
             r = node.getRadius()+this.getRadius();
             node.setPosition(this.getCenterX()+Math.cos(Math.toRadians(30*i))*r, this.getCenterY()+Math.sin(Math.toRadians(30*i))*r);
+            for (DrawableEdge edge : node.getDrawableEdges()) {
+                edge.updateNodes();
+            }
             i--;
         }
+    }
+
+    public void setSubnodes(List<DrawableSubnode> subnodes) {
+        this.subnodes = subnodes;
+    }
+
+    public void setEdges(List<DrawableEdge> edges) {
+        this.drawableEdges = edges;
+    }
+
+    public List<DrawableSubnode> getDrawableSubnodes() {
+        return subnodes;
     }
 }

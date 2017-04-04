@@ -12,7 +12,7 @@ public class AbstractNode implements AreaNode, Tile {
     private int id;
     private static int idCounter = 0;
     private ArrayList<Edge> edges = new ArrayList<>();
-    private ArrayList<ObjectNode> objects = new ArrayList<>();
+    private ArrayList<Subnode> objects = new ArrayList<>();
     private TILE_TYPE type = TILE_TYPE.TOWN;
     public AbstractNode(){
         id = idCounter;
@@ -24,13 +24,12 @@ public class AbstractNode implements AreaNode, Tile {
         return null;
     }
 
-    @Override
-    public List<ObjectNode> getObjects() {
+    public List<Subnode> getSubnodes() {
         return objects;
     }
 
     @Override
-    public void addObject(ObjectNode node) {
+    public void addObject(Subnode node) {
         objects.add(node);
     }
 

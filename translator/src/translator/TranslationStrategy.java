@@ -1,6 +1,6 @@
 package translator;
 
-import model.ObjectNode;
+import model.Subnode;
 import model.Tile;
 import translator.model.PopulatedTileGrid;
 import translator.model.TileGrid;
@@ -13,7 +13,7 @@ public abstract class TranslationStrategy {
 
     public static void copyFromPos(PopulatedTileGrid from, PopulatedTileGrid to, int xPos, int yPos) {
         Tile tile;
-        ObjectNode obj;
+        Subnode obj;
         for (int y = 0; y < from.size(); y++) {
             for (int x = 0; x < from.size(); x++) {
                 tile = from.getTile(x, y);

@@ -1,7 +1,4 @@
-package graph_generator.test;
-
 import graph_generator.controller.GraphController;
-import javafx.scene.paint.Color;
 import javafx.util.Pair;
 import model.*;
 import org.junit.Before;
@@ -18,7 +15,7 @@ public class GraphControllerTest {
     private ArrayList<Rule> rules;
     @Before
     public void init(){
-        graphController = new GraphController();
+        graphController = GraphController.getInstance();
         Log.level = Log.LEVEL.INFO;
 
         rules = new ArrayList<>();
@@ -150,6 +147,6 @@ public class GraphControllerTest {
     }
 
     private DrawableAreaNode node(AREA_TYPE type) {
-        return new DrawableAreaNode(0,0,40, Color.AQUA, type);
+        return new DrawableAreaNode(0, 0, type);
     }
 }

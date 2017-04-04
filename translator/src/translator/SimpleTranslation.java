@@ -2,7 +2,7 @@ package translator;
 
 import javafx.util.Pair;
 import model.AreaNode;
-import model.ObjectNode;
+import model.Subnode;
 import model.TILE_TYPE;
 import model.Tile;
 import translator.model.AbstractNode;
@@ -175,8 +175,8 @@ public class SimpleTranslation extends TranslationStrategy {
     }
 
     private void placeObjectsRandomly(AreaNode tile, PopulatedTileGrid grid) {
-        for (ObjectNode node :
-                tile.getObjects()) {
+        for (Subnode node :
+                tile.getSubnodes()) {
             boolean placed = false;
             while(!placed){
                 placed = grid.addObject(node, rand.nextInt(grid.size()), rand.nextInt(grid.size()));

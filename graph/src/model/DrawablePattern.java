@@ -4,18 +4,21 @@ import javafx.util.Pair;
 import utils.Log;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
  * Created by vilddjur on 1/28/17.
  */
 public class DrawablePattern implements Pattern {
-    public ArrayList<DrawableAreaNode> drawableAreaNodes;
-    public ArrayList<DrawableObjectNode> drawableObjectNodes;
+    //TODO: Refactor so DrawablePattern only uses drawableAreaNodes?
+    public List<DrawableAreaNode> drawableAreaNodes;
+    public List<DrawableSubnode> drawableSubnodes;
 
     private Random random;
     public DrawablePattern(){
         drawableAreaNodes = new ArrayList<DrawableAreaNode>();
+        drawableSubnodes = new ArrayList<DrawableSubnode>();
         random = new Random();
     }
     public DrawablePattern(Pair<ArrayList<DrawableAreaNode>,ArrayList<DrawableEdge>> pair){
@@ -67,14 +70,11 @@ public class DrawablePattern implements Pattern {
 
     @Override
     public void addNode(AreaNode node) {
-        String tmpPrefix = Log.prefix;
-        Log.prefix = "addNode: ";
-        if(node instanceof DrawableAreaNode) {
+        if (node instanceof DrawableAreaNode) {
             this.drawableAreaNodes.add((DrawableAreaNode) node);
-        }else{
+        } else {
             Log.print("given node of incorrect type", Log.LEVEL.ERROR);
         }
-        Log.prefix = tmpPrefix;
     }
 
     @Override

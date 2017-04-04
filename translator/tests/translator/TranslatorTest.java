@@ -296,7 +296,7 @@ public class TranslatorTest {
     public DrawablePattern getRandomDrawablePattern() {
         DrawablePattern pattern = new DrawablePattern();
         for (int i = 0; i < GRAPH_SIZE; i++) {
-            DrawableAreaNode node = new DrawableAreaNode(0,0,0, Color.AQUA, AREA_TYPE.GRASSFIELD);
+            DrawableAreaNode node = new DrawableAreaNode(0,0, AREA_TYPE.GRASSFIELD);
             addRandomDrawableEdge(node, pattern);
             pattern.addNode(node);
         }

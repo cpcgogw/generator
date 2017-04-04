@@ -1,6 +1,5 @@
 package rule_editor.controller;
 
-
 import model.DrawableEdge;
 import model.DrawableAreaNode;
 
@@ -8,49 +7,46 @@ import model.DrawableAreaNode;
  * Created by vilddjur on 1/25/17.
  */
 public class EdgeController {
+
     private boolean dragging;
+    private static EdgeController instance = null;
+
     public EdgeController(){
         dragging = false;
     }
 
-    public DrawableEdge addEdge(DrawableAreaNode c, DrawableAreaNode s) {
-        DrawableEdge e = new DrawableEdge(c, s);
-
-        e.setOnMousePressed(mouseEvent -> handlePress(mouseEvent, e));
-        e.setOnMouseReleased(event -> {
-            dragging = false;
-        });
-
-        e.setOnMouseDragged(event -> {
-                if(dragging){
-                    e.makeArrow();
-                }
-        });
-
-        return e;
-    }
-
-    private void handlePress(javafx.scene.input.MouseEvent mouseEvent, DrawableEdge e) {
-        if(Controller.activeTool == Controller.tools.DELETE){
-            e.delete();
-            Controller.getActiveCanvas().getChildren().removeAll(e, e.getArrow());
-        }else if(Controller.activeTool == Controller.tools.MOVE){
-            dragging = true;
+    public static EdgeController getInstance() {
+        if (instance == null) {
+            instance = new EdgeController();
         }
+        return instance;
     }
 
-    public DrawableEdge addEdge(DrawableEdge e) {
-        e.setOnMousePressed(mouseEvent -> dragging = true);
-        e.setOnMouseReleased(event -> {
+    public DrawableEdge addEdge(DrawableAreaNode from, DrawableAreaNode to) {
+        DrawableEdge edge = new DrawableEdge(from, to);
+        setDraggable(edge);
+        return edge;
+    }
+
+    public void setDraggable(DrawableEdge edge) {
+        edge.setOnMousePressed(mouseEvent -> handlePress(edge));
+        edge.setOnMouseReleased(event -> {
             dragging = false;
         });
 
-        e.setOnMouseDragged(event -> {
+        edge.setOnMouseDragged(event -> {
             if(dragging){
-                e.makeArrow();
+                edge.makeArrow();
             }
         });
+    }
 
-        return e;
+    private void handlePress(DrawableEdge edge) {
+        if (Controller.activeTool == Controller.tools.DELETE) {
+            edge.delete();
+            Controller.getActiveCanvas().getChildren().removeAll(edge, edge.getArrow());
+        } else if (Controller.activeTool == Controller.tools.MOVE) {
+            dragging = true;
+        }
     }
 }

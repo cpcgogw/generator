@@ -7,11 +7,16 @@ import javafx.scene.shape.*;
 /**
  * Created by vilddjur on 1/24/17.
  */
-public class DrawableEdge extends Line implements Edge{
+public class DrawableEdge extends Line implements Edge {
     private DrawableAreaNode startDrawableAreaNode;
     private DrawableAreaNode endDrawableAreaNode;
+    private DrawableSubnode start;
+    private DrawableSubnode end;
+
     private Path arrowHead;
     public static final double STROKE_WIDTH = 3;
+    private Node startObject;
+
     /**
      * Takes a start DrawableAreaNode and an end DrawableAreaNode, draws a line between the center of the two.
      * @param startDrawableAreaNode
@@ -21,13 +26,30 @@ public class DrawableEdge extends Line implements Edge{
         arrowHead = new Path();
         this.arrowHead.setStrokeWidth(STROKE_WIDTH);
         this.setStartDrawableAreaNode(startDrawableAreaNode);
-        if(endDrawableAreaNode != null){
+
+        if (endDrawableAreaNode != null) {
             this.setEndNode(endDrawableAreaNode);
         }
+
         this.setFill(new Color(0,0,0,0));
         this.setStroke(Color.BLACK);
         this.setStrokeWidth(STROKE_WIDTH);
+    }
 
+    public DrawableEdge(DrawableSubnode from, DrawableSubnode to) {
+        start = from;
+        end = to;
+
+        from.getDrawableEdges().add(this);
+        if (to != null) {
+            to.getDrawableEdges().add(this);
+        }
+
+        this.setStartX(from.getCenterX());
+        this.setStartY(from.getCenterY());
+        this.setFill(Color.BLACK);
+        this.setStroke(Color.BLACK);
+        this.setStrokeWidth(3);
     }
 
     /**
@@ -85,7 +107,17 @@ public class DrawableEdge extends Line implements Edge{
             this.setEndX(endDrawableAreaNode.getCenterX());
             this.setEndY(endDrawableAreaNode.getCenterY());
         }
-        makeArrow();
+        if(start != null) {
+            this.setStartX(start.getCenterX());
+            this.setStartY(start.getCenterY());
+        }
+        if(end != null) {
+            this.setEndX(end.getCenterX());
+            this.setEndY(end.getCenterY());
+        }
+        if (startDrawableAreaNode != null && endDrawableAreaNode != null) {
+            makeArrow();
+        }
     }
     public Shape getArrow(){
         return arrowHead;
@@ -114,11 +146,22 @@ public class DrawableEdge extends Line implements Edge{
 
     @Override
     public Node getFrom() {
+        if (startDrawableAreaNode == null)
+            return start;
         return startDrawableAreaNode;
     }
 
     @Override
     public Node getTo() {
+        if (endDrawableAreaNode == null)
+            return end;
         return endDrawableAreaNode;
+    }
+
+    public Shape setEndNode(DrawableSubnode node) {
+        end = node;
+        this.setEndX(end.getCenterX());
+        this.setEndY(end.getCenterY());
+        return null;
     }
 }

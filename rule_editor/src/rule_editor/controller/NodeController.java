@@ -1,13 +1,9 @@
 package rule_editor.controller;
 
 
-import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
 import model.*;
-
+import utils.Log;
 import java.util.ArrayList;
-import java.util.List;
-
 import static rule_editor.controller.Controller.tools.*;
 
 /**
@@ -20,16 +16,21 @@ public class NodeController {
     private Controller controller;
     private boolean dragging;
     private ArrayList<DrawableAreaNode> drawableAreaNodes;
+    private static NodeController instance = null;
 
-    /**
-     *
-     */
-    public NodeController(Controller controller){
+    private NodeController(Controller controller) {
         currentDrawableEdge = null;
         dragging = false;
         this.controller = controller;
-        this.edgeController = new EdgeController();
+        this.edgeController = EdgeController.getInstance();
         this.drawableAreaNodes = new ArrayList<DrawableAreaNode>();
+    }
+
+    public static NodeController getInstance(Controller controller) {
+        if (instance == null) {
+            instance = new NodeController(controller);
+        }
+        return instance;
     }
 
     /**
@@ -39,51 +40,72 @@ public class NodeController {
         drawableAreaNodes.clear();
     }
 
-    private void handlePressNode(MouseEvent event, DrawableAreaNode c) {
-        if(Controller.activeTool == DELETE){
+    public void handlePressNode(DrawableAreaNode c) {
+        if (Controller.activeTool == DELETE) {
             Controller.getActiveCanvas().getChildren().remove(c);
             Controller.getActiveCanvas().getChildren().removeAll(c.getDrawableEdges());
             for (DrawableEdge e: c.getDrawableEdges()) {
                 Controller.getActiveCanvas().getChildren().removeAll(e.getArrow());
             }
-        }else if(Controller.activeTool == EDGE){
-            if(currentDrawableEdge == null){
+        } else if (Controller.activeTool == EDGE) {
+            if (currentDrawableEdge == null) {
                 currentDrawableEdge = edgeController.addEdge(c, null);
-            }else{
+            } else {
                 Controller.getActiveCanvas().getChildren().add(currentDrawableEdge.setEndNode(c));
                 Controller.getActiveCanvas().getChildren().add(currentDrawableEdge);
                 currentDrawableEdge = null;
             }
-        }else if(Controller.activeTool == MOVE){
+        } else if (Controller.activeTool == MOVE) {
             dragging = true;
-        }else if(Controller.activeTool == SELECT) {
+        } else if (Controller.activeTool == SELECT) {
             controller.setActiveDrawableAreaNode(c);
         } else if (Controller.activeTool == SUBNODE) {
-            DrawableObjectNode node = new DrawableObjectNode(c.getCenterX(), c.getCenterY(), 10, (OBJECT_TYPE) Controller.activeType);
-            c.addObject(node);
-            c.updateSubnodes();
-            Controller.getActiveCanvas().getChildren().add(node);
+            DrawableSubnode node = new DrawableSubnode(c.getCenterX(), c.getCenterY(), (OBJECT_TYPE) Controller.activeType);
+            if (c.addObject(node)) {
+                node.setOnMouseClicked(mouseEvent -> handlePressSubnode(node));
+                Controller.getActiveCanvas().getChildren().add(node);
+                Controller.getActiveCanvas().getChildren().add(node.text);
+            }
         }
     }
 
-    public DrawableAreaNode addNode(DrawableAreaNode c) {
-        c.setOnMousePressed(mouseEvent -> handlePressNode(mouseEvent, c));
-        c.setOnMouseReleased(event -> {
-            dragging = false;
-        });
-        c.setOnMouseDragged(event -> {
-            if(dragging){
-                c.setPos(event.getX(),event.getY());
-                c.updateEdges();
+    private void handlePressSubnode(DrawableSubnode node) {
+        Log.print("NodeController: Subnode pressed: "+node.getType(), Log.LEVEL.DEBUG);
+
+        if (Controller.activeTool == SUBEDGE) {
+            if (currentDrawableEdge == null) {
+                Log.print("NodeController: No current edge adding new.", Log.LEVEL.DEBUG);
+                currentDrawableEdge = new DrawableEdge(node, null);
+                node.addEdge(currentDrawableEdge);
+            } else {
+                Log.print("NodeController: Setting end node for current edge.", Log.LEVEL.DEBUG);
+                currentDrawableEdge.setEndNode(node);
+                node.addEdge(currentDrawableEdge);
+                Log.print("NodeController: Adding edge to canvas "+currentDrawableEdge, Log.LEVEL.DEBUG);
+                Controller.getActiveCanvas().getChildren().add(currentDrawableEdge);
+                currentDrawableEdge = null;
             }
-        });
-        drawableAreaNodes.add(c);
-        return c;
+        }
     }
 
-    public DrawableAreaNode addNode(double x, double y, int radius, Color color, AREA_TYPE type) {
-        DrawableAreaNode c = new DrawableAreaNode(x,y,radius,color, type);
-        return addNode(c);
+    public void addNode(DrawableAreaNode node) {
+        setDraggable(node);
+        drawableAreaNodes.add(node);
+    }
+
+    private void setDraggable(DrawableAreaNode node) {
+        node.setOnMousePressed(mouseEvent -> handlePressNode(node));
+        node.setOnMouseReleased(event -> {
+            dragging = false;
+        });
+
+        node.setOnMouseDragged(event -> {
+            if (dragging) {
+                node.setPos(event.getX(),event.getY());
+                node.updateEdges();
+                node.updateSubnodes();
+            }
+        });
     }
 
     public  ArrayList<DrawableAreaNode> getDrawableAreaNodes(){

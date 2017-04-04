@@ -1,6 +1,6 @@
 package translator;
 
-import model.ObjectNode;
+import model.Subnode;
 import model.TILE_TYPE;
 import model.Tile;
 import org.w3c.dom.Document;
@@ -94,7 +94,7 @@ public class TMXFileHandler {
                     elemData.appendChild(elemTile);
 
                     Element elemObj = doc.createElement("tile");
-                    ObjectNode object = grid.getObject(x,y);
+                    Subnode object = grid.getObject(x,y);
                     if(object == null) {
                         gid = 0;
                     }else if(object.getTILE_TYPE() == TILE_TYPE.ROAD){

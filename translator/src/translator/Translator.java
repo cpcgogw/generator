@@ -147,7 +147,7 @@ public class Translator {
             Log.print("Translator: Translating node "+n.getNodeId(), Log.LEVEL.INFO);
 
 
-            List<Edge> edges = n.getEdges();
+            List<? extends Edge> edges = n.getEdges();
             for (Edge e : edges) {
                 Pair<Integer, Integer> first = lowResGrid.getNodePosition((Tile) e.getFrom());
                 Pair<Integer, Integer> second = lowResGrid.getNodePosition((Tile) e.getTo());

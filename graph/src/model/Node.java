@@ -8,5 +8,5 @@ import java.util.ArrayList;
 public interface Node {
     int getNodeId();
     void addEdge(Edge e);
-    ArrayList<Edge> getEdges();
+    ArrayList<? extends Edge> getEdges();
 }

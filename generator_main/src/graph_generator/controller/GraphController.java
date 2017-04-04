@@ -15,10 +15,21 @@ import java.util.Random;
  * Created by vilddjur on 2/28/17.
  */
 public class GraphController {
+
     private Random random;
-    public GraphController(){
+    private static GraphController instance = null;
+
+    private GraphController(){
         random = new Random();
     }
+
+    public static GraphController getInstance() {
+        if (instance == null) {
+            instance = new GraphController();
+        }
+        return instance;
+    }
+
     /**
      * Calls applyRandomRule n number of times
      * @param rules
@@ -46,6 +57,7 @@ public class GraphController {
      */
     public ArrayList<Pair<Rule, DrawablePattern>> rulesMatchingPattern(List<Rule> rules, DrawablePattern graph) {
         ArrayList<Pair<Rule, DrawablePattern>> rulePatternList = new ArrayList<>();
+
         for (Rule r : rules) {
             rulePatternList.addAll(ruleMatchingPattern(r, graph));
         }
