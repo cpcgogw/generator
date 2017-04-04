@@ -261,8 +261,6 @@ public class Controller {
     /**
      * Updates the currentLevel.
      */
-    //TODO: Add updating for subnodes
-    //TODO: Not sure this is even needed
     private void updateDisplayedGraph() {
         for (DrawableAreaNode node : currentLevel.drawableAreaNodes){
             nodeController.addNode(node);

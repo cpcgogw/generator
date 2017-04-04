@@ -109,7 +109,6 @@ public class DrawableAreaNode extends Circle implements AreaNode, Tile {
         for (DrawableEdge e : drawableEdges) {
             e.updateNodes();
         }
-        updateSubnodes();
     }
 
     public void addEdge(DrawableEdge e){
@@ -211,13 +210,13 @@ public class DrawableAreaNode extends Circle implements AreaNode, Tile {
         int i = subnodes.size();
         double r = 0;
 
-        for (DrawableSubnode node : subnodes) {
-            Log.print("DrawableAreaNode: Updating subnode: "+node.getType(), Log.LEVEL.INFO);
-            Log.print("DrawableAreaNode: edges: "+node.getDrawableEdges().size(), Log.LEVEL.INFO);
-            Log.print("DrawableAreaNode: radius: "+node.getRadius(), Log.LEVEL.INFO);
-            r = node.getRadius()+this.getRadius();
-            node.setPosition(this.getCenterX()+Math.cos(Math.toRadians(30*i))*r, this.getCenterY()+Math.sin(Math.toRadians(30*i))*r);
-            for (DrawableEdge edge : node.getDrawableEdges()) {
+        for (DrawableSubnode subnode : subnodes) {
+            Log.print("DrawableAreaNode: Updating subnode: "+subnode.getType(), Log.LEVEL.INFO);
+            Log.print("DrawableAreaNode: edges: "+subnode.getDrawableEdges().size(), Log.LEVEL.INFO);
+            Log.print("DrawableAreaNode: radius: "+subnode.getRadius(), Log.LEVEL.INFO);
+            r = subnode.getRadius()+this.getRadius();
+            subnode.setPosition(this.getCenterX()+Math.cos(Math.toRadians(30*i))*r, this.getCenterY()+Math.sin(Math.toRadians(30*i))*r);
+            for (DrawableEdge edge : subnode.getDrawableEdges()) {
                 edge.updateNodes();
             }
             i--;
