@@ -5,7 +5,7 @@ package model;
  */
 public enum TILE_TYPE {
     ROAD('R'), DESART('D'), FOREST('F'), LAKE('L'), TOWN('T'), GRAVEYARD('g'), GRASS('G'), MONSTER('M'), TRAP('t'), DANGER('d'), UNKOWN('U');
-
+    int id;
     char value;
 
     TILE_TYPE(char value) {

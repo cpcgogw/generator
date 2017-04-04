@@ -14,9 +14,9 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 import model.*;
-import utils.FileHandler;
 import translator.Translator;
 import translator.model.NodeGrid;
+import utils.FileHandler;
 import utils.Log;
 
 import javax.swing.*;
@@ -45,7 +45,8 @@ public class Controller {
     private Button gen_button;
     @FXML
     private Button level_to_grid_button;
-
+    @FXML
+    private Button export_button;
 
     @FXML
     private Button start_node_button;
@@ -144,6 +145,7 @@ public class Controller {
         move_button.setOnMouseClicked(mouseEvent -> activeTool = MOVE);
         select_node_button.setOnMouseClicked(mouseEvent -> activeTool = SELECT);
         level_to_grid_button.setOnMouseClicked(mouseEvent -> currentLevelToGrid());
+        export_button.setOnMouseClicked(mouseEvent -> exportCurrentLevel());
         gen_button.setOnMouseClicked(event -> generateLevel());
 
         // Init subnode buttons
@@ -185,6 +187,15 @@ public class Controller {
         active_node_save_button.setOnMouseClicked(mouseEvent -> saveActiveNode());
 
         activeRule = new Rule(new DrawablePattern());
+    }
+
+    private void exportCurrentLevel() {
+        String path = JOptionPane.showInputDialog("Save","newfile");
+
+        if (path == "" || path == null) {
+            path = "newfile";
+        }
+        Translator.exportLevel(currentLevel, path);
     }
 
     public void setActiveDrawableAreaNode(DrawableAreaNode activeDrawableAreaNode) {

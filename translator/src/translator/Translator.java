@@ -18,7 +18,7 @@ public class Translator {
     public static void main(String[] args) {
         Log.level = Log.LEVEL.INFO;
         AbstractPattern graph = testGraph();
-        NodeGrid grid = new NodeGrid(3);
+        NodeGrid grid = new NodeGrid(testGraph().getNodes().size());
         TileGrid lowRes;
         PopulatedTileGrid highRes;
 
@@ -39,6 +39,23 @@ public class Translator {
         return strategy.apply(lowRes);
     }
 
+    public static void exportLevel(Pattern graph, String path){
+        int size = (int) Math.sqrt(graph.getNodes().size())+1;
+        NodeGrid grid = new NodeGrid(size);
+        TileGrid lowRes;
+        PopulatedTileGrid highRes;
+
+        System.out.println("Grid before: ");
+        System.out.println(grid);
+        placeGraphOnGrid(graph, grid);
+        System.out.println("Grid after: ");
+        System.out.println(grid);
+        System.out.println("Translated to low res: ");
+        lowRes = translateToLowRes(grid);
+        highRes = translateToPopulatedGrid(lowRes);
+        System.out.println(highRes);
+        TMXFileHandler.saveGridAsTMX(highRes, path);
+    }
     /**
      * Tries to place the graph onto the grid.
      *
@@ -210,6 +227,7 @@ public class Translator {
         graph.add(n2);
         graph.add(n3);
         graph.add(n4);
+        graph.add(new AbstractNode());
 
         Edge e1 = new AbstractEdge(n1, n2);
         Edge e2 = new AbstractEdge(n2, n3);
