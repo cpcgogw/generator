@@ -244,6 +244,8 @@ public class Controller {
     private void generateLevel() {
         List<Rule> rules = loadAllRules();
 
+        Log.level = Log.LEVEL.DEBUG;
+
         canvas.getChildren().clear();
 
         translateLevel(currentLevel, rules);
@@ -253,7 +255,7 @@ public class Controller {
             Log.print("  node: Type: " + n.getType() + ", id:" + n.getNodeId() + ", #edges: " + n.getDrawableEdges().size(), Log.LEVEL.DEBUG);
         }
 
-        updateDisplayedGraph();
+        showLevel();
     }
 
     /**
@@ -277,12 +279,6 @@ public class Controller {
         }
     }
 
-    /**
-     * Loads all available rules.
-     *
-     * @return
-     * List of all rules.
-     */
     private List<Rule> loadAllRules() {
         File folder = new File("saves/rules");
         List<Rule> rules = new ArrayList<>();
@@ -290,8 +286,13 @@ public class Controller {
         for (File f : folder.listFiles()) {
             if(!f.isDirectory()){
                 //TODO: Refactor so FileHandler is used correctly
-                /*DrawablePattern match = new DrawablePattern(FileHandler.loadMatch(f));
-                rules.add(new Rule(match, FileHandler.loadTranslations(f)));*/
+                DrawablePattern match = new DrawablePattern((ArrayList<DrawableAreaNode>) FileHandler.loadMatch(f));
+                ArrayList<DrawablePattern> p = new ArrayList<>();
+                for (List<DrawableAreaNode> list : FileHandler.loadTranslations(f)) {
+                    p.add(new DrawablePattern((ArrayList<DrawableAreaNode>) list));
+                }
+
+                rules.add(new Rule(match, p));
             }
         }
 
@@ -319,6 +320,8 @@ public class Controller {
         rule_pane.setVisible(false);
 
         activeCanvas = canvas;
+
+        updateDisplayedGraph();
     }
 
     private void activateType(AREA_TYPE type) {
@@ -364,6 +367,7 @@ public class Controller {
         }
     }
 
+    //TODO: Should likely change name to something more descriptive
     private File loadRule() {
         File file;
         Stage stage;
@@ -371,6 +375,19 @@ public class Controller {
         fileChooser.setTitle("Explorer");
         stage = (Stage) window.getScene().getWindow();
         fileChooser.setInitialDirectory(new File("./saves/rules/"));
+        file = fileChooser.showOpenDialog(stage);
+
+        return file;
+    }
+
+    //TODO: Should likely change name to something more descriptive
+    private File loadLevel() {
+        File file;
+        Stage stage;
+
+        fileChooser.setTitle("Explorer");
+        stage = (Stage) window.getScene().getWindow();
+        fileChooser.setInitialDirectory(new File("./saves/levels/"));
         file = fileChooser.showOpenDialog(stage);
 
         return file;
@@ -388,32 +405,20 @@ public class Controller {
         //new rule
         activeRule = new Rule(new DrawablePattern());
 
+        // Extract matching pattern and possible translations
         List<DrawableAreaNode> match = FileHandler.loadMatch(file);
         List<List<DrawableAreaNode>> translations = FileHandler.loadTranslations(file);
 
-        activeCanvas = rule_canvas;
-        activeCanvas.getChildren().clear();
-
-        //TODO: Fix this mess after refactoring currentLevel and removing/refactoring DrawablePattern
-        // All rows till 435 contains absolute cancer
-
         DrawablePattern p = new DrawablePattern((ArrayList<DrawableAreaNode>) match);
-
         activeRule.matchingDrawablePattern = p;
 
+        // Conversion to DrawablePattern
         ArrayList<DrawablePattern> translationPatterns = new ArrayList<>();
         for (List<DrawableAreaNode> translation : translations) {
             translationPatterns.add(new DrawablePattern((ArrayList<DrawableAreaNode>) translation));
         }
 
         activeRule.possibleTranslations = translationPatterns;
-
-        //TODO: Rewrite to use currentLevel instead of manual adding to canvas
-        //TODO: Or dont have DrawablePattern? Discuss.
-        /*addToCanvas(match);
-        for (List<DrawableAreaNode> pattern : translations) {
-            addToCanvas(pattern);
-        }*/
 
         showRules();
     }
@@ -455,14 +460,8 @@ public class Controller {
      */
     //TODO: Rewrite
     private void prepareLoadLevel() {
-        File file;
-        Stage stage;
+        File file = loadLevel();
         Pair<ArrayList<DrawableAreaNode>,ArrayList<DrawableEdge>> pair;
-
-        fileChooser.setTitle("Explorer");
-        stage = (Stage) window.getScene().getWindow();
-        fileChooser.setInitialDirectory(new File("./saves/levels/"));
-        file = fileChooser.showOpenDialog(stage);
 
         //No file selected, don't do anything
         if (file == null) {return;}
