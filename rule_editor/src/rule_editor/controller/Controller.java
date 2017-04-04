@@ -10,7 +10,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Pair;
@@ -24,7 +23,6 @@ import javax.swing.*;
 import java.io.File;
 import java.util.*;
 
-import static model.DrawableAreaNode.DEFAULT_RADIUS;
 import static rule_editor.controller.Controller.tools.*;
 
 public class Controller {
@@ -82,7 +80,6 @@ public class Controller {
     private TabPane rule_tab_pane;
     @FXML
     private Button new_scenario_button;
-    private Rule activeRule;
 
 
     @FXML
@@ -110,8 +107,10 @@ public class Controller {
     private Button active_node_save_button;
 
     private HashMap<Pane, DrawablePattern> scenarios;
-    private DrawablePattern matchingDrawablePattern;
+
     private DrawablePattern currentLevel;
+    private Rule activeRule;
+
     private FileChooser fileChooser;
     private NodeController nodeController;
     private GraphController graphController;
@@ -134,7 +133,7 @@ public class Controller {
         fileChooser = new FileChooser();
         graphController = GraphController.getInstance();
         nodeController = NodeController.getInstance(this);
-        scenarios = new HashMap<Pane, DrawablePattern>();
+        scenarios = new HashMap<>();
         activeType = AREA_TYPE.TOWN;
         activeTool = NODE;
         activeCanvas = rule_canvas;
@@ -164,7 +163,7 @@ public class Controller {
         edge_button.setOnMouseClicked(mouseEvent -> activeTool = EDGE);
 
         // Init top menu
-        save_button.setOnAction(actionEvent -> PrepareSave());
+        save_button.setOnAction(actionEvent -> prepareSave());
         load_level_button.setOnAction(actionEvent -> prepareLoadLevel());
         load_rule_button.setOnAction(actionEvent -> prepareLoadRule());
         rule_menu_item.setOnAction(actionEvent -> showRules());
@@ -185,9 +184,7 @@ public class Controller {
         // init inspector pane
         active_node_save_button.setOnMouseClicked(mouseEvent -> saveActiveNode());
 
-        // initialize currentRule;
-        matchingDrawablePattern = new DrawablePattern();
-        activeRule = new Rule(matchingDrawablePattern);
+        activeRule = new Rule(new DrawablePattern());
     }
 
     public void setActiveDrawableAreaNode(DrawableAreaNode activeDrawableAreaNode) {
@@ -310,16 +307,10 @@ public class Controller {
         rule_pane.setVisible(true);
         activeCanvas = rule_canvas;
 
-        Log.print("Dumping current rule: \n MatchingPattern: ", Log.LEVEL.INFO);
-        for (DrawableAreaNode n : activeRule.matchingDrawablePattern.drawableAreaNodes) {
-            Log.print("  node: " + n.getType().toString(), Log.LEVEL.INFO);
-        }
-        Log.print(" possibleOutcomes: ", Log.LEVEL.INFO);
+        addToCanvas(activeRule.matchingDrawablePattern.drawableAreaNodes);
+
         for (DrawablePattern p : activeRule.possibleTranslations) {
-            Log.print("  outcome: ", Log.LEVEL.INFO);
-            for (DrawableAreaNode n : p.drawableAreaNodes) {
-                Log.print("   node: " + n.getType().toString(), Log.LEVEL.INFO);
-            }
+            addToCanvas(p.drawableAreaNodes);
         }
     }
 
@@ -339,6 +330,11 @@ public class Controller {
         activeCanvas = p;
     }
 
+    /**
+     * This will be used to add things to canvas at a later time when all refactoring is done.
+     *
+     * @param nodes
+     */
     private void addToCanvas(List<DrawableAreaNode> nodes) {
         Set<DrawableEdge> edgeSet = new HashSet<>();
 
@@ -390,46 +386,42 @@ public class Controller {
         clearCanvases();
 
         //new rule
-        matchingDrawablePattern = new DrawablePattern();
-        activeRule = new Rule(matchingDrawablePattern);
+        activeRule = new Rule(new DrawablePattern());
 
         List<DrawableAreaNode> match = FileHandler.loadMatch(file);
         List<List<DrawableAreaNode>> translations = FileHandler.loadTranslations(file);
 
         activeCanvas = rule_canvas;
-
         activeCanvas.getChildren().clear();
+
+        //TODO: Fix this mess after refactoring currentLevel and removing/refactoring DrawablePattern
+        // All rows till 435 contains absolute cancer
+
+        DrawablePattern p = new DrawablePattern((ArrayList<DrawableAreaNode>) match);
+
+        activeRule.matchingDrawablePattern = p;
+
+        ArrayList<DrawablePattern> translationPatterns = new ArrayList<>();
+        for (List<DrawableAreaNode> translation : translations) {
+            translationPatterns.add(new DrawablePattern((ArrayList<DrawableAreaNode>) translation));
+        }
+
+        activeRule.possibleTranslations = translationPatterns;
 
         //TODO: Rewrite to use currentLevel instead of manual adding to canvas
         //TODO: Or dont have DrawablePattern? Discuss.
-        addToCanvas(match);
+        /*addToCanvas(match);
         for (List<DrawableAreaNode> pattern : translations) {
             addToCanvas(pattern);
-        }
+        }*/
 
         showRules();
-        updateDisplayedGraph();
     }
 
     private void clearCanvases() {
         rule_canvas.getChildren().clear();
         rule_tab_pane.getTabs().clear();
         scenarios.clear();
-    }
-
-    private void insertIntoCanvasAndList(Pane canvas, ArrayList<DrawableAreaNode> drawableAreaNodes, Pair<ArrayList<DrawableAreaNode>, ArrayList<DrawableEdge>> pair) {
-        Log.print("Controller: InsertIntoCanvasAndList: "+pair.getKey(), Log.LEVEL.DEBUG);
-        for (DrawableAreaNode node : pair.getKey()) {
-            drawableAreaNodes.add(node);
-            canvas.getChildren().add(node);
-            nodeController.addNode(node);
-        }
-
-        for(DrawableEdge edge : pair.getValue()){
-            nodeController.getEdgeController().setDraggable(edge);
-            canvas.getChildren().add(edge.getArrow());
-            canvas.getChildren().add(edge);
-        }
     }
 
     /**
@@ -496,7 +488,7 @@ public class Controller {
     /**
      * Saves level state in file
      */
-    private void PrepareSave() {
+    private void prepareSave() {
         String path = JOptionPane.showInputDialog("Save","newfile");
 
         if (path == "" || path == null) {
@@ -517,7 +509,7 @@ public class Controller {
             c.getChildren().add(node);
 
             if (c == rule_canvas) {
-                matchingDrawablePattern.drawableAreaNodes.add(node);
+                activeRule.matchingDrawablePattern.drawableAreaNodes.add(node);
             } else if (c == canvas) {
                 currentLevel.drawableAreaNodes.add(node);
             } else {

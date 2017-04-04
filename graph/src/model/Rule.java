@@ -13,6 +13,7 @@ public class Rule {
     public DrawablePattern matchingDrawablePattern;
     public ArrayList<DrawablePattern> possibleTranslations;
     private Random rand;
+
     public Rule(DrawablePattern matchingDrawablePattern){
         rand = new Random();
         this.matchingDrawablePattern = matchingDrawablePattern;
@@ -24,7 +25,7 @@ public class Rule {
         possibleTranslations = new ArrayList<DrawablePattern>();
         rand = new Random();
         for (Pair<ArrayList<DrawableAreaNode>, ArrayList<DrawableEdge>> pair : translations) {
-            DrawablePattern p = new DrawablePattern(pair);
+            DrawablePattern p = new DrawablePattern(pair.getKey());
             possibleTranslations.add(p);
         }
     }
