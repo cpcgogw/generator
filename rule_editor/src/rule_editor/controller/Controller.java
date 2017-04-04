@@ -10,21 +10,19 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 import model.*;
-import utils.FileHandler;
 import translator.Translator;
 import translator.model.NodeGrid;
+import utils.FileHandler;
 import utils.Log;
 
 import javax.swing.*;
 import java.io.File;
 import java.util.*;
 
-import static model.DrawableAreaNode.DEFAULT_RADIUS;
 import static rule_editor.controller.Controller.tools.*;
 
 public class Controller {
@@ -47,7 +45,8 @@ public class Controller {
     private Button gen_button;
     @FXML
     private Button level_to_grid_button;
-
+    @FXML
+    private Button export_button;
 
     @FXML
     private Button start_node_button;
@@ -145,6 +144,7 @@ public class Controller {
         move_button.setOnMouseClicked(mouseEvent -> activeTool = MOVE);
         select_node_button.setOnMouseClicked(mouseEvent -> activeTool = SELECT);
         level_to_grid_button.setOnMouseClicked(mouseEvent -> currentLevelToGrid());
+        export_button.setOnMouseClicked(mouseEvent -> exportCurrentLevel());
         gen_button.setOnMouseClicked(event -> generateLevel());
 
         // Init subnode buttons
@@ -188,6 +188,15 @@ public class Controller {
         // initialize currentRule;
         matchingDrawablePattern = new DrawablePattern();
         activeRule = new Rule(matchingDrawablePattern);
+    }
+
+    private void exportCurrentLevel() {
+        String path = JOptionPane.showInputDialog("Save","newfile");
+
+        if (path == "" || path == null) {
+            path = "newfile";
+        }
+        Translator.exportLevel(currentLevel, path);
     }
 
     public void setActiveDrawableAreaNode(DrawableAreaNode activeDrawableAreaNode) {
