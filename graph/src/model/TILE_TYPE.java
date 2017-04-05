@@ -13,7 +13,11 @@ public enum TILE_TYPE {
     }
 
     @Override
-    public String toString() {
+    public String toString(){
+        return ""+this.value;
+    }
+
+    public String prettyString() {
         if (this != GRASS)
             return ((char)27+"[31m"+this.value+(char)27+"[39;49m");
         else

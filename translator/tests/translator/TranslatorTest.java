@@ -1,6 +1,5 @@
 package translator;
 
-import javafx.scene.paint.Color;
 import model.*;
 import org.junit.Test;
 import translator.model.*;
@@ -30,7 +29,7 @@ public class TranslatorTest {
         System.out.println(lowRes);
         PopulatedTileGrid popGrid = Translator.translateToPopulatedGrid(lowRes);
         System.out.println(popGrid);
-        TMXFileHandler.saveGridAsTMX(popGrid, "../saves/levels/test.tmx");
+        ExportLevelHandler.saveGridAsTMX(popGrid, "../saves/levels/test.xml");
 
     }
     @Test
