@@ -17,6 +17,7 @@ public class DrawableEdge extends Line implements Edge {
 
     private Path arrowHead;
     private Node startObject;
+    private EDGE_TYPE type;
 
     /**
      * Takes a start DrawableAreaNode and an end DrawableAreaNode, draws a line between the center of the two.
@@ -25,6 +26,7 @@ public class DrawableEdge extends Line implements Edge {
      */
     public DrawableEdge(DrawableAreaNode startDrawableAreaNode, DrawableAreaNode endDrawableAreaNode) {
         arrowHead = new Path();
+        this.type = EDGE_TYPE.NORMAL;
         this.arrowHead.setStrokeWidth(STROKE_WIDTH);
         this.setStartDrawableAreaNode(startDrawableAreaNode);
 
@@ -35,6 +37,10 @@ public class DrawableEdge extends Line implements Edge {
         this.setFill(new Color(0,0,0,0));
         this.setStroke(Color.BLACK);
         this.setStrokeWidth(STROKE_WIDTH);
+    }
+    public DrawableEdge(DrawableAreaNode startDrawableAreaNode, DrawableAreaNode endDrawableAreaNode, EDGE_TYPE type) {
+        this(startDrawableAreaNode, endDrawableAreaNode);
+        this.type = type;
     }
 
     public DrawableEdge(DrawableSubnode from, DrawableSubnode to) {
@@ -144,6 +150,11 @@ public class DrawableEdge extends Line implements Edge {
         }else if(endDrawableAreaNode == replace){
             endDrawableAreaNode = newDrawableAreaNode;
         }
+    }
+
+    @Override
+    public EDGE_TYPE getType() {
+        return this.type;
     }
 
     @Override
