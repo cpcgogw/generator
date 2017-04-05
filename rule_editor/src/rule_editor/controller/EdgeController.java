@@ -2,6 +2,7 @@ package rule_editor.controller;
 
 import model.DrawableEdge;
 import model.DrawableAreaNode;
+import model.EDGE_TYPE;
 
 /**
  * Created by vilddjur on 1/25/17.
@@ -23,9 +24,7 @@ public class EdgeController {
     }
 
     public DrawableEdge addEdge(DrawableAreaNode from, DrawableAreaNode to) {
-        DrawableEdge edge = new DrawableEdge(from, to);
-        setDraggable(edge);
-        return edge;
+        return addEdge(from, to, EDGE_TYPE.NORMAL);
     }
 
     public void setDraggable(DrawableEdge edge) {
@@ -48,5 +47,11 @@ public class EdgeController {
         } else if (Controller.activeTool == Controller.tools.MOVE) {
             dragging = true;
         }
+    }
+
+    public DrawableEdge addEdge(DrawableAreaNode from, DrawableAreaNode to, EDGE_TYPE type) {
+        DrawableEdge edge = new DrawableEdge(from, to, type);
+        setDraggable(edge);
+        return edge;
     }
 }

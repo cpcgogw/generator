@@ -36,6 +36,8 @@ public class Controller {
     @FXML
     private Button edge_button;
     @FXML
+    private Button locked_edge_button;
+    @FXML
     private Button delete_button;
     @FXML
     private Button move_button;
@@ -125,7 +127,7 @@ public class Controller {
      * Used to keep track of which tool is active
      */
     public enum tools {
-        EDGE, NODE, SUBNODE, DELETE, MOVE, SELECT, SUBEDGE
+        EDGE, NODE, SUBNODE, DELETE, MOVE, SELECT, SUBEDGE, LOCKED_EDGE
     }
 
     public void initialize(){
@@ -163,6 +165,7 @@ public class Controller {
         // Init edge buttons
         subedge_button.setOnMouseClicked(mouseEvent -> activeTool = SUBEDGE);
         edge_button.setOnMouseClicked(mouseEvent -> activeTool = EDGE);
+        locked_edge_button.setOnMouseClicked(mouseEvent -> activeTool = LOCKED_EDGE);
 
         // Init top menu
         save_button.setOnAction(actionEvent -> prepareSave());

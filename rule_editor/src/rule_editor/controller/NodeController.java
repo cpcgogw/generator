@@ -55,6 +55,14 @@ public class NodeController {
                 Controller.getActiveCanvas().getChildren().add(currentDrawableEdge);
                 currentDrawableEdge = null;
             }
+        } else if (Controller.activeTool == LOCKED_EDGE){
+            if (currentDrawableEdge == null){
+                currentDrawableEdge = edgeController.addEdge(c, null, EDGE_TYPE.LOCKED);
+            } else {
+                Controller.getActiveCanvas().getChildren().add(currentDrawableEdge.setEndNode(c));
+                Controller.getActiveCanvas().getChildren().add(currentDrawableEdge);
+                currentDrawableEdge = null;
+            }
         } else if (Controller.activeTool == MOVE) {
             dragging = true;
         } else if (Controller.activeTool == SELECT) {
