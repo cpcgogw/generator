@@ -46,6 +46,11 @@ public class EdgeController {
             Controller.getActiveCanvas().getChildren().removeAll(edge, edge.getArrow());
         } else if (Controller.activeTool == Controller.tools.MOVE) {
             dragging = true;
+        }else if (Controller.activeTool == Controller.tools.SUBEDGE){
+            if(NodeController.currentSubNode != null){
+                NodeController.currentSubNode.addEdge(edge);
+                NodeController.currentSubNode.drawEdges();
+            }
         }
     }
 

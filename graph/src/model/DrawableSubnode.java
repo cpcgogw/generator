@@ -2,9 +2,8 @@ package model;
 
 import javafx.geometry.VPos;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
+import javafx.scene.shape.*;
 import javafx.scene.text.Text;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
 
@@ -16,12 +15,14 @@ public class DrawableSubnode extends Circle implements Subnode, Tile {
     private OBJECT_TYPE type;
     private Color color = Color.YELLOW;
     public Text text;
+    public Path path = new Path();
     private int ID;
     private static int IDcount = 1000;
     private ArrayList<DrawableEdge> drawableEdges = new ArrayList<>();
 
     public DrawableSubnode(double x, double y, OBJECT_TYPE type) {
         this(x, y, IDcount++, type);
+        drawEdges();
     }
 
     public DrawableSubnode(double x, double y, int id, OBJECT_TYPE type) {
@@ -31,6 +32,15 @@ public class DrawableSubnode extends Circle implements Subnode, Tile {
         text = new Text(x, y, ""+type.toString().charAt(0));
         text.setTextOrigin(VPos.CENTER);
         this.setColor();
+    }
+
+    public Shape drawEdges(){
+        path.getElements().clear();
+        for(DrawableEdge e : drawableEdges){
+            path.getElements().add(new MoveTo(this.getCenterX(), this.getCenterY()));
+            path.getElements().add(new LineTo(e.getMiddleX(), e.getMiddleY()));
+        }
+        return path;
     }
 
     private void setColor() {
@@ -78,7 +88,7 @@ public class DrawableSubnode extends Circle implements Subnode, Tile {
 
     @Override
     public void addEdge(Edge e) {
-        throw new NotImplementedException();
+        addEdge((DrawableEdge) e);
     }
 
     @Override

@@ -17,6 +17,7 @@ public class NodeController {
     private boolean dragging;
     private ArrayList<DrawableAreaNode> drawableAreaNodes;
     private static NodeController instance = null;
+    public static DrawableSubnode currentSubNode;
 
     private NodeController(Controller controller) {
         currentDrawableEdge = null;
@@ -72,6 +73,7 @@ public class NodeController {
             if (c.addObject(node)) {
                 node.setOnMouseClicked(mouseEvent -> handlePressSubnode(node));
                 Controller.getActiveCanvas().getChildren().add(node);
+                Controller.getActiveCanvas().getChildren().add(node.drawEdges());
                 Controller.getActiveCanvas().getChildren().add(node.text);
             }
         }
@@ -81,18 +83,7 @@ public class NodeController {
         Log.print("NodeController: Subnode pressed: "+node.getType(), Log.LEVEL.DEBUG);
 
         if (Controller.activeTool == SUBEDGE) {
-            if (currentDrawableEdge == null) {
-                Log.print("NodeController: No current edge adding new.", Log.LEVEL.DEBUG);
-                currentDrawableEdge = new DrawableEdge(node, null);
-                node.addEdge(currentDrawableEdge);
-            } else {
-                Log.print("NodeController: Setting end node for current edge.", Log.LEVEL.DEBUG);
-                currentDrawableEdge.setEndNode(node);
-                node.addEdge(currentDrawableEdge);
-                Log.print("NodeController: Adding edge to canvas "+currentDrawableEdge, Log.LEVEL.DEBUG);
-                Controller.getActiveCanvas().getChildren().add(currentDrawableEdge);
-                currentDrawableEdge = null;
-            }
+            currentSubNode = node;
         }
     }
 

@@ -99,8 +99,8 @@ public class DrawableEdge extends Line implements Edge {
         arrowHead.getElements().add(new LineTo(x + Math.cos(angle+Math.toRadians(-45))*(DrawableAreaNode.DEFAULT_RADIUS/2),y + Math.sin(angle+Math.toRadians(-45))*(DrawableAreaNode.DEFAULT_RADIUS/2)));
         arrowHead.getElements().add(new LineTo(x,y));
         if(type == EDGE_TYPE.LOCKED){
-            deltaX = (startDrawableAreaNode.getCenterX() + endDrawableAreaNode.getCenterX()) / 2;
-            deltaY = (startDrawableAreaNode.getCenterY() + endDrawableAreaNode.getCenterY()) / 2;
+            deltaX = getMiddleX();
+            deltaY = getMiddleY();
             arrowHead.getElements().add(new MoveTo(deltaX, deltaY));
             arrowHead.getElements().add(new LineTo(deltaX, deltaY+20));
             arrowHead.getElements().add(new LineTo(deltaX, deltaY-20));
@@ -110,6 +110,13 @@ public class DrawableEdge extends Line implements Edge {
         }
 
         return arrowHead;
+    }
+
+    public double getMiddleX(){
+        return (startDrawableAreaNode.getCenterX() + endDrawableAreaNode.getCenterX()) / 2;
+    }
+    public double getMiddleY(){
+        return (startDrawableAreaNode.getCenterY() + endDrawableAreaNode.getCenterY()) / 2;
     }
 
     public DrawableAreaNode getEndDrawableAreaNode() {

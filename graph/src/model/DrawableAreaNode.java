@@ -219,6 +219,7 @@ public class DrawableAreaNode extends Circle implements AreaNode, Tile {
             for (DrawableEdge edge : subnode.getDrawableEdges()) {
                 edge.updateNodes();
             }
+            subnode.drawEdges();
             i--;
         }
     }
