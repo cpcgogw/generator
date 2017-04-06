@@ -45,6 +45,11 @@ public class SubNode implements Subnode {
     }
 
     @Override
+    public void setNodeId(int id) {
+        this.id = id;
+    }
+
+    @Override
     public TILE_TYPE getTILE_TYPE() {
         return type.toTile();
     }

@@ -9,4 +9,5 @@ public interface Node {
     int getNodeId();
     void addEdge(Edge e);
     ArrayList<? extends Edge> getEdges();
+    void setNodeId(int id);
 }

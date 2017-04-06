@@ -121,7 +121,12 @@ public class Controller {
     public static tools activeTool;
     public static TYPE activeType;
     public static Pane activeCanvas;
-    public DrawableAreaNode activeDrawableAreaNode;
+    public Node activeNode;
+
+    public void setActiveNode(Node node) {
+        this.activeNode = node;
+        active_node_id_field.setText(String.valueOf(node.getNodeId()));
+    }
 
     /**
      * Used to keep track of which tool is active
@@ -202,11 +207,6 @@ public class Controller {
         Translator.exportLevel(currentLevel, path);
     }
 
-    public void setActiveDrawableAreaNode(DrawableAreaNode activeDrawableAreaNode) {
-        this.activeDrawableAreaNode = activeDrawableAreaNode;
-        active_node_id_field.setText(String.valueOf(activeDrawableAreaNode.getNodeId()));
-    }
-
     public tools getActiveTool() {
         return activeTool;
     }
@@ -249,7 +249,7 @@ public class Controller {
     }
 
     private void saveActiveNode() {
-        activeDrawableAreaNode.setNodeId(Integer.parseInt(active_node_id_field.getText()));
+        activeNode.setNodeId(Integer.parseInt(active_node_id_field.getText()));
     }
 
     /**
@@ -259,11 +259,12 @@ public class Controller {
     private void generateLevel() {
         List<Rule> rules = loadAllRules();
 
-        Log.level = Log.LEVEL.DEBUG;
-
         canvas.getChildren().clear();
 
+        Log.level = Log.LEVEL.DEBUG;
+        //Log.print("Controller: Loaded rules: "+rules, Log.LEVEL.DEBUG);
         translateLevel(currentLevel, rules);
+        Log.level = Log.LEVEL.NONE;
 
         Log.print("Dumping generated level: ", Log.LEVEL.DEBUG);
         for (DrawableAreaNode n : currentLevel.drawableAreaNodes) {
@@ -322,8 +323,8 @@ public class Controller {
         return rules;
     }
 
-    private void translateLevel(DrawablePattern drawablePattern, List<Rule> rules) {
-        graphController.applyRandomRule(rules, drawablePattern);
+    private void translateLevel(DrawablePattern level, List<Rule> rules) {
+        graphController.applyRandomRule(rules, level);
     }
 
     private void showRules() {

@@ -24,7 +24,7 @@ public class NodeController {
         dragging = false;
         this.controller = controller;
         this.edgeController = EdgeController.getInstance();
-        this.drawableAreaNodes = new ArrayList<DrawableAreaNode>();
+        this.drawableAreaNodes = new ArrayList<>();
     }
 
     public static NodeController getInstance(Controller controller) {
@@ -67,7 +67,7 @@ public class NodeController {
         } else if (Controller.activeTool == MOVE) {
             dragging = true;
         } else if (Controller.activeTool == SELECT) {
-            controller.setActiveDrawableAreaNode(c);
+            controller.setActiveNode(c);
         } else if (Controller.activeTool == SUBNODE) {
             DrawableSubnode node = new DrawableSubnode(c.getCenterX(), c.getCenterY(), (OBJECT_TYPE) Controller.activeType);
             if (c.addObject(node)) {
@@ -84,6 +84,8 @@ public class NodeController {
 
         if (Controller.activeTool == SUBEDGE) {
             currentSubNode = node;
+        } else if (Controller.activeTool == SELECT) {
+            controller.setActiveNode(node);
         }
     }
 

@@ -31,6 +31,7 @@ public class DrawableSubnode extends Circle implements Subnode, Tile {
         this.type = type;
         text = new Text(x, y, ""+type.toString().charAt(0));
         text.setTextOrigin(VPos.CENTER);
+        text.setMouseTransparent(true);
         this.setColor();
     }
 
@@ -92,8 +93,24 @@ public class DrawableSubnode extends Circle implements Subnode, Tile {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (o instanceof DrawableSubnode) {
+            DrawableSubnode subnode = (DrawableSubnode) o;
+            return this.getType() == subnode.getType()
+                    && drawableEdges.containsAll(subnode.getDrawableEdges());
+        }
+
+        return false;
+    }
+
+    @Override
     public ArrayList<? extends Edge> getEdges() {
         return drawableEdges;
+    }
+
+    @Override
+    public void setNodeId(int id) {
+        this.ID = id;
     }
 
     public void addEdge(DrawableEdge e) {

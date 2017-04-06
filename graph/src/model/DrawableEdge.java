@@ -38,6 +38,16 @@ public class DrawableEdge extends Line implements Edge {
         this.setStroke(Color.BLACK);
         this.setStrokeWidth(STROKE_WIDTH);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof DrawableEdge) {
+            DrawableEdge edge = (DrawableEdge) o;
+            return this.getFrom() == edge.getFrom() && this.getTo() == edge.getTo();
+        }
+        return false;
+    }
+
     public DrawableEdge(DrawableAreaNode startDrawableAreaNode, DrawableAreaNode endDrawableAreaNode, EDGE_TYPE type) {
         this(startDrawableAreaNode, endDrawableAreaNode);
         this.type = type;

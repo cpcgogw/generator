@@ -48,6 +48,11 @@ public class AbstractNode implements AreaNode, Tile {
         return edges;
     }
 
+    @Override
+    public void setNodeId(int id) {
+        this.id = id;
+    }
+
     public void setType(TILE_TYPE type) {
         this.type = type;
     }
