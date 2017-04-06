@@ -40,8 +40,6 @@ public class Controller {
     @FXML
     private Button delete_button;
     @FXML
-    private Button move_button;
-    @FXML
     private Button select_node_button;
     @FXML
     private Button gen_button;
@@ -132,7 +130,7 @@ public class Controller {
      * Used to keep track of which tool is active
      */
     public enum tools {
-        EDGE, NODE, SUBNODE, DELETE, MOVE, SELECT, SUBEDGE, LOCKED_EDGE
+        EDGE, NODE, SUBNODE, DELETE, SELECT, SUBEDGE, LOCKED_EDGE
     }
 
     public void initialize(){
@@ -149,7 +147,6 @@ public class Controller {
 
         // Init editing buttons
         delete_button.setOnMouseClicked(mouseEvent -> activeTool = DELETE);
-        move_button.setOnMouseClicked(mouseEvent -> activeTool = MOVE);
         select_node_button.setOnMouseClicked(mouseEvent -> activeTool = SELECT);
         level_to_grid_button.setOnMouseClicked(mouseEvent -> currentLevelToGrid());
         export_button.setOnMouseClicked(mouseEvent -> exportCurrentLevel());

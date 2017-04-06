@@ -64,9 +64,8 @@ public class NodeController {
                 Controller.getActiveCanvas().getChildren().add(currentDrawableEdge);
                 currentDrawableEdge = null;
             }
-        } else if (Controller.activeTool == MOVE) {
-            dragging = true;
         } else if (Controller.activeTool == SELECT) {
+            dragging = true;
             controller.setActiveNode(c);
         } else if (Controller.activeTool == SUBNODE) {
             DrawableSubnode node = new DrawableSubnode(c.getCenterX(), c.getCenterY(), (OBJECT_TYPE) Controller.activeType);

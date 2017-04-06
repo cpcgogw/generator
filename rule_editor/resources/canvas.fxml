@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane fx:id="window" prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="rule_editor.controller.Controller">
+<AnchorPane fx:id="window" prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="rule_editor.controller.Controller">
    <children>
        <GridPane fx:id="rule_pane" layoutX="200.0" layoutY="29.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="29.0">
            <columnConstraints>
@@ -87,9 +87,8 @@
                                  <content>
                                     <VBox prefHeight="255.0" prefWidth="197.0">
                                        <children>
-                                          <Button fx:id="move_button" mnemonicParsing="false" prefHeight="26.0" prefWidth="156.0" text="Move" />
-                                          <Button fx:id="delete_button" mnemonicParsing="false" prefHeight="26.0" prefWidth="156.0" text="Delete" />
                                           <Button fx:id="select_node_button" mnemonicParsing="false" prefHeight="26.0" prefWidth="156.0" text="Select" />
+                                          <Button fx:id="delete_button" mnemonicParsing="false" prefHeight="26.0" prefWidth="156.0" text="Delete" />
                                           <Button fx:id="new_scenario_button" mnemonicParsing="false" prefHeight="26.0" prefWidth="155.0" text="New Scenario" />
                                           <Button fx:id="gen_button" mnemonicParsing="false" prefHeight="26.0" prefWidth="155.0" text="Generate level" />
                                           <Button fx:id="level_to_grid_button" mnemonicParsing="false" prefHeight="26.0" prefWidth="155.0" text="Display level on grid" />

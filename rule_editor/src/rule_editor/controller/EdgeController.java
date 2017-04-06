@@ -44,7 +44,7 @@ public class EdgeController {
         if (Controller.activeTool == Controller.tools.DELETE) {
             edge.delete();
             Controller.getActiveCanvas().getChildren().removeAll(edge, edge.getArrow());
-        } else if (Controller.activeTool == Controller.tools.MOVE) {
+        } else if (Controller.activeTool == Controller.tools.SELECT) {
             dragging = true;
         }else if (Controller.activeTool == Controller.tools.SUBEDGE){
             if(NodeController.currentSubNode != null){
