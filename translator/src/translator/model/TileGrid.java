@@ -188,4 +188,18 @@ public class TileGrid {
         }
         return s;
     }
+
+    public boolean setTile(Tile tile, int x, int y) {
+        if (isValidPosition(x, y)) {
+            placed.add(tile);
+            if(grid[x][y] != null){
+                placed.remove(grid[x][y]);
+                placedPositions.put(grid[x][y], new Pair<>(x,y));
+            }
+            placedPositions.put(tile, new Pair<>(x,y));
+            grid[x][y] = tile;
+            return true;
+        }
+        return false;
+    }
 }

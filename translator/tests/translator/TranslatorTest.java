@@ -115,6 +115,49 @@ public class TranslatorTest {
     }
 
     @Test
+    public void testLockedRoads() throws Exception {
+        AbstractPattern pattern = new AbstractPattern();
+        pattern = getRandomLockedPattern(10);
+        NodeGrid grid = new NodeGrid(8);
+        Translator.placeGraphOnGrid(pattern,grid);
+        System.out.print(grid);
+        TileGrid tileGrid = Translator.translateToLowRes(grid);
+        System.out.println(tileGrid);
+        tileGrid = Translator.translateToPopulatedGrid(tileGrid);
+        System.out.println(tileGrid);
+
+    }
+
+    private AbstractPattern getRandomLockedPattern(int size) {
+        AbstractPattern p = new AbstractPattern();
+        for (int i = 0; i < size; i++) {
+            AbstractNode node = new AbstractNode();
+            node.setType(TILE_TYPE.TOWN);
+            randomObjects(node);
+            addRandomLockedEdge(node, p);
+            p.addNode(node);
+        }
+        return p;
+    }
+
+    private void addRandomLockedEdge(AbstractNode node, AbstractPattern p) {
+        if(p.getNodes().size()>0) {
+            Node randNode = p.getNodes().get(rand.nextInt(p.getNodes().size()));
+            if(randNode != node){
+                if(rand.nextBoolean() && randNode.getEdges().size()<8 && node.getEdges().size()<8) {
+                    AbstractEdge e = new AbstractEdge(randNode, node, EDGE_TYPE.LOCKED);
+                    node.addEdge(e);
+                    randNode.addEdge(e);
+                } else{
+                    AbstractEdge e = new AbstractEdge(node, randNode, EDGE_TYPE.LOCKED);
+                    node.addEdge(e);
+                    randNode.addEdge(e);
+                }
+            }
+        }
+    }
+
+    @Test
     public void placeGraphOnGridAbstractPattern() throws Exception {
 
         /*

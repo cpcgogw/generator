@@ -5,10 +5,7 @@ import model.AreaNode;
 import model.Subnode;
 import model.TILE_TYPE;
 import model.Tile;
-import translator.model.AbstractNode;
-import translator.model.PopulatedTileGrid;
-import translator.model.Road;
-import translator.model.TileGrid;
+import translator.model.*;
 import utils.Log;
 
 import java.util.ArrayList;
@@ -37,12 +34,66 @@ public class SimpleTranslation extends TranslationStrategy {
                     copyFromPos(town(10, tile), popGrid, x*TILE_SIZE, y*TILE_SIZE);
                 } else if (tile.getTILE_TYPE() == TILE_TYPE.ROAD) {
                     copyFromPos(road(grid, x, y), popGrid, x*TILE_SIZE, y*TILE_SIZE);
+                } else if(tile.getTILE_TYPE() == TILE_TYPE.LOCKED_ROAD){
+                    copyFromPos(lockedRoad(grid, x,y), popGrid, x*TILE_SIZE, y*TILE_SIZE);
                 }
             }
         }
         grass(popGrid);
 
         return popGrid;
+    }
+
+    private PopulatedTileGrid lockedRoad(TileGrid grid, int xPos, int yPos) {
+        PopulatedTileGrid road = new PopulatedTileGrid(TILE_SIZE);
+        List<Pair<Integer, Integer>> neighbours = getNeighbours(grid, xPos, yPos);
+
+        if (neighbours.isEmpty())
+            return road;
+
+        Log.print("SimpleTranslation: Checking position xPos: "+xPos+", yPos: "+yPos+".", Log.LEVEL.DEBUG);
+        Log.print("SimpleTranslation: The positions where neighbours are not empty or road: "+neighbours, Log.LEVEL.DEBUG);
+
+        if (placeRoads(road, xPos, yPos, neighbours) && placeLocks(road, xPos, yPos, neighbours)) {
+            Log.print("SimpleTranslation: Road placed!", Log.LEVEL.DEBUG);
+        } else {
+            Log.print("SimpleTranslation: No road placed!", Log.LEVEL.DEBUG);
+        }
+
+        return road;
+    }
+
+    private boolean placeLocks(PopulatedTileGrid grid, int xPos, int yPos, List<Pair<Integer, Integer>> positions) {
+        boolean placed = false;
+        if (positions.contains(new Pair<>(xPos-1, yPos)) && positions.contains(new Pair<>(xPos+1, yPos))) {
+            grid.setTile(new LockedRoad(), 0, 4);
+            grid.setTile(new LockedRoad(), 9, 4);
+            placed = true;
+        }
+
+        if (positions.contains(new Pair<>(xPos-1, yPos-1)) && positions.contains(new Pair<>(xPos+1, yPos+1))) {
+            grid.setTile(new LockedRoad(), 0, 0);
+            grid.setTile(new LockedRoad(), 9, 9);
+
+            placed = true;
+        }
+
+        if (positions.contains(new Pair<>(xPos-1, yPos+1)) && positions.contains(new Pair<>(xPos+1, yPos-1))) {
+            grid.setTile(new LockedRoad(), 0, 9);
+            grid.setTile(new LockedRoad(), 9, 0);
+            placed = true;
+        }
+
+        if (positions.contains(new Pair<>(xPos, yPos+1)) && positions.contains(new Pair<>(xPos, yPos-1))) {
+            grid.setTile(new LockedRoad(), 4, 9);
+            grid.setTile(new LockedRoad(), 4, 0);
+            for (int i = TILE_SIZE-1; i >= 0; i--) {
+                grid.addTile(new LockedRoad(), 4, i);
+            }
+            placed = true;
+        }
+
+        return placed;
     }
 
     /**

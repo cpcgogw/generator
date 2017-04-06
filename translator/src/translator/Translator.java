@@ -143,7 +143,7 @@ public class Translator {
         }
         //HashMap<Node, Pair<Integer, Integer>> placed = lowResGrid.getPlacedPositions();
         List<Node> placed = grid.getNodes();
-        List<Pair<Integer, Integer>> toBePlaced = new ArrayList<>();
+        List<Pair<Pair<Integer, Integer>, EDGE_TYPE>> toBePlaced = new ArrayList<>();
         Log.print("Translator: Translating "+placed.size()+" nodes.", Log.LEVEL.INFO);
         for (Node n : placed) {
             if (n == null)
@@ -156,15 +156,18 @@ public class Translator {
                 Pair<Integer, Integer> first = lowResGrid.getNodePosition((Tile) e.getFrom());
                 Pair<Integer, Integer> second = lowResGrid.getNodePosition((Tile) e.getTo());
 
-                Pair<Integer, Integer> midPoint = midPoint(first, second);
+                Pair<Pair<Integer, Integer>, EDGE_TYPE> midPoint = new Pair<>(midPoint(first, second), e.getType());
 
                 toBePlaced.add(midPoint);
             }
         }
 
         for (Pair p : toBePlaced) {
-            Road r = new Road();
-            lowResGrid.addTile(r, ((Integer)p.getKey()), ((Integer)p.getValue()));
+            Tile t = new Road();
+            if(p.getValue() == EDGE_TYPE.LOCKED)
+                t = new LockedRoad();
+            Pair<Integer, Integer> pos = (Pair<Integer,Integer>)p.getKey();
+            lowResGrid.addTile(t, ((Integer)pos.getKey()), ((Integer)pos.getValue()));
         }
 
         return lowResGrid;
