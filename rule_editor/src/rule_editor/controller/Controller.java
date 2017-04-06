@@ -243,6 +243,8 @@ public class Controller {
                 }
             }
         }
+
+        showLevel();
     }
 
     private void saveActiveNode() {
@@ -340,6 +342,7 @@ public class Controller {
         canvas.setVisible(true);
         rule_pane.setVisible(false);
 
+        canvas.getChildren().clear();
         activeCanvas = canvas;
 
         updateDisplayedGraph();
