@@ -12,6 +12,7 @@ import utils.Log;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by time on 3/4/17.
@@ -33,22 +34,29 @@ public class DoOnce extends Command {
             return false;
         }
 
-        Pair<ArrayList<DrawableAreaNode>,ArrayList<DrawableEdge>> ruleR = FileHandler.loadNodes(file);
-        //TODO: Fix so rule accommodates recent changes
-        //Rule r = new Rule(new DrawablePattern(FileHandler.loadMatch(file)), FileHandler.loadTranslations(file));
-        ArrayList<Rule> rl = new ArrayList<>();
-        //rl.add(r);
+        List<DrawableAreaNode> match = FileHandler.loadMatch(file);
+        List<List<DrawableAreaNode>> translationsTMP = FileHandler.loadTranslations(file);
+        List<DrawablePattern> translations = new ArrayList<>();
+
+        //Need to do conversion...
+        for (List<DrawableAreaNode> nodes : translationsTMP) {
+            translations.add(new DrawablePattern((ArrayList<DrawableAreaNode>) nodes));
+        }
+
+        Rule r = new Rule(new DrawablePattern((ArrayList<DrawableAreaNode>) match), translations);
+        List<Rule> rules = new ArrayList<>();
+        rules.add(r);
+
 
         Log.print("Matching pattern to graph...", Log.LEVEL.INFO);
         Log.print("Graph: "+graph,Log.LEVEL.DEBUG);
-        ArrayList<Pair<Rule, DrawablePattern>> rulePatternList = graphController.rulesMatchingPattern(rl, graph);
+        ArrayList<Pair<Rule, DrawablePattern>> matches = graphController.rulesMatchingPattern(rules, graph);
 
-        if (rulePatternList.size() == 0) {
+        if (matches.size() == 0) {
             Log.print("DoOnce: No rules matching pattern.", Log.LEVEL.WARNING);
             return false;
         } else {
-            //TODO: Fix so rule accommodates recent changes
-            //graphController.applyRule(graph, rulePatternList.get(0).getValue(), r);
+            graphController.applyRule(graph, matches.get(0).getValue(), r);
             Log.print("Updated graph: "+graph,Log.LEVEL.DEBUG);
             return true;
         }

@@ -2,6 +2,7 @@ package graph_generator.parser;
 
 import model.DrawablePattern;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -11,6 +12,7 @@ public class DoNTimes extends Command {
     final int PARAM_SIZE = 2;
     int n;
     String rule;
+    Command doOnce;
 
     public DoNTimes() {
         clearParams();
@@ -20,6 +22,10 @@ public class DoNTimes extends Command {
     boolean execute(DrawablePattern graph) {
         if (rule == null || n<=0)
             return false;
+
+        for (int i=0; i < n; i++) {
+            doOnce.execute(graph);
+        }
 
         clearParams();
         return true;
@@ -40,6 +46,10 @@ public class DoNTimes extends Command {
             return false;
 
         rule = params.get(0);
+        doOnce = new DoOnce();
+        List<String> derp = new ArrayList<>();
+        derp.add(rule);
+        doOnce.setParameters(derp);
 
         return true;
     }
