@@ -179,7 +179,6 @@ public class GraphController {
      * @return
      * True if we have found a valid subpattern, otherwise false.
      */
-    //TODO: Fail rules which produce more than 8 edges on any target.
     private boolean insertValidSubPatternFromRule(DrawableAreaNode target, ArrayList<DrawableAreaNode> checkedNodes, DrawablePattern currentMatch, Rule rule) {
         boolean inserted = false;
 
@@ -195,17 +194,7 @@ public class GraphController {
 
         for (DrawableAreaNode match : rule.matchingDrawablePattern.drawableAreaNodes) {
             // find target in matching pattern with same type.
-            if (target.getType().equals(match.getType())) {//|| match.getType().equals(AREA_TYPE.ANY)) {
-                //TMP
-                /*for (DrawablePattern translations : rule.possibleTranslations) {
-                    for (DrawableAreaNode node : translations.drawableAreaNodes) {
-                        if (match.getNodeId() == node.getNodeId()) {
-                            for (DrawableEdge edge : node.getDrawableEdges()) {
-
-                            }
-                        }
-                    }
-                }*/
+            if (target.getType().equals(match.getType())) {
                 checkedNodes.add(target);
                 Log.print("insertValidSubPatternFromRule: found matching type", Log.LEVEL.DEBUG);
 
@@ -216,20 +205,25 @@ public class GraphController {
                 inserted = allSubnodesAreContainedIn(match, target, checkedNodes, currentMatch);
                 inserted = inserted && allEdgeAreContainedIn(match, target, checkedNodes, currentMatch, rule);
 
-                //This specific node is correct
+                // This specific node is correct
                 if (inserted) {
-                    //For each translation check that the edges
-                    /*for (DrawablePattern translation : rule.possibleTranslations) {
-                        Node n = findCorrespondingNode(match, currentMatch, rule);
-                    }*/
+                    // For each translation check that there wont be too many edges (>8)
+                    for (DrawablePattern translation : rule.possibleTranslations) {
+                        for (DrawableAreaNode node : translation.drawableAreaNodes) {
+                            if (node.getNodeId() == match.getNodeId()) {
+                                // NodeEdges - MatchEdges + TranslationEdges = final number of edges
+                                if (target.getDrawableEdges().size()
+                                        - match.getDrawableEdges().size()
+                                        + node.getDrawableEdges().size() > 8) {
+                                    return false;
+                                }
+                            }
+                        }
+                    }
                     Log.print("insertValidSubPatternFromRule: edges were correct, adding to pattern", Log.LEVEL.DEBUG);
                     currentMatch.drawableAreaNodes.add(target);
                 }
             }
-            /*
-             * once we have found a target which has the correct edges we can check all the subnodes to that target.
-             * issue here is that we need to keep track of which drawableAreaNodes we have check in order to not have a circular dep.
-             */
         }
 
         return inserted;
@@ -261,12 +255,6 @@ public class GraphController {
             Log.print("allEdgeAreContainedIn: given target had less edges than other given target", Log.LEVEL.DEBUG);
             return false;
         }
-
-        //We have a matching type on match and target
-        //Check if we will produce too many edges for the translation
-        //How to handle this for rule? Ie if only some of the possible
-        //translations will not produce too many edges, should only those
-        //possible translations work or the entire rule fails?
 
         // For each matchingEdge in target from matching pattern.
         for (DrawableEdge matchingEdge : match.getDrawableEdges()) {
@@ -333,5 +321,4 @@ public class GraphController {
         graph.resetIds();
         insertAndReplace(graph, p, rule);
     }
-
 }

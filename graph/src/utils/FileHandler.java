@@ -64,6 +64,7 @@ public class FileHandler {
         }
     }
 
+    //TODO: Should likely be removed since unused.
     public static Pair<ArrayList<DrawableAreaNode>,ArrayList<DrawableEdge>> loadNodes(File file){
         HashMap<Integer, model.Node> nodeMap = new HashMap<>();
         ArrayList<DrawableEdge> drawableEdges = new ArrayList<>();
