@@ -65,6 +65,11 @@ public class DrawableSubnode extends Circle implements Subnode, Tile {
         super.setFill(color);
     }
 
+    @Override
+    public String toString() {
+        return "Type: " + type + ", id: " + ID + ", edges: " + drawableEdges;
+    }
+
     public void setPosition(double x, double y) {
         super.setCenterX(x);
         super.setCenterY(y);

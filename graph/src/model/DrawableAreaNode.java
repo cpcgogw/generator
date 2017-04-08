@@ -99,6 +99,8 @@ public class DrawableAreaNode extends Circle implements AreaNode, Tile {
     public void setPos(double x, double y) {
         super.setCenterX(x);
         super.setCenterY(y);
+        updateSubnodes();
+        updateEdges();
     }
 
     public List<DrawableEdge> getDrawableEdges() {
@@ -203,7 +205,7 @@ public class DrawableAreaNode extends Circle implements AreaNode, Tile {
 
     @Override
     public String toString() {
-        return "Type: " + this.getType() + ", id:" + this.getNodeId() + ", #drawableEdges: " + this.getDrawableEdges().size();
+        return "Type: " + this.getType() + ", id:" + this.getNodeId() + ", edges: " + this.getDrawableEdges() + ", subnodes: "+subnodes;
     }
 
     public void updateSubnodes() {
@@ -234,5 +236,9 @@ public class DrawableAreaNode extends Circle implements AreaNode, Tile {
 
     public List<DrawableSubnode> getDrawableSubnodes() {
         return subnodes;
+    }
+
+    public void removeSubnode(DrawableSubnode subnode) {
+        subnodes.remove(subnode);
     }
 }

@@ -4,6 +4,8 @@ package rule_editor.controller;
 import model.*;
 import utils.Log;
 import java.util.ArrayList;
+import java.util.List;
+
 import static rule_editor.controller.Controller.tools.*;
 
 /**
@@ -41,50 +43,62 @@ public class NodeController {
         drawableAreaNodes.clear();
     }
 
-    public void handlePressNode(DrawableAreaNode c) {
+    public void handlePressNode(DrawableAreaNode node) {
         if (Controller.activeTool == DELETE) {
-            Controller.getActiveCanvas().getChildren().remove(c);
-            Controller.getActiveCanvas().getChildren().removeAll(c.getDrawableEdges());
-            for (DrawableEdge e: c.getDrawableEdges()) {
-                Controller.getActiveCanvas().getChildren().removeAll(e.getArrow());
+            Log.tmpPrint("NodeController: Nodes before deleting node 1 "+drawableAreaNodes, Log.LEVEL.DEBUG);
+            List<DrawableEdge> edges = node.getDrawableEdges();
+            for (DrawableEdge e : edges) {
+                if (node.equals(e.getTo())) {
+                    ((DrawableAreaNode) e.getFrom()).removeEdge(e);
+                } else {
+                    ((DrawableAreaNode) e.getTo()).removeEdge(e);
+                }
             }
+            //TODO: Figure out a better way to remove nodes when deleted.
+            controller.removeFromLevel(node);
+            Log.print("NodeController: Nodes after deleting node 1 "+drawableAreaNodes, Log.LEVEL.DEBUG);
+            controller.updateDisplayedGraph();
         } else if (Controller.activeTool == EDGE) {
             if (currentDrawableEdge == null) {
-                currentDrawableEdge = edgeController.addEdge(c, null);
+                currentDrawableEdge = edgeController.addEdge(node, null);
             } else {
-                Controller.getActiveCanvas().getChildren().add(currentDrawableEdge.setEndNode(c));
+                Controller.getActiveCanvas().getChildren().add(currentDrawableEdge.setEndNode(node));
                 Controller.getActiveCanvas().getChildren().add(currentDrawableEdge);
                 currentDrawableEdge = null;
             }
         } else if (Controller.activeTool == LOCKED_EDGE){
             if (currentDrawableEdge == null){
-                currentDrawableEdge = edgeController.addEdge(c, null, EDGE_TYPE.LOCKED);
+                currentDrawableEdge = edgeController.addEdge(node, null, EDGE_TYPE.LOCKED);
             } else {
-                Controller.getActiveCanvas().getChildren().add(currentDrawableEdge.setEndNode(c));
+                Controller.getActiveCanvas().getChildren().add(currentDrawableEdge.setEndNode(node));
                 Controller.getActiveCanvas().getChildren().add(currentDrawableEdge);
                 currentDrawableEdge = null;
             }
         } else if (Controller.activeTool == SELECT) {
             dragging = true;
-            controller.setActiveNode(c);
+            controller.setActiveNode(node);
         } else if (Controller.activeTool == SUBNODE) {
-            DrawableSubnode node = new DrawableSubnode(c.getCenterX(), c.getCenterY(), (OBJECT_TYPE) Controller.activeType);
-            if (c.addObject(node)) {
-                node.setOnMouseClicked(mouseEvent -> handlePressSubnode(node));
-                Controller.getActiveCanvas().getChildren().add(node);
-                Controller.getActiveCanvas().getChildren().add(node.drawEdges());
-                Controller.getActiveCanvas().getChildren().add(node.text);
+            DrawableSubnode subnode = new DrawableSubnode(node.getCenterX(), node.getCenterY(), (OBJECT_TYPE) Controller.activeType);
+            if (node.addObject(subnode)) {
+                subnode.setOnMouseClicked(mouseEvent -> handlePressSubnode(subnode, node));
+                Controller.getActiveCanvas().getChildren().add(subnode);
+                //Controller.getActiveCanvas().getChildren().add(subnode.drawEdges());
+                Controller.getActiveCanvas().getChildren().add(subnode.text);
             }
         }
     }
 
-    private void handlePressSubnode(DrawableSubnode node) {
-        Log.print("NodeController: Subnode pressed: "+node.getType(), Log.LEVEL.DEBUG);
+    private void handlePressSubnode(DrawableSubnode subnode, DrawableAreaNode node) {
+        Log.print("NodeController: Subnode pressed: "+subnode.getType(), Log.LEVEL.DEBUG);
 
         if (Controller.activeTool == SUBEDGE) {
-            currentSubNode = node;
+            currentSubNode = subnode;
         } else if (Controller.activeTool == SELECT) {
-            controller.setActiveNode(node);
+            controller.setActiveNode(subnode);
+        } else if (Controller.activeTool == DELETE) {
+            //TODO: something fucks up if any other subnode than the one with lowest ID is pressed.
+            node.removeSubnode(subnode);
+            controller.updateDisplayedGraph();
         }
     }
 
@@ -95,6 +109,11 @@ public class NodeController {
 
     private void setDraggable(DrawableAreaNode node) {
         node.setOnMousePressed(mouseEvent -> handlePressNode(node));
+
+        for (DrawableSubnode subnode : node.getDrawableSubnodes()) {
+            subnode.setOnMouseClicked(event -> handlePressSubnode(subnode, node));
+        }
+
         node.setOnMouseReleased(event -> {
             dragging = false;
         });
@@ -109,10 +128,22 @@ public class NodeController {
     }
 
     public  ArrayList<DrawableAreaNode> getDrawableAreaNodes(){
-        return drawableAreaNodes;
+        ArrayList<DrawableAreaNode> nodes = new ArrayList<>();
+        nodes.addAll(drawableAreaNodes);
+        return nodes;
     }
 
-    public  EdgeController getEdgeController(){
+    public EdgeController getEdgeController(){
         return edgeController;
+    }
+
+    public void setNodes(List<DrawableAreaNode> nodes) {
+        this.drawableAreaNodes.clear();
+
+        for (DrawableAreaNode node : nodes) {
+            node.updateEdges();
+            node.updateSubnodes();
+            addNode(node);
+        }
     }
 }

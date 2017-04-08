@@ -9,7 +9,7 @@ import model.OBJECT_TYPE;
  */
 
 public class Log {
-    public enum LEVEL {NONE, ERROR, WARNING, DEBUG, INFO};
+    public enum LEVEL {NONE, ERROR, WARNING, DEBUG, INFO}
 
     private static boolean LOGGING = false;
     public static LEVEL level = LEVEL.NONE;

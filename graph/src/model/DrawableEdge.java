@@ -40,6 +40,11 @@ public class DrawableEdge extends Line implements Edge {
     }
 
     @Override
+    public String toString() {
+        return "("+getFrom().getNodeId()+", "+getTo().getNodeId()+")";
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (o instanceof DrawableEdge) {
             DrawableEdge edge = (DrawableEdge) o;
