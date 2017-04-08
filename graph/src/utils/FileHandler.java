@@ -77,11 +77,8 @@ public class FileHandler {
 
 
             //Defines all drawableAreaNodes...
-
             NodeList xnodeList = doc.getElementsByTagName("AreaNode"); //grab all "AreaNode" from XML-file
             nodeMap = extractNodes(xnodeList);
-
-
 
             //Defines all drawableEdges...
             HashMap<Integer,ArrayList<Integer>> edgeMap = new HashMap<>(); //HashMap used for easy fix of duplicate drawableEdges.
@@ -103,6 +100,26 @@ public class FileHandler {
         //Returns the entries as an ArrayList
         Pair pair = new Pair(new ArrayList<>(nodeMap.values()), drawableEdges);
         return pair;
+    }
+
+    public static List<Rule> loadAllRules() {
+        File folder = new File("saves/rules");
+        List<Rule> rules = new ArrayList<>();
+
+        for (File f : folder.listFiles()) {
+            if(!f.isDirectory()){
+                //TODO: Refactor so FileHandler is used correctly
+                DrawablePattern match = new DrawablePattern((ArrayList<DrawableAreaNode>) FileHandler.loadMatch(f));
+                ArrayList<DrawablePattern> p = new ArrayList<>();
+                for (List<DrawableAreaNode> list : FileHandler.loadTranslations(f)) {
+                    p.add(new DrawablePattern((ArrayList<DrawableAreaNode>) list));
+                }
+
+                rules.add(new Rule(match, p));
+            }
+        }
+
+        return rules;
     }
 
     public static List<DrawableAreaNode> loadLevel(File file) {

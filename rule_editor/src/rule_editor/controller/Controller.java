@@ -286,7 +286,7 @@ public class Controller {
      * looks for scenarios/rules in ./saves/rules
      */
     private void generateLevel() {
-        List<Rule> rules = loadAllRules();
+        List<Rule> rules = FileHandler.loadAllRules();
 
         canvas.getChildren().clear();
 
@@ -329,26 +329,6 @@ public class Controller {
                 addToCanvas(p.drawableAreaNodes);
             }
         }
-    }
-
-    private List<Rule> loadAllRules() {
-        File folder = new File("saves/rules");
-        List<Rule> rules = new ArrayList<>();
-
-        for (File f : folder.listFiles()) {
-            if(!f.isDirectory()){
-                //TODO: Refactor so FileHandler is used correctly
-                DrawablePattern match = new DrawablePattern((ArrayList<DrawableAreaNode>) FileHandler.loadMatch(f));
-                ArrayList<DrawablePattern> p = new ArrayList<>();
-                for (List<DrawableAreaNode> list : FileHandler.loadTranslations(f)) {
-                    p.add(new DrawablePattern((ArrayList<DrawableAreaNode>) list));
-                }
-
-                rules.add(new Rule(match, p));
-            }
-        }
-
-        return rules;
     }
 
     private void translateLevel(DrawablePattern level, List<Rule> rules) {

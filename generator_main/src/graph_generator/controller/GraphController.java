@@ -4,9 +4,7 @@ import javafx.util.Pair;
 import model.*;
 import utils.Log;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Created by vilddjur on 2/28/17.
@@ -75,6 +73,7 @@ public class GraphController {
             boolean result = insertValidSubPatternFromRule(graph.drawableAreaNodes.get(i), new ArrayList<DrawableAreaNode>(), p, r);
 
             if (result) {
+                //If the current node can get too many edges its not a possible rule.
                 rulePatternList.add(new Pair<>(r,p));
             }
 
@@ -106,13 +105,14 @@ public class GraphController {
         DrawablePattern tr = rule.randomPossiblePattern();
         for (DrawableAreaNode drawableAreaNode : p.drawableAreaNodes) {
             DrawableAreaNode n = findCorrespondingNode(drawableAreaNode, tr, rule);
-            if(n != null){
+            if (n != null) {
                 Log.print("insertAndReplace: found corresponding drawableAreaNode; "+ n, Log.LEVEL.INFO);
                 n.removeEdgesToNodesWithType("ANY");
-                for (DrawableEdge e :
-                        n.getDrawableEdges()) {
+
+                for (DrawableEdge e : n.getDrawableEdges()) {
                     e.replaceNode(n, drawableAreaNode);
                 }
+
                 drawableAreaNode.setCenterX(n.getCenterX());
                 drawableAreaNode.setCenterY(n.getCenterY());
                 drawableAreaNode.addAllEdges(n.getDrawableEdges());
@@ -151,8 +151,7 @@ public class GraphController {
 
     private DrawableAreaNode findCorrespondingNode(DrawableAreaNode drawableAreaNode, DrawablePattern p, Rule rule) {
         DrawableAreaNode ret = null;
-        for (DrawableAreaNode n :
-                rule.matchingDrawablePattern.drawableAreaNodes) {
+        for (DrawableAreaNode n : rule.matchingDrawablePattern.drawableAreaNodes) {
             if (drawableAreaNode.getType().equals(n.getType())){
                 for (DrawableAreaNode n2 : p.drawableAreaNodes) {
                     if (n2.getNodeId() == n.getNodeId())
@@ -164,56 +163,71 @@ public class GraphController {
     }
 
     /**
-     * Checks if node 'node' is a valid node in the given rules matchingpattern if that is the case its added to the
-     * pattern 'currentMatch' will return false if any valid 'node' found in matchingpattern has more than 8 edges.
-     * After checking a node, if its valid and has more drawableAreaNodes to check it will call itself with the next node and
-     * add the checked node node to checkedNode list.
+     * Checks if target 'target' is a valid target in the given rules matchingpattern if that is the case its added to the
+     * pattern 'currentMatch' will return false if any valid 'target' found in matchingpattern has more than 8 edges.
+     * After checking a target, if its valid and has more drawableAreaNodes to check it will call itself with the next target and
+     * add the checked target target to checkedNode list.
      *
-     * @param node
+     * @param target
      * DrawableAreaNode to check if valid in matchingDrawablePattern
      * @param checkedNodes
-     * List of checked drawableAreaNodes so we dont check same node twice
+     * List of checked drawableAreaNodes so we dont check same target twice
      * @param currentMatch
-     * Valid subpattern built from 'node'
+     * Valid subpattern built from 'target'
      * @param rule
      * Rule with the pattern we are matching against
      * @return
      * True if we have found a valid subpattern, otherwise false.
      */
-    //TODO: Fail rules which produce more than 8 edges on any node.
-    private boolean insertValidSubPatternFromRule(DrawableAreaNode node, ArrayList<DrawableAreaNode> checkedNodes, DrawablePattern currentMatch, Rule rule){
+    //TODO: Fail rules which produce more than 8 edges on any target.
+    private boolean insertValidSubPatternFromRule(DrawableAreaNode target, ArrayList<DrawableAreaNode> checkedNodes, DrawablePattern currentMatch, Rule rule) {
         boolean inserted = false;
 
-        if (checkedNodes.contains(node)) {
+        if (checkedNodes.contains(target)) {
             return true;
         }
 
-        // check so that node has less than 8 edges
-        if (node.getDrawableEdges().size() > 8) {
-            Log.print("insertValidSubPatternFromRule: node has more than 8 edges; returning false", Log.LEVEL.DEBUG);
+        // check so that target has less than 8 edges
+        if (target.getDrawableEdges().size() > 8) {
+            Log.print("insertValidSubPatternFromRule: target has more than 8 edges; returning false", Log.LEVEL.DEBUG);
             return false;
         }
 
-        for (DrawableAreaNode n : rule.matchingDrawablePattern.drawableAreaNodes) {
-            // find node in matching pattern with same type.
-            if (node.getType().equals(n.getType())) {//|| n.getType().equals(AREA_TYPE.ANY)) {
-                checkedNodes.add(node);
+        for (DrawableAreaNode match : rule.matchingDrawablePattern.drawableAreaNodes) {
+            // find target in matching pattern with same type.
+            if (target.getType().equals(match.getType())) {//|| match.getType().equals(AREA_TYPE.ANY)) {
+                //TMP
+                /*for (DrawablePattern translations : rule.possibleTranslations) {
+                    for (DrawableAreaNode node : translations.drawableAreaNodes) {
+                        if (match.getNodeId() == node.getNodeId()) {
+                            for (DrawableEdge edge : node.getDrawableEdges()) {
+
+                            }
+                        }
+                    }
+                }*/
+                checkedNodes.add(target);
                 Log.print("insertValidSubPatternFromRule: found matching type", Log.LEVEL.DEBUG);
 
                 /*
-                 * all edges in node n must be in node "node"
+                 * all edges in target match must be in target "target"
                  * also traverses the drawableAreaNodes to check
                  */
-                inserted = allSubnodesAreContainedIn(n, node, checkedNodes, currentMatch);
-                inserted = inserted && allEdgeAreContainedIn(n, node, checkedNodes, currentMatch, rule);
+                inserted = allSubnodesAreContainedIn(match, target, checkedNodes, currentMatch);
+                inserted = inserted && allEdgeAreContainedIn(match, target, checkedNodes, currentMatch, rule);
 
+                //This specific node is correct
                 if (inserted) {
+                    //For each translation check that the edges
+                    /*for (DrawablePattern translation : rule.possibleTranslations) {
+                        Node n = findCorrespondingNode(match, currentMatch, rule);
+                    }*/
                     Log.print("insertValidSubPatternFromRule: edges were correct, adding to pattern", Log.LEVEL.DEBUG);
-                    currentMatch.drawableAreaNodes.add(node);
+                    currentMatch.drawableAreaNodes.add(target);
                 }
             }
             /*
-             * once we have found a node which has the correct edges we can check all the subnodes to that node.
+             * once we have found a target which has the correct edges we can check all the subnodes to that target.
              * issue here is that we need to keep track of which drawableAreaNodes we have check in order to not have a circular dep.
              */
         }
@@ -230,7 +244,8 @@ public class GraphController {
     }
 
     /**
-     * Checks so all that all edges that target 'match' has, target 'target' will have too.
+     * Checks so all edges of the target node contains all edges of the matching node.
+     *
      * @param match
      * @param target
      * @param checkedNodes
@@ -246,6 +261,12 @@ public class GraphController {
             Log.print("allEdgeAreContainedIn: given target had less edges than other given target", Log.LEVEL.DEBUG);
             return false;
         }
+
+        //We have a matching type on match and target
+        //Check if we will produce too many edges for the translation
+        //How to handle this for rule? Ie if only some of the possible
+        //translations will not produce too many edges, should only those
+        //possible translations work or the entire rule fails?
 
         // For each matchingEdge in target from matching pattern.
         for (DrawableEdge matchingEdge : match.getDrawableEdges()) {
