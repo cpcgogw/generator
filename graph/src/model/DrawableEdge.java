@@ -31,7 +31,7 @@ public class DrawableEdge extends Line implements Edge {
         this.setStartDrawableAreaNode(startDrawableAreaNode);
 
         if (endDrawableAreaNode != null) {
-            this.setEndNode(endDrawableAreaNode);
+            this.setEndDrawableAreaNode(endDrawableAreaNode);
         }
 
         this.setFill(new Color(0,0,0,0));
@@ -79,10 +79,21 @@ public class DrawableEdge extends Line implements Edge {
      * @param startDrawableAreaNode
      */
     public void setStartDrawableAreaNode(DrawableAreaNode startDrawableAreaNode) {
+        this.setStartNode(startDrawableAreaNode);
+        startDrawableAreaNode.addEdge(this);
+    }
+
+    public void setStartNode(DrawableAreaNode startDrawableAreaNode) {
         this.setStartX(startDrawableAreaNode.getCenterX());
         this.setStartY(startDrawableAreaNode.getCenterY());
         this.startDrawableAreaNode = startDrawableAreaNode;
-        startDrawableAreaNode.addEdge(this);
+    }
+
+    public Shape setEndDrawableAreaNode(DrawableAreaNode endDrawableAreaNode) {
+        this.setEndNode(endDrawableAreaNode);
+        this.endDrawableAreaNode.addEdge(this);
+
+        return makeArrow();
     }
 
     public DrawableAreaNode getStartDrawableAreaNode() {
@@ -97,7 +108,6 @@ public class DrawableEdge extends Line implements Edge {
         this.setEndX(endDrawableAreaNode.getCenterX());
         this.setEndY(endDrawableAreaNode.getCenterY());
         this.endDrawableAreaNode = endDrawableAreaNode;
-        this.endDrawableAreaNode.addEdge(this);
 
         return makeArrow();
     }
@@ -178,9 +188,9 @@ public class DrawableEdge extends Line implements Edge {
      * DrawableAreaNode to replace with
      */
     public void replaceNode(DrawableAreaNode replace, DrawableAreaNode newDrawableAreaNode){
-        if(startDrawableAreaNode == replace){
+        if (startDrawableAreaNode == replace) {
             startDrawableAreaNode = newDrawableAreaNode;
-        }else if(endDrawableAreaNode == replace){
+        } else if(endDrawableAreaNode == replace) {
             endDrawableAreaNode = newDrawableAreaNode;
         }
     }

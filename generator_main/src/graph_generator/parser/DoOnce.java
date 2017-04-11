@@ -50,7 +50,7 @@ public class DoOnce extends Command {
 
         Log.print("Matching pattern to graph...", Log.LEVEL.INFO);
         Log.print("Graph: "+graph,Log.LEVEL.DEBUG);
-        ArrayList<Pair<Rule, DrawablePattern>> matches = graphController.rulesMatchingPattern(rules, graph);
+        ArrayList<Pair<Rule, Pair<DrawablePattern, DrawablePattern>>> matches = graphController.rulesMatchingPattern(rules, graph);
 
         if (matches.size() == 0) {
             Log.print("DoOnce: No rules matching pattern.", Log.LEVEL.WARNING);

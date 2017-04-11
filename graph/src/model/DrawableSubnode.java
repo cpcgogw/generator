@@ -101,8 +101,7 @@ public class DrawableSubnode extends Circle implements Subnode, Tile {
     public boolean equals(Object o) {
         if (o instanceof DrawableSubnode) {
             DrawableSubnode subnode = (DrawableSubnode) o;
-            return this.getType() == subnode.getType()
-                    && drawableEdges.containsAll(subnode.getDrawableEdges());
+            return this.getType() == subnode.getType();
         }
 
         return false;

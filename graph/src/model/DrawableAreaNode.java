@@ -191,14 +191,17 @@ public class DrawableAreaNode extends Circle implements AreaNode, Tile {
         return super.hashCode()+id*5+type.hashCode()*7;
     }
 
-    public DrawableAreaNode clone(){
-        DrawableAreaNode drawableAreaNode = new DrawableAreaNode(this.getCenterX(), this.getCenterY(), this.getType());
-        for (DrawableEdge e: this.drawableEdges){
-            if(e.getStartDrawableAreaNode().getNodeId() == this.id)
-                e.setStartDrawableAreaNode(drawableAreaNode);
-            if(e.getEndDrawableAreaNode().getNodeId() == this.id)
+    public DrawableAreaNode clone() {
+        DrawableAreaNode drawableAreaNode = new DrawableAreaNode(this.getCenterX(), this.getCenterY(), this.id, this.getType());
+        for (DrawableEdge e: this.drawableEdges) {
+            if (e.getStartDrawableAreaNode().getNodeId() == this.id)
+                e.setStartNode(drawableAreaNode);
+            if (e.getEndDrawableAreaNode().getNodeId() == this.id)
                 e.setEndNode(drawableAreaNode);
             drawableAreaNode.drawableEdges.add(e);
+        }
+        for (DrawableSubnode subnode : this.subnodes) {
+            drawableAreaNode.addObject(subnode);
         }
         return drawableAreaNode;
     }
@@ -240,5 +243,17 @@ public class DrawableAreaNode extends Circle implements AreaNode, Tile {
 
     public void removeSubnode(DrawableSubnode subnode) {
         subnodes.remove(subnode);
+    }
+
+    public void removeAllEdges() {
+        // Remove references to this node
+        for (DrawableEdge edge : drawableEdges) {
+            if (edge.getFrom() == this) {
+                ((DrawableAreaNode) edge.getTo()).removeEdge(edge);
+            } else {
+                ((DrawableAreaNode) edge.getFrom()).removeEdge(edge);
+            }
+        }
+        drawableEdges.clear();
     }
 }

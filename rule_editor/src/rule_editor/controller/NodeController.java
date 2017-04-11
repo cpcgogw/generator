@@ -62,7 +62,7 @@ public class NodeController {
             if (currentDrawableEdge == null) {
                 currentDrawableEdge = edgeController.addEdge(node, null);
             } else {
-                Controller.getActiveCanvas().getChildren().add(currentDrawableEdge.setEndNode(node));
+                Controller.getActiveCanvas().getChildren().add(currentDrawableEdge.setEndDrawableAreaNode(node));
                 Controller.getActiveCanvas().getChildren().add(currentDrawableEdge);
                 currentDrawableEdge = null;
             }

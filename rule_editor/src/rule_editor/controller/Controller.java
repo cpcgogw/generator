@@ -166,7 +166,7 @@ public class Controller {
         level_to_grid_button.setOnMouseClicked(mouseEvent -> currentLevelToGrid());
         export_button.setOnMouseClicked(mouseEvent -> exportCurrentLevel());
         gen_button.setOnMouseClicked(event -> generateLevel());
-        print_button.setOnMouseClicked(event -> printCurrentLevel());
+        print_button.setOnMouseClicked(event -> printLevel());
         print_canvas_button.setOnMouseClicked(event -> printCanvas());
 
         // Init subnode buttons
@@ -213,17 +213,16 @@ public class Controller {
     }
 
     private void printCanvas() {
-        System.out.println();
-        System.out.println("Printing Canvas");
+        System.out.println("Printing Active Canvas");
         for (javafx.scene.Node node : activeCanvas.getChildren())
             System.out.println(node);
     }
 
-    private void printCurrentLevel() {
+    private void printLevel() {
         if (activeCanvas == canvas)
-            System.out.println(currentLevel);
+            System.out.println("Current Level: "+currentLevel);
         else if (activeCanvas == rule_canvas)
-            System.out.println(activeRule);
+            System.out.println("Active Rule: "+activeRule);
     }
 
     private void exportCurrentLevel() {
@@ -372,6 +371,7 @@ public class Controller {
         for (DrawableAreaNode node : nodes) {
             activeCanvas.getChildren().add(node);
             for (DrawableSubnode subnode : node.getDrawableSubnodes()) {
+                Log.print("Adding node "+node.getNodeId()+", subnode "+subnode.getNodeId()+" to canvas.", Log.LEVEL.DEBUG);
                 activeCanvas.getChildren().add(subnode);
                 activeCanvas.getChildren().add(subnode.text);
 
