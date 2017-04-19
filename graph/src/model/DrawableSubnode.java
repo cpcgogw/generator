@@ -124,4 +124,8 @@ public class DrawableSubnode extends Circle implements Subnode, Tile {
     public ArrayList<DrawableEdge> getDrawableEdges() {
         return drawableEdges;
     }
+
+    public void removeEdge(DrawableEdge edge) {
+        this.drawableEdges.remove(edge);
+    }
 }

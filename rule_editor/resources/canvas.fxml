@@ -95,6 +95,7 @@
                                           <Button fx:id="export_button" mnemonicParsing="false" prefHeight="26.0" prefWidth="155.0" text="Export as level" />
                                           <Button fx:id="print_button" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="156.0" text="Print" />
                                           <Button fx:id="print_canvas_button" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="156.0" text="Print canvas" />
+                                          <Button fx:id="update_button" layoutX="10.0" layoutY="192.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="156.0" text="update" />
                                        </children>
                                     </VBox>
                                  </content>

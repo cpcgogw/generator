@@ -3,6 +3,7 @@ package model;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
+import utils.Log;
 
 /**
  * Created by vilddjur on 1/24/17.
@@ -137,11 +138,19 @@ public class DrawableEdge extends Line implements Edge {
         return arrowHead;
     }
 
-    public double getMiddleX(){
-        return (startDrawableAreaNode.getCenterX() + endDrawableAreaNode.getCenterX()) / 2;
+    public double getMiddleX() {
+        if (startDrawableAreaNode == null) {
+            return (start.getCenterX() + end.getCenterX()) / 2;
+        } else {
+            return (startDrawableAreaNode.getCenterX() + endDrawableAreaNode.getCenterX()) / 2;
+        }
     }
     public double getMiddleY(){
-        return (startDrawableAreaNode.getCenterY() + endDrawableAreaNode.getCenterY()) / 2;
+        if (startDrawableAreaNode == null) {
+            return (start.getCenterY() + end.getCenterY()) / 2;
+        } else {
+            return (startDrawableAreaNode.getCenterY() + endDrawableAreaNode.getCenterY()) / 2;
+        }
     }
 
     public DrawableAreaNode getEndDrawableAreaNode() {
@@ -175,8 +184,21 @@ public class DrawableEdge extends Line implements Edge {
     }
 
     public void delete() {
-        getStartDrawableAreaNode().removeEdge(this);
-        getEndDrawableAreaNode().removeEdge(this);
+        if (startDrawableAreaNode == null) {
+            start.removeEdge(this);
+            end.removeEdge(this);
+        } else {
+            getStartDrawableAreaNode().removeEdge(this);
+            getEndDrawableAreaNode().removeEdge(this);
+        }
+    }
+
+    public DrawableSubnode getStart() {
+        return start;
+    }
+
+    public DrawableSubnode getEnd() {
+        return end;
     }
 
     /**
@@ -214,10 +236,11 @@ public class DrawableEdge extends Line implements Edge {
         return endDrawableAreaNode;
     }
 
-    public Shape setEndNode(DrawableSubnode node) {
-        end = node;
-        this.setEndX(end.getCenterX());
-        this.setEndY(end.getCenterY());
-        return null;
+    //TODO: This method should not return anything at all wtf.
+    public Shape setEndNode(DrawableSubnode subnode) {
+        this.end = subnode;
+        this.end.addEdge(this);
+        this.updateNodes();
+        return null; //makeArrow();
     }
 }

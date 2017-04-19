@@ -5,6 +5,7 @@ import javafx.scene.shape.Circle;
 import utils.Log;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -241,8 +242,15 @@ public class DrawableAreaNode extends Circle implements AreaNode, Tile {
         return subnodes;
     }
 
+    //TODO: The equals method is wrong in DrawableSubnode, matches nodes without having same node ID.
     public void removeSubnode(DrawableSubnode subnode) {
-        subnodes.remove(subnode);
+        for (Iterator<DrawableSubnode> iterator = subnodes.iterator(); iterator.hasNext();) {
+            DrawableSubnode sub = iterator.next();
+            if (subnode.getNodeId() == sub.getNodeId()) {
+                iterator.remove();
+            }
+        }
+        //subnodes.remove(subnode);
     }
 
     public void removeAllEdges() {

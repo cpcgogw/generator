@@ -1,9 +1,11 @@
 package rule_editor.controller;
 
 
+import javafx.scene.shape.Shape;
 import model.*;
 import utils.Log;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import static rule_editor.controller.Controller.tools.*;
@@ -89,16 +91,37 @@ public class NodeController {
     }
 
     private void handlePressSubnode(DrawableSubnode subnode, DrawableAreaNode node) {
-        Log.print("NodeController: Subnode pressed: "+subnode.getType(), Log.LEVEL.DEBUG);
+        Log.tmpPrint("NodeController: Subnode pressed: "+subnode.getNodeId(), Log.LEVEL.DEBUG);
 
         if (Controller.activeTool == SUBEDGE) {
-            currentSubNode = subnode;
+            if (currentDrawableEdge == null) {
+                currentDrawableEdge = edgeController.addEdge(subnode, null);
+            } else {
+                if (subnode.getNodeId() == currentDrawableEdge.getFrom().getNodeId()) {
+                    return;
+                }
+                //TODO: setEndNode should not return the arrow, it should have a separate function.
+                currentDrawableEdge.setEndNode(subnode);
+                Controller.activeCanvas.getChildren().add(currentDrawableEdge);
+                currentDrawableEdge = null;
+            }
         } else if (Controller.activeTool == SELECT) {
             controller.setActiveNode(subnode);
         } else if (Controller.activeTool == DELETE) {
             //TODO: something fucks up if any other subnode than the one with lowest ID is pressed.
+            List<DrawableEdge> edges = subnode.getDrawableEdges();
+            for (Iterator<DrawableEdge> iterator = edges.iterator(); iterator.hasNext();) {
+                DrawableEdge edge = iterator.next();
+                if (subnode.equals(edge.getFrom())) {
+                    ((DrawableSubnode) edge.getTo()).removeEdge(edge);
+                } else {
+                    ((DrawableSubnode) edge.getFrom()).removeEdge(edge);
+                }
+                iterator.remove();
+            }
             node.removeSubnode(subnode);
-            controller.updateDisplayedGraph();
+            //TODO: the display should of course be updated after this action,
+            //TODO: but that is not possible from inside this method. Manual update button added for now.
         }
     }
 

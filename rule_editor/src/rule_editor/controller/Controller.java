@@ -6,6 +6,9 @@ import graph_generator.parser.CookbookParser;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
@@ -22,6 +25,7 @@ import utils.Log;
 import javax.swing.*;
 import java.io.File;
 import java.util.*;
+import java.util.List;
 
 import static rule_editor.controller.Controller.tools.*;
 
@@ -51,6 +55,8 @@ public class Controller {
     private Button print_button;
     @FXML
     private Button print_canvas_button;
+    @FXML
+    private Button update_button;
 
     @FXML
     private Button start_node_button;
@@ -168,6 +174,7 @@ public class Controller {
         gen_button.setOnMouseClicked(event -> generateLevel());
         print_button.setOnMouseClicked(event -> printLevel());
         print_canvas_button.setOnMouseClicked(event -> printCanvas());
+        update_button.setOnMouseClicked(event -> updateDisplayedGraph());
 
         // Init subnode buttons
         start_node_button.setOnMouseClicked(mouseEvent -> activateType(OBJECT_TYPE.START));
@@ -508,6 +515,10 @@ public class Controller {
         currentLevel.drawableAreaNodes = nodes;
 
         showLevel();
+    }
+
+    public Pane getCanvas() {
+        return canvas;
     }
 
     /**

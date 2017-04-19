@@ -2,6 +2,7 @@ package rule_editor.controller;
 
 import model.DrawableEdge;
 import model.DrawableAreaNode;
+import model.DrawableSubnode;
 import model.EDGE_TYPE;
 
 /**
@@ -56,6 +57,12 @@ public class EdgeController {
 
     public DrawableEdge addEdge(DrawableAreaNode from, DrawableAreaNode to, EDGE_TYPE type) {
         DrawableEdge edge = new DrawableEdge(from, to, type);
+        setDraggable(edge);
+        return edge;
+    }
+
+    public DrawableEdge addEdge(DrawableSubnode from, DrawableSubnode to) {
+        DrawableEdge edge = new DrawableEdge(from, to);
         setDraggable(edge);
         return edge;
     }
