@@ -59,26 +59,11 @@ public class Controller {
     private Button update_button;
 
     @FXML
-    private Button start_node_button;
-    @FXML
-    private Button end_node_button;
-    @FXML
-    private Button key_node_button;
-    @FXML
-    private Button lock_node_button;
-    @FXML
-    private Button room_node_button;
-    @FXML
-    private Button any_node_button;
-    @FXML
-    private Button grass_node_button;
-    @FXML
-    private Button desert_node_button;
-    @FXML
     private Button subedge_button;
     @FXML
-    private Button enemy_subnode;
-
+    private ChoiceBox area_node_choice;
+    @FXML
+    private ChoiceBox sub_node_choice;
 
     @FXML
     private Pane canvas;
@@ -176,17 +161,12 @@ public class Controller {
         print_canvas_button.setOnMouseClicked(event -> printCanvas());
         update_button.setOnMouseClicked(event -> updateDisplayedGraph());
 
-        // Init subnode buttons
-        start_node_button.setOnMouseClicked(mouseEvent -> activateType(OBJECT_TYPE.START));
-        end_node_button.setOnMouseClicked(mouseEvent -> activateType(OBJECT_TYPE.END));
-        key_node_button.setOnMouseClicked(mouseEvent -> activateType(OBJECT_TYPE.KEY));
-        enemy_subnode.setOnMouseClicked(mouseEvent -> activateType(OBJECT_TYPE.MONSTER));
-        lock_node_button.setOnMouseClicked(mouseEvent -> activateType(OBJECT_TYPE.LOCK)); //SHOULD BE EDGE
+        // init choiceboxes
+        sub_node_choice.getItems().addAll(OBJECT_TYPE.values());
+        area_node_choice.getItems().addAll(AREA_TYPE.values());
 
-        // Init node buttons
-        room_node_button.setOnMouseClicked(mouseEvent -> activateType(AREA_TYPE.TOWN));
-        grass_node_button.setOnMouseClicked(mouseEvent -> activateType(AREA_TYPE.GRASSFIELD));
-        desert_node_button.setOnMouseClicked(mouseEvent -> activateType(AREA_TYPE.DESERT));
+        sub_node_choice.setOnAction(event -> activateType((OBJECT_TYPE) sub_node_choice.getValue()));
+        area_node_choice.setOnAction(event -> activateType((AREA_TYPE) area_node_choice.getValue()));
 
         // Init edge buttons
         subedge_button.setOnMouseClicked(mouseEvent -> activeTool = SUBEDGE);

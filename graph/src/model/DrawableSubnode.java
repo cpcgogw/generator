@@ -49,17 +49,11 @@ public class DrawableSubnode extends Circle implements Subnode, Tile {
             case KEY:
                 color = Color.AQUAMARINE;
                 break;
-            case LOCK:
-                color = Color.BISQUE;
-                break;
             case START:
                 color = Color.VIOLET;
                 break;
             case MONSTER:
                 color = Color.CORNFLOWERBLUE;
-                break;
-            case END:
-                color = Color.BURLYWOOD;
                 break;
         }
         super.setFill(color);

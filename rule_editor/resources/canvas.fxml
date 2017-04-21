@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
@@ -16,7 +17,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane fx:id="window" prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="rule_editor.controller.Controller">
+<AnchorPane fx:id="window" prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="rule_editor.controller.Controller">
    <children>
        <GridPane fx:id="rule_pane" layoutX="200.0" layoutY="29.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="29.0">
            <columnConstraints>
@@ -40,39 +41,17 @@
                     <items>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                            <children>
-                              <ScrollPane prefHeight="400.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <ScrollPane prefHeight="346.0" prefWidth="160.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                                 <content>
                                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="800.0" prefWidth="200.0">
                                        <children>
-                                          <VBox fx:id="node_types_box" layoutY="-6.0" prefHeight="777.0" prefWidth="156.0">
+                                          <VBox fx:id="node_types_box" layoutY="-6.0" prefHeight="329.0" prefWidth="156.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                                              <children>
-                                                <Button fx:id="grass_node_button" layoutX="10.0" layoutY="192.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="156.0" style="-fx-background-color: #FFAAFF;" text="GrassNode" />
-                                                <Button fx:id="desert_node_button" layoutX="10.0" layoutY="674.0" mnemonicParsing="false" prefHeight="69.0" prefWidth="156.0" style="-fx-background-color: #F0F000;" text="DesertNode" />
-                                                <Button fx:id="town_node_button" mnemonicParsing="false" prefHeight="71.0" prefWidth="156.0" style="-fx-background-color: #DDD;" text="TownNode" />
+                                                <ChoiceBox fx:id="area_node_choice" prefWidth="150.0" />
                                                 <Button fx:id="edge_button" mnemonicParsing="false" prefHeight="55.0" prefWidth="155.0" style="-fx-background-color: #ABCDEF;" text="Edge" />
                                                 <Button fx:id="locked_edge_button" mnemonicParsing="false" prefHeight="55.0" prefWidth="155.0" style="-fx-background-color: #ABCDEF;" text="LockedEdge" />
-                                                <GridPane>
-                                                  <columnConstraints>
-                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                                  </columnConstraints>
-                                                  <rowConstraints>
-                                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                  </rowConstraints>
-                                                   <children>
-                                                      <Button fx:id="start_node_button" mnemonicParsing="false" prefHeight="30.0" prefWidth="84.0" style="-fx-background-color: #00BFFF;" text="Start" />
-                                                      <Button fx:id="end_node_button" mnemonicParsing="false" prefHeight="89.0" prefWidth="100.0" style="-fx-background-color: #228B22;" text="End" GridPane.columnIndex="1" />
-                                                      <Button fx:id="room_node_button" mnemonicParsing="false" prefHeight="98.0" prefWidth="100.0" style="-fx-background-color: #FFC0CB;" text="Room" GridPane.rowIndex="1" />
-                                                      <Button fx:id="enemy_subnode" mnemonicParsing="false" prefHeight="89.0" prefWidth="100.0" style="-fx-background-color: #FF8833;" text="Enemy" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                      <Button fx:id="any_node_button" mnemonicParsing="false" prefHeight="98.0" prefWidth="100.0" style="-fx-background-color: #bdb76b;" text="Any" GridPane.rowIndex="2" />
-                                                      <Button fx:id="subedge_button" mnemonicParsing="false" prefHeight="93.0" prefWidth="100.0" style="-fx-background-color: #ABCDEF;" text="Subedge" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                      <Button fx:id="lock_node_button" mnemonicParsing="false" prefHeight="95.0" prefWidth="100.0" style="-fx-background-color: #FF0000;" text="Lock" GridPane.rowIndex="3" />
-                                                      <Button fx:id="key_node_button" mnemonicParsing="false" prefHeight="93.0" prefWidth="100.0" style="-fx-background-color: #FFA500;" text="Key" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                                   </children>
-                                                </GridPane>
+                                                <ChoiceBox fx:id="sub_node_choice" prefWidth="150.0" />
+                                                <Button fx:id="subedge_button" mnemonicParsing="false" prefHeight="93.0" prefWidth="100.0" style="-fx-background-color: #ABCDEF;" text="Subedge" />
                                              </children>
                                           </VBox>
                                        </children>
