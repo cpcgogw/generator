@@ -374,6 +374,7 @@ public class Controller {
 
         for (DrawableEdge edge : edgeSet) {
             activeCanvas.getChildren().add(edge);
+            activeCanvas.getChildren().add(edge.makeArrow());
         }
     }
 

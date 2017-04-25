@@ -1,9 +1,9 @@
 package rule_editor.controller;
 
 
-import javafx.scene.shape.Shape;
 import model.*;
 import utils.Log;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
