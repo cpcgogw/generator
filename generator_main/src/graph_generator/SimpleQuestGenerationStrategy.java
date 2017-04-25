@@ -1,5 +1,7 @@
 package graph_generator;
 
+import model.enums.OBJECTIVE_TYPE;
+import model.implementations.Objective;
 import model.implementations.Quest;
 import model.interfaces.AreaNode;
 import model.interfaces.Edge;
@@ -8,6 +10,7 @@ import utils.Log;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by vilddjur on 4/25/17.
@@ -17,10 +20,6 @@ public class SimpleQuestGenerationStrategy implements QuestGenerationStrategy {
     @Override
     public List<Quest> generate(List<? extends AreaNode> nodes) {
         List<Quest> quests = new ArrayList<>();
-
-        Quest quest = placeQuest(null);
-        if (quest != null)
-            quests.add(quest);
 
         List<List<? extends AreaNode>> cycles = getAllCycles(nodes);
         Log.print("Cycles found: "+cycles.size(), Log.LEVEL.DEBUG);
@@ -39,11 +38,52 @@ public class SimpleQuestGenerationStrategy implements QuestGenerationStrategy {
             Log.print("", Log.LEVEL.DEBUG);
         }
 
+        List<Quest> questList = placeQuests(cycles);
+
+        /*for (Quest q : questList) {
+            Log.tmpPrint(q);
+        }*/
+
+        return questList;
+    }
+
+    private List<Quest> placeQuests(List<List<? extends AreaNode>> cycles) {
+        final int numOfQuests = 10;
+        List<Quest> quests = new ArrayList<>();
+        Random random = new Random();
+
+        for (int i = 0; i < numOfQuests; i++) {
+            Quest quest = placeQuest(cycles.get(random.nextInt(cycles.size())));
+            quests.add(quest);
+            Log.tmpPrint(quest);
+        }
+
         return quests;
     }
 
     private Quest placeQuest(List<? extends AreaNode> nodes) {
-        return null;
+        Random random = new Random();
+        final int maxProb = 100;
+        int div = 1;
+        Quest quest = new Quest();
+        quest.setParentNode(nodes.get(0));
+
+        for (AreaNode node : nodes) {
+            // Add objectives randomly
+            if (random.nextInt(maxProb) < maxProb/div) {
+                div++;
+                int rand = random.nextInt(maxProb);
+                if (rand < 33) {
+                    quest.addObjective(new Objective(node, OBJECTIVE_TYPE.ITEM));
+                } else if (rand < 66) {
+                    quest.addObjective(new Objective(node, OBJECTIVE_TYPE.MONSTER));
+                } else {
+                    quest.addObjective(new Objective(node, OBJECTIVE_TYPE.BOSS));
+                }
+            }
+        }
+
+        return quest;
     }
 
     private List<List<? extends AreaNode>> getAllCycles(List<? extends AreaNode> nodes) {

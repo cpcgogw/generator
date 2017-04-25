@@ -71,7 +71,7 @@ public class Quest extends Circle {
     }
 
     public void update() {
-        if(parent != null && parent instanceof DrawableAreaNode){
+        if (parent != null && parent instanceof DrawableAreaNode) {
             this.setCenterX(((DrawableAreaNode) parent).getCenterX() + 40);
             this.setCenterY(((DrawableAreaNode) parent).getCenterY() + 40);
         }
@@ -86,10 +86,11 @@ public class Quest extends Circle {
         for (Quest quest : prerequisites) {
             s += quest.getQuestId() + ", ";
         }
-        s += "\n";
+        s += "\nObjectives: ";
         for (Objective objective : objectives) {
-            s += objective.getType() + ", ";
+            s += objective + ", ";
         }
+        s += "\n";
 
         return s;
     }

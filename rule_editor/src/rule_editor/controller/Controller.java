@@ -206,6 +206,14 @@ public class Controller {
 
         activeRule = new Rule(new DrawablePattern());
         showLevel();
+
+        /*
+        // Temporary for easier debug
+        File file = new File("saves/levels/level");
+        prepareLoadLevel(file);
+        placeQuests();
+        System.exit(0);
+        */
     }
 
     private void placeQuests() {
