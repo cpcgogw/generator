@@ -44,9 +44,12 @@ public class Quest extends Circle {
     public void addObjective(Objective objective) {
         objectives.add(objective);
     }
-    
+
     public List<Objective> getObjectives() {
         return objectives;
     }
 
+    public int getQuestId() {
+        return id;
+    }
 }
