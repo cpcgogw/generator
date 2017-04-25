@@ -3,6 +3,7 @@ package rule_editor.controller;
 import graph_generator.controller.QuestGenerator;
 import model.implementations.DrawableAreaNode;
 import model.implementations.Quest;
+import utils.Log;
 
 import java.util.ArrayList;
 import java.util.List;

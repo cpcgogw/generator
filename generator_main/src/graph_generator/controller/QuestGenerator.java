@@ -13,6 +13,7 @@ import java.util.List;
 public class QuestGenerator {
     private static QuestGenerator instance;
     private QuestGenerationStrategy strategy;
+
     public static QuestGenerator getInstance() {
         if (instance == null) {
             instance = new QuestGenerator();

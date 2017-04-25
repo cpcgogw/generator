@@ -184,7 +184,7 @@ public class Controller {
 
         // Init top menu
         save_button.setOnAction(actionEvent -> prepareSave());
-        load_level_button.setOnAction(actionEvent -> prepareLoadLevel());
+        load_level_button.setOnAction(actionEvent -> {File file = loadLevel(); prepareLoadLevel(file);});
         load_rule_button.setOnAction(actionEvent -> prepareLoadRule());
         rule_menu_item.setOnAction(actionEvent -> showRules());
         level_menu_item.setOnAction(actionEvent -> showLevel());
@@ -494,8 +494,7 @@ public class Controller {
      * Loads file and appends elements to canvas
      */
     //TODO: Rewrite
-    private void prepareLoadLevel() {
-        File file = loadLevel();
+    private void prepareLoadLevel(File file) {
         List<DrawableAreaNode> nodes;
 
         //No file selected, don't do anything

@@ -76,4 +76,21 @@ public class Quest extends Circle {
             this.setCenterY(((DrawableAreaNode) parent).getCenterY() + 40);
         }
     }
+
+    @Override
+    public String toString() {
+        String s = "";
+        s += "ID: " + id + "\n";
+        s += "Parent: " + parent.getNodeId() + "\n";
+        s += "Prerequisites: ";
+        for (Quest quest : prerequisites) {
+            s += quest.getQuestId() + ", ";
+        }
+        s += "\n";
+        for (Objective objective : objectives) {
+            s += objective.getType() + ", ";
+        }
+
+        return s;
+    }
 }

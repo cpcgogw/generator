@@ -3,6 +3,8 @@ package graph_generator;
 import model.implementations.Quest;
 import model.interfaces.AreaNode;
 import model.interfaces.Edge;
+import model.interfaces.Node;
+import utils.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +21,23 @@ public class SimpleQuestGenerationStrategy implements QuestGenerationStrategy {
         Quest quest = placeQuest(null);
         if (quest != null)
             quests.add(quest);
-        getAllCycles(nodes);
+
+        List<List<? extends AreaNode>> cycles = getAllCycles(nodes);
+        Log.print("Cycles found: "+cycles.size(), Log.LEVEL.DEBUG);
+
+        int i = 0;
+        for (List<? extends AreaNode> cycle : cycles) {
+            Log.print("Cycle "+i++, Log.LEVEL.DEBUG);
+
+            String s = "";
+            for (AreaNode node : cycle) {
+                s += node.getNodeId() + ", ";
+            }
+            if (cycle.size() > 0)
+                s = s.substring(0, s.length()-2);
+            Log.print(s, Log.LEVEL.DEBUG);
+            Log.print("", Log.LEVEL.DEBUG);
+        }
 
         return quests;
     }
@@ -30,21 +48,40 @@ public class SimpleQuestGenerationStrategy implements QuestGenerationStrategy {
 
     private List<List<? extends AreaNode>> getAllCycles(List<? extends AreaNode> nodes) {
         List<List<? extends AreaNode>> cycles = new ArrayList<>();
+
         int maxJumps = 10;
         int minJumps = 2;
+
         for (AreaNode node : nodes) {
+            Log.print("Trying to find cycles starting from node: "+node.getNodeId(), Log.LEVEL.DEBUG);
             List<List<? extends AreaNode>> nodeCycles = getAllCycles(node, new ArrayList<>(), 0, minJumps, maxJumps);
-            if (nodeCycles != null)
+            Log.print("Number of cycles found: "+nodeCycles.size(), Log.LEVEL.DEBUG);
+
+            if (!nodeCycles.isEmpty()) {
                 cycles.addAll(nodeCycles);
+            }
         }
+
+        Log.print("Total number of cycles found: "+cycles.size(), Log.LEVEL.DEBUG);
+
         return cycles;
     }
 
     private List<List<? extends AreaNode>> getAllCycles(AreaNode node,
                                                         ArrayList<AreaNode> checkedNodes,
                                                         int jumps,
-                                                        int maxJumps,
-                                                        int minJumps) {
+                                                        int minJumps,
+                                                        int maxJumps) {
+        String s = "Checked:  ";
+
+        for (AreaNode node1 : checkedNodes) {
+            s += node1.getNodeId() + ", ";
+        }
+
+        Log.print("Checking: " + node.getNodeId(), Log.LEVEL.DEBUG);
+        Log.print(s, Log.LEVEL.DEBUG);
+        Log.print("", Log.LEVEL.DEBUG);
+
         List<List<? extends AreaNode>> cycles = new ArrayList<>();
 
         if (jumps > maxJumps) {
@@ -56,6 +93,7 @@ public class SimpleQuestGenerationStrategy implements QuestGenerationStrategy {
                 return null;
             }
 
+            checkedNodes.add(node);
             cycles.add(checkedNodes);
             return cycles;
         }
@@ -67,15 +105,18 @@ public class SimpleQuestGenerationStrategy implements QuestGenerationStrategy {
         jumps++;
         checkedNodes.add(node);
 
+        // For all neighbours check for possible cycle
         for (Edge edge : node.getEdges()) {
-            if (node == edge.getFrom()) { // node is to
+            if (node.getNodeId() == edge.getFrom().getNodeId()) {
+                // Node is from
                 ArrayList<AreaNode> copiedCheckedNodes = (ArrayList<AreaNode>) checkedNodes.clone();
-                List<List<? extends AreaNode>> nextCycles = getAllCycles((AreaNode) edge.getTo(), copiedCheckedNodes, jumps, maxJumps, minJumps);
+                List<List<? extends AreaNode>> nextCycles = getAllCycles((AreaNode) edge.getTo(), copiedCheckedNodes, jumps, minJumps, maxJumps);
                 if (nextCycles != null)
                     cycles.addAll(nextCycles);
-            } else { // node is from
+            } else {
+                // Node is to
                 ArrayList<AreaNode> copiedCheckedNodes = (ArrayList<AreaNode>) checkedNodes.clone();
-                List<List<? extends AreaNode>> nextCycles = getAllCycles((AreaNode) edge.getFrom(), copiedCheckedNodes, jumps, maxJumps, minJumps);
+                List<List<? extends AreaNode>> nextCycles = getAllCycles((AreaNode) edge.getFrom(), copiedCheckedNodes, jumps, minJumps, maxJumps);
                 if (nextCycles != null)
                     cycles.addAll(nextCycles);
             }

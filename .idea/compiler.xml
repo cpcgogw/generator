@@ -4,6 +4,7 @@
     <bytecodeTargetLevel>
       <module name="generator_main" target="1.8" />
       <module name="generator_test" target="1.8" />
+      <module name="IdeaProjects-generator_main" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
