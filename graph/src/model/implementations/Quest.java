@@ -1,6 +1,7 @@
 package model.implementations;
 
 import javafx.scene.shape.Circle;
+import model.interfaces.AreaNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +12,8 @@ import java.util.List;
 public class Quest extends Circle {
     public static int idCounter = 0;
     private int id;
+
+    private AreaNode parent;
 
     private List<Quest> prerequisites;
     private List<Objective> objectives;
@@ -28,9 +31,14 @@ public class Quest extends Circle {
     }
 
     public Quest(int id, List<Quest> prerequisites, List<Objective> objectives) {
+        this(id, prerequisites, objectives, null);
+    }
+
+    public Quest(int id, List<Quest> prerequisites, List<Objective> objectives, AreaNode parent) {
         this.id = id;
         this.prerequisites = prerequisites;
         this.objectives = objectives;
+        this.parent = parent;
     }
 
     public void addPrerequisite(Quest quest) {
@@ -51,5 +59,13 @@ public class Quest extends Circle {
 
     public int getQuestId() {
         return id;
+    }
+
+    public AreaNode getParentNode() {
+        return parent;
+    }
+
+    public void setParentNode(AreaNode parent) {
+        this.parent = parent;
     }
 }
