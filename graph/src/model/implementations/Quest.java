@@ -39,6 +39,7 @@ public class Quest extends Circle {
         this.prerequisites = prerequisites;
         this.objectives = objectives;
         this.parent = parent;
+        this.update();
     }
 
     public void addPrerequisite(Quest quest) {
@@ -67,5 +68,12 @@ public class Quest extends Circle {
 
     public void setParentNode(AreaNode parent) {
         this.parent = parent;
+    }
+
+    public void update() {
+        if(parent != null && parent instanceof DrawableAreaNode){
+            this.setCenterX(((DrawableAreaNode) parent).getCenterX() + 40);
+            this.setCenterY(((DrawableAreaNode) parent).getCenterY() + 40);
+        }
     }
 }

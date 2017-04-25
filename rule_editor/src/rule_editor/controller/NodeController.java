@@ -21,6 +21,7 @@ public class NodeController {
 
     private DrawableEdge currentDrawableEdge;
     private EdgeController edgeController;
+    private QuestController questController;
     private Controller controller;
     private boolean dragging;
     private ArrayList<DrawableAreaNode> drawableAreaNodes;
@@ -32,6 +33,7 @@ public class NodeController {
         dragging = false;
         this.controller = controller;
         this.edgeController = EdgeController.getInstance();
+        this.questController = QuestController.getInstance();
         this.drawableAreaNodes = new ArrayList<>();
     }
 
@@ -150,6 +152,7 @@ public class NodeController {
                 node.setPos(event.getX(),event.getY());
                 node.updateEdges();
                 node.updateSubnodes();
+                questController.update();
             }
         });
     }

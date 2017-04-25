@@ -61,6 +61,8 @@ public class Controller {
     private Button print_canvas_button;
     @FXML
     private Button update_button;
+    @FXML
+    private Button quest_button;
 
     @FXML
     private Button subedge_button;
@@ -114,6 +116,7 @@ public class Controller {
     private FileChooser fileChooser;
     private NodeController nodeController;
     private GraphController graphController;
+    private QuestController questController;
 
     public static tools activeTool;
     public static TYPE activeType;
@@ -149,6 +152,7 @@ public class Controller {
         fileChooser = new FileChooser();
         graphController = GraphController.getInstance();
         nodeController = NodeController.getInstance(this);
+        questController = QuestController.getInstance();
         scenarios = new HashMap<>();
         activeType = AREA_TYPE.TOWN;
         activeTool = NODE;
@@ -164,6 +168,7 @@ public class Controller {
         print_button.setOnMouseClicked(event -> printLevel());
         print_canvas_button.setOnMouseClicked(event -> printCanvas());
         update_button.setOnMouseClicked(event -> updateDisplayedGraph());
+        quest_button.setOnMouseClicked(event -> placeQuests());
 
         // init choiceboxes
         sub_node_choice.getItems().addAll(OBJECT_TYPE.values());
@@ -201,6 +206,10 @@ public class Controller {
 
         activeRule = new Rule(new DrawablePattern());
         showLevel();
+    }
+
+    private void placeQuests() {
+        questController.generate(currentLevel.drawableAreaNodes);
     }
 
     private void printCanvas() {
