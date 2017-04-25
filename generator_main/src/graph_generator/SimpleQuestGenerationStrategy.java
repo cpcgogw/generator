@@ -48,7 +48,7 @@ public class SimpleQuestGenerationStrategy implements QuestGenerationStrategy {
     }
 
     private List<Quest> placeQuests(List<List<? extends AreaNode>> cycles) {
-        final int numOfQuests = 10;
+        final int numOfQuests = 5;
         List<Quest> quests = new ArrayList<>();
         Random random = new Random();
 

@@ -1,5 +1,6 @@
 package model.implementations;
 
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import model.interfaces.AreaNode;
 
@@ -40,6 +41,10 @@ public class Quest extends Circle {
         this.objectives = objectives;
         this.parent = parent;
         this.update();
+
+        this.setRadius(20);
+        // Because poop, he he
+        this.setFill(Color.CHOCOLATE);
     }
 
     public void addPrerequisite(Quest quest) {

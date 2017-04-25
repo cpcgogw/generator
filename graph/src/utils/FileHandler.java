@@ -468,15 +468,7 @@ public class FileHandler {
 
             DOMSource source = new DOMSource(doc);
             try {
-                File saves = new File("saves");
-                File rules = new File("saves/rules");
-                File levels = new File("saves/levels");
-                if (!saves.exists())
-                    saves.mkdir();
-                if (!rules.exists())
-                    rules.mkdir();
-                if (!levels.exists())
-                    levels.mkdir();
+                createDirsIfNotCreated();
 
                 FileWriter fileWriter = new FileWriter(path);
                 StreamResult streamResult = new StreamResult(fileWriter);
@@ -493,6 +485,21 @@ public class FileHandler {
             Log.print("Rule::save(String): There was an error saving the Rule: ", Log.LEVEL.ERROR);
             e.printStackTrace();
         }
+    }
+
+    private static void createDirsIfNotCreated() {
+        File saves = new File("saves");
+        File rules = new File("saves/rules");
+        File levels = new File("saves/levels");
+        File quests = new File("saves/levels/quests");
+        if (!saves.exists())
+            saves.mkdir();
+        if (!rules.exists())
+            rules.mkdir();
+        if (!levels.exists())
+            levels.mkdir();
+        if (!quests.exists())
+            quests.mkdir();
     }
 
     private static void insertSubNodesInto(List<? extends Subnode> subnodes, Element element, Document doc) {
@@ -543,6 +550,62 @@ public class FileHandler {
 
             elemEdge.setAttribute("EndID", String.valueOf(edge.getTo().getNodeId()));
             elemEdge.setAttribute("StartID", String.valueOf(edge.getFrom().getNodeId()));
+        }
+    }
+
+    public static void saveQuests(List<Quest> quests, String path) {
+        Log.tmpPrint("Saving "+quests.size()+" number of quests", Log.LEVEL.DEBUG);
+
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document document = builder.newDocument();
+
+            Element questsElem = document.createElement("Quests");
+            document.appendChild(questsElem);
+
+            for (Quest quest : quests) {
+                Element questElem = document.createElement("Quest");
+                questElem.setAttribute("ID", ""+quest.getQuestId());
+                questElem.setAttribute("Parent", ""+quest.getParentNode().getNodeId());
+
+                Element objectivesElem = document.createElement("Objectives");
+                for (Objective objective : quest.getObjectives()) {
+                    Element objectiveElem = document.createElement("Objective");
+                    objectiveElem.setAttribute("ID", ""+objective.getParentNode().getNodeId());
+                    objectiveElem.setAttribute("Type", ""+objective.getType());
+                    objectivesElem.appendChild(objectiveElem);
+                }
+                questElem.appendChild(objectivesElem);
+
+                Element prerequisitesElem = document.createElement("Prerequisites");
+                for (Quest prerequisite : quest.getPrerequisites()) {
+                    Element prerequisiteElem = document.createElement("Prerequisite");
+                    prerequisiteElem.setAttribute("ID", ""+prerequisite.getQuestId());
+                    prerequisitesElem.appendChild(prerequisiteElem);
+                }
+                questElem.appendChild(prerequisitesElem);
+
+                questsElem.appendChild(questElem);
+            }
+
+            Transformer transformer = TransformerFactory.newInstance().newTransformer();
+
+            //formatting for human readability.
+            transformer.setOutputProperty(
+                    "{http://xml.apache.org/xslt}indent-amount", "4");
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+
+            DOMSource source = new DOMSource(document);
+
+            createDirsIfNotCreated();
+
+            FileWriter fileWriter = new FileWriter(path);
+            StreamResult streamResult = new StreamResult(fileWriter);
+            transformer.transform(source, streamResult);
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

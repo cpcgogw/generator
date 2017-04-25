@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane fx:id="window" prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="rule_editor.controller.Controller">
+<AnchorPane fx:id="window" prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="rule_editor.controller.Controller">
    <children>
        <GridPane fx:id="rule_pane" layoutX="200.0" layoutY="29.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="29.0">
            <columnConstraints>
@@ -110,6 +110,7 @@
                   <MenuItem fx:id="save_button" mnemonicParsing="false" text="Save" />
                 <MenuItem fx:id="apply_cookbook" mnemonicParsing="false" text="Use cookbook" />
               <MenuItem fx:id="close_button" mnemonicParsing="false" text="Close" />
+                  <MenuItem fx:id="save_quests_button" mnemonicParsing="false" text="Save quests" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="View">

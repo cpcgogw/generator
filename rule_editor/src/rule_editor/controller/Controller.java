@@ -13,6 +13,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Pair;
@@ -100,6 +102,8 @@ public class Controller {
     private MenuItem level_menu_item;
     @FXML
     private MenuItem apply_cookbook;
+    @FXML
+    private MenuItem save_quests_button;
 
     @FXML
     public static Pane node_inspector_pane;
@@ -154,8 +158,8 @@ public class Controller {
         nodeController = NodeController.getInstance(this);
         questController = QuestController.getInstance();
         scenarios = new HashMap<>();
-        activeType = AREA_TYPE.TOWN;
-        activeTool = NODE;
+        activeType = AREA_TYPE.GRASSFIELD;
+        activeTool = SELECT;
         activeCanvas = rule_canvas;
         currentLevel = new DrawablePattern();
 
@@ -191,6 +195,7 @@ public class Controller {
         close_button.setOnAction(actionEvent -> Platform.exit());
         apply_cookbook.setOnAction(actionEvent -> loadCookbook());
         new_button.setOnAction(actionEvent -> {nodeController.clear(); canvas.getChildren().clear(); currentLevel = new DrawablePattern();});
+        save_quests_button.setOnAction(actionEvent -> saveQuests());
 
         // Init level canvas
         canvas.setOnMouseClicked(mouseEvent -> handlePress(mouseEvent, canvas));
@@ -207,17 +212,21 @@ public class Controller {
         activeRule = new Rule(new DrawablePattern());
         showLevel();
 
-        /*
         // Temporary for easier debug
         File file = new File("saves/levels/level");
         prepareLoadLevel(file);
         placeQuests();
-        System.exit(0);
-        */
+        saveQuests();
+        //System.exit(0);
+    }
+
+    private void saveQuests() {
+        FileHandler.saveQuests(questController.getQuests(), "saves/levels/quests/quest");
     }
 
     private void placeQuests() {
         questController.generate(currentLevel.drawableAreaNodes);
+        updateDisplayedGraph();
     }
 
     private void printCanvas() {
@@ -318,6 +327,24 @@ public class Controller {
             nodeController.setNodes(currentLevel.drawableAreaNodes);
             Log.print("Controller: CurrentLevel in update "+currentLevel.drawableAreaNodes, Log.LEVEL.DEBUG);
             addToCanvas(currentLevel.drawableAreaNodes);
+
+            questController.update();
+            for (Quest quest : questController.getQuests()) {
+                canvas.getChildren().add(quest);
+                for (Objective objective : quest.getObjectives()) {
+                    //NOTE: Quick fix for checking relation between quest and objectives, should not work like this
+                    //TODO: Handle lines in a better manner/don't use lines.
+                    Line line = new Line();
+                    line.setStrokeWidth(2);
+                    line.setFill(Color.BLACK);
+                    line.setStartX(quest.getCenterX());
+                    line.setStartY(quest.getCenterY());
+                    line.setEndX(objective.getCenterX());
+                    line.setEndY(objective.getCenterY());
+                    canvas.getChildren().add(objective);
+                    canvas.getChildren().add(line);
+                }
+            }
         } else if (activeCanvas == rule_canvas) {
             nodeController.clear();
 
