@@ -1,6 +1,11 @@
 package translator.model;
 
-import model.*;
+import model.enums.AREA_TYPE;
+import model.enums.TILE_TYPE;
+import model.interfaces.AreaNode;
+import model.interfaces.Edge;
+import model.interfaces.Subnode;
+import model.interfaces.Tile;
 
 import java.util.ArrayList;
 import java.util.List;

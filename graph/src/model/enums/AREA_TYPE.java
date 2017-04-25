@@ -1,4 +1,6 @@
-package model;
+package model.enums;
+
+import model.interfaces.TYPE;
 
 /**
  * Created by vilddjur on 3/23/17.

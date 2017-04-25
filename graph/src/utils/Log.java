@@ -1,7 +1,5 @@
 package utils;
 
-import model.OBJECT_TYPE;
-
 /**
  * utils.Log class for printing out information during execution.
  *

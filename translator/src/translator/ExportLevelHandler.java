@@ -1,7 +1,7 @@
 package translator;
 
-import model.Subnode;
-import model.Tile;
+import model.interfaces.Subnode;
+import model.interfaces.Tile;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import translator.model.PopulatedTileGrid;

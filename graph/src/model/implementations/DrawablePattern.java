@@ -1,6 +1,8 @@
-package model;
+package model.implementations;
 
-import javafx.util.Pair;
+import model.interfaces.AreaNode;
+import model.interfaces.Node;
+import model.interfaces.Pattern;
 import utils.Log;
 
 import java.util.ArrayList;

@@ -1,4 +1,6 @@
-package model;
+package model.interfaces;
+
+import model.enums.AREA_TYPE;
 
 import java.util.List;
 

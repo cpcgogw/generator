@@ -1,9 +1,11 @@
-package model;
+package model.implementations;
 
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
-import utils.Log;
+import model.enums.EDGE_TYPE;
+import model.interfaces.Edge;
+import model.interfaces.Node;
 
 /**
  * Created by vilddjur on 1/24/17.

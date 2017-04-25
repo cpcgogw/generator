@@ -1,7 +1,7 @@
 package graph_generator.controller;
 
 import javafx.util.Pair;
-import model.*;
+import model.implementations.*;
 import utils.Log;
 
 import java.util.*;

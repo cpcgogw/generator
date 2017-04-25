@@ -1,4 +1,6 @@
-package model;
+package model.interfaces;
+
+import model.enums.OBJECT_TYPE;
 
 /**
  * Created by vilddjur on 3/23/17.

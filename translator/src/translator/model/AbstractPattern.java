@@ -1,8 +1,8 @@
 package translator.model;
 
-import model.AreaNode;
-import model.Node;
-import model.Pattern;
+import model.interfaces.AreaNode;
+import model.interfaces.Node;
+import model.interfaces.Pattern;
 
 import java.util.ArrayList;
 

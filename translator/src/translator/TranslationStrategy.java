@@ -1,7 +1,7 @@
 package translator;
 
-import model.Subnode;
-import model.Tile;
+import model.interfaces.Subnode;
+import model.interfaces.Tile;
 import translator.model.PopulatedTileGrid;
 import translator.model.TileGrid;
 

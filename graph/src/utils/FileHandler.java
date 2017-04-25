@@ -1,7 +1,12 @@
 package utils;
 
 import javafx.util.Pair;
-import model.*;
+import model.enums.AREA_TYPE;
+import model.enums.OBJECT_TYPE;
+import model.implementations.*;
+import model.interfaces.AreaNode;
+import model.interfaces.Edge;
+import model.interfaces.Subnode;
 import org.w3c.dom.*;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
@@ -66,7 +71,7 @@ public class FileHandler {
 
     //TODO: Should likely be removed since unused.
     public static Pair<ArrayList<DrawableAreaNode>,ArrayList<DrawableEdge>> loadNodes(File file){
-        HashMap<Integer, model.Node> nodeMap = new HashMap<>();
+        HashMap<Integer, model.interfaces.Node> nodeMap = new HashMap<>();
         ArrayList<DrawableEdge> drawableEdges = new ArrayList<>();
 
         try {
@@ -388,8 +393,8 @@ public class FileHandler {
         return edge;
     }
 
-    private static HashMap<Integer, model.Node> extractNodes(NodeList xnodeList) {
-        HashMap<Integer, model.Node> nodeMap = new HashMap<>();
+    private static HashMap<Integer, model.interfaces.Node> extractNodes(NodeList xnodeList) {
+        HashMap<Integer, model.interfaces.Node> nodeMap = new HashMap<>();
         for(int i = 0; i < xnodeList.getLength(); i++){
             org.w3c.dom.Node xNode = xnodeList.item(i);
 

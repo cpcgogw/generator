@@ -1,7 +1,7 @@
 package translator.model;
 
-import model.TILE_TYPE;
-import model.Tile;
+import model.enums.TILE_TYPE;
+import model.interfaces.Tile;
 
 /**
  * Created by time on 3/18/17.

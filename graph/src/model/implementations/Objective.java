@@ -1,6 +1,8 @@
-package model;
+package model.implementations;
 
 import javafx.scene.shape.Circle;
+import model.enums.OBJECTIVE_TYPE;
+import model.interfaces.AreaNode;
 
 /**
  * Created by vilddjur on 4/25/17.

@@ -1,9 +1,9 @@
 package translator.model;
 
 import javafx.util.Pair;
-import model.Edge;
-import model.Node;
-import model.Tile;
+import model.interfaces.Edge;
+import model.interfaces.Node;
+import model.interfaces.Tile;
 import org.junit.Before;
 import org.junit.Test;
 

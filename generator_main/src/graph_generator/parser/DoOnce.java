@@ -2,17 +2,15 @@ package graph_generator.parser;
 
 import graph_generator.controller.GraphController;
 import javafx.util.Pair;
-import model.DrawableAreaNode;
-import model.DrawableEdge;
-import model.DrawablePattern;
-import model.Rule;
+import model.implementations.DrawableAreaNode;
+import model.implementations.DrawablePattern;
+import model.implementations.Rule;
 import utils.FileHandler;
 import utils.Log;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by time on 3/4/17.

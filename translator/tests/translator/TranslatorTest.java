@@ -1,6 +1,14 @@
 package translator;
 
-import model.*;
+import model.enums.AREA_TYPE;
+import model.enums.EDGE_TYPE;
+import model.enums.OBJECT_TYPE;
+import model.enums.TILE_TYPE;
+import model.implementations.DrawableAreaNode;
+import model.implementations.DrawableEdge;
+import model.implementations.DrawablePattern;
+import model.implementations.SubNode;
+import model.interfaces.*;
 import org.junit.Test;
 import translator.model.*;
 import utils.Log;

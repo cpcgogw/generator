@@ -1,6 +1,6 @@
 package graph_generator.parser;
 
-import model.DrawablePattern;
+import model.implementations.DrawablePattern;
 
 import java.util.ArrayList;
 import java.util.List;

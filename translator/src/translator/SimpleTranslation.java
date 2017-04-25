@@ -1,10 +1,10 @@
 package translator;
 
 import javafx.util.Pair;
-import model.AreaNode;
-import model.Subnode;
-import model.TILE_TYPE;
-import model.Tile;
+import model.interfaces.AreaNode;
+import model.interfaces.Subnode;
+import model.enums.TILE_TYPE;
+import model.interfaces.Tile;
 import translator.model.*;
 import utils.Log;
 

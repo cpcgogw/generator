@@ -1,7 +1,7 @@
 package graph_generator.parser;
 
 import graph_generator.controller.CommandController;
-import model.DrawablePattern;
+import model.implementations.DrawablePattern;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

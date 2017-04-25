@@ -1,4 +1,4 @@
-package model;
+package model.implementations;
 
 import javafx.scene.shape.Circle;
 

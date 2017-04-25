@@ -1,9 +1,9 @@
 package rule_editor.controller;
 
-import model.DrawableEdge;
-import model.DrawableAreaNode;
-import model.DrawableSubnode;
-import model.EDGE_TYPE;
+import model.implementations.DrawableEdge;
+import model.implementations.DrawableAreaNode;
+import model.implementations.DrawableSubnode;
+import model.enums.EDGE_TYPE;
 
 /**
  * Created by vilddjur on 1/25/17.

@@ -1,8 +1,8 @@
 package translator.model;
 
-import model.EDGE_TYPE;
-import model.Edge;
-import model.Node;
+import model.enums.EDGE_TYPE;
+import model.interfaces.Edge;
+import model.interfaces.Node;
 
 /**
  * Created by vilddjur on 3/11/17.

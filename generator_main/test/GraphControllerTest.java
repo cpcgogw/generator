@@ -1,6 +1,10 @@
 import graph_generator.controller.GraphController;
 import javafx.util.Pair;
-import model.*;
+import model.enums.AREA_TYPE;
+import model.implementations.DrawableAreaNode;
+import model.implementations.DrawableEdge;
+import model.implementations.DrawablePattern;
+import model.implementations.Rule;
 import org.junit.Before;
 import org.junit.Test;
 import utils.Log;

@@ -4,7 +4,7 @@ import java.io.File;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 
-import model.DrawablePattern;
+import model.implementations.DrawablePattern;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import utils.Log;

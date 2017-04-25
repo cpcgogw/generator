@@ -1,9 +1,14 @@
-package model;
+package model.implementations;
 
 import javafx.geometry.VPos;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 import javafx.scene.text.Text;
+import model.enums.OBJECT_TYPE;
+import model.enums.TILE_TYPE;
+import model.interfaces.Edge;
+import model.interfaces.Subnode;
+import model.interfaces.Tile;
 
 import java.util.ArrayList;
 

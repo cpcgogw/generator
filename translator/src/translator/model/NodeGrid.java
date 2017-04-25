@@ -1,8 +1,8 @@
 package translator.model;
 
-import model.Edge;
-import model.Node;
-import model.Tile;
+import model.interfaces.Edge;
+import model.interfaces.Node;
+import model.interfaces.Tile;
 
 import java.util.ArrayList;
 import java.util.List;

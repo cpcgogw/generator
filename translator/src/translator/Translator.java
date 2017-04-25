@@ -2,7 +2,8 @@ package translator;
 
 
 import javafx.util.Pair;
-import model.*;
+import model.enums.EDGE_TYPE;
+import model.interfaces.*;
 import translator.model.*;
 import utils.Log;
 

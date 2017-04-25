@@ -1,6 +1,6 @@
 package translator.model;
 
-import model.Subnode;
+import model.interfaces.Subnode;
 
 /**
  * Created by vilddjur on 3/23/17.

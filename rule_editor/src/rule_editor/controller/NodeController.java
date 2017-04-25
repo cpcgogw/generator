@@ -1,7 +1,11 @@
 package rule_editor.controller;
 
 
-import model.*;
+import model.enums.EDGE_TYPE;
+import model.enums.OBJECT_TYPE;
+import model.implementations.DrawableAreaNode;
+import model.implementations.DrawableEdge;
+import model.implementations.DrawableSubnode;
 import utils.Log;
 
 import java.util.ArrayList;

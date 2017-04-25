@@ -1,5 +1,9 @@
-package model;
+package model.implementations;
 
+import model.enums.OBJECT_TYPE;
+import model.enums.TILE_TYPE;
+import model.interfaces.Edge;
+import model.interfaces.Subnode;
 import utils.Log;
 
 import java.util.ArrayList;

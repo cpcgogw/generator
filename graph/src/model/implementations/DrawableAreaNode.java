@@ -1,7 +1,13 @@
-package model;
+package model.implementations;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import model.enums.AREA_TYPE;
+import model.enums.TILE_TYPE;
+import model.interfaces.AreaNode;
+import model.interfaces.Edge;
+import model.interfaces.Subnode;
+import model.interfaces.Tile;
 import utils.Log;
 
 import java.util.ArrayList;
