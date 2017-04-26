@@ -35,11 +35,8 @@ public class Objective extends Circle {
         return "(Parent: "+parent.getNodeId()+" Type: "+getType()+")";
     }
 
-    public void update() {
-        //NOTE: Ugly fast fix for checking correct positions of objectives
-        //TODO: Place objectives in a more intelligent manner (possibly like how its done for subnodes)
-        Random random = new Random();
-        this.setCenterX(((DrawableAreaNode)parent).getCenterX()-40-random.nextInt(30));
-        this.setCenterY(((DrawableAreaNode)parent).getCenterY()+40+random.nextInt(30));
+    public void update(Integer placed) {
+        this.setCenterX(((DrawableAreaNode)parent).getCenterX()+Math.cos(Math.toRadians(30*placed))*30);
+        this.setCenterY(((DrawableAreaNode)parent).getCenterY()+Math.sin(Math.toRadians(30*placed))*30);
     }
 }

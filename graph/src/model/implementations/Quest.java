@@ -2,10 +2,13 @@ package model.implementations;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import model.interfaces.AreaNode;
+import utils.Log;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by vilddjur on 4/25/17.
@@ -18,6 +21,7 @@ public class Quest extends Circle {
 
     private List<Quest> prerequisites;
     private List<Objective> objectives;
+    private List<Line> objevtiveConnections = new ArrayList<>();
 
     public Quest() {
         this(idCounter++);
@@ -40,7 +44,6 @@ public class Quest extends Circle {
         this.prerequisites = prerequisites;
         this.objectives = objectives;
         this.parent = parent;
-        this.update();
 
         this.setRadius(20);
         // Because poop, he he
@@ -56,6 +59,14 @@ public class Quest extends Circle {
     }
 
     public void addObjective(Objective objective) {
+        Line line = new Line();
+        line.setFill(Color.BLACK);
+        line.setStrokeWidth(2);
+        line.setStartX(getCenterX());
+        line.setStartY(getCenterY());
+        line.setEndX(objective.getCenterX());
+        line.setEndY(objective.getCenterY());
+        objevtiveConnections.add(line);
         objectives.add(objective);
     }
 
@@ -75,11 +86,15 @@ public class Quest extends Circle {
         this.parent = parent;
     }
 
-    public void update() {
+    public void update(Integer placed) {
         if (parent != null && parent instanceof DrawableAreaNode) {
-            this.setCenterX(((DrawableAreaNode) parent).getCenterX() + 40);
-            this.setCenterY(((DrawableAreaNode) parent).getCenterY() + 40);
+            this.setCenterX(((DrawableAreaNode) parent).getCenterX() + Math.cos(Math.toRadians(50*placed))*60);
+            this.setCenterY(((DrawableAreaNode) parent).getCenterY() + Math.sin(Math.toRadians(50*placed))*60);
         }
+    }
+
+    public List<Line> getConnections() {
+        return objevtiveConnections;
     }
 
     @Override

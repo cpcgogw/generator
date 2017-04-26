@@ -331,19 +331,8 @@ public class Controller {
             questController.update();
             for (Quest quest : questController.getQuests()) {
                 canvas.getChildren().add(quest);
-                for (Objective objective : quest.getObjectives()) {
-                    //NOTE: Quick fix for checking relation between quest and objectives, should not work like this
-                    //TODO: Handle lines in a better manner/don't use lines.
-                    Line line = new Line();
-                    line.setStrokeWidth(2);
-                    line.setFill(Color.BLACK);
-                    line.setStartX(quest.getCenterX());
-                    line.setStartY(quest.getCenterY());
-                    line.setEndX(objective.getCenterX());
-                    line.setEndY(objective.getCenterY());
-                    canvas.getChildren().add(objective);
-                    canvas.getChildren().add(line);
-                }
+                canvas.getChildren().addAll(quest.getObjectives());
+                canvas.getChildren().addAll(quest.getConnections());
             }
         } else if (activeCanvas == rule_canvas) {
             nodeController.clear();
