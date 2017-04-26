@@ -5,8 +5,6 @@ import javafx.scene.shape.Circle;
 import model.enums.OBJECTIVE_TYPE;
 import model.interfaces.AreaNode;
 
-import java.util.Random;
-
 /**
  * Created by vilddjur on 4/25/17.
  */
@@ -19,7 +17,13 @@ public class Objective extends Circle {
         this.type = type;
 
         this.setRadius(5);
-        this.setFill(Color.DARKGOLDENROD);
+        if (type == OBJECTIVE_TYPE.ITEM) {
+            this.setFill(Color.YELLOW);
+        } else if (type == OBJECTIVE_TYPE.MONSTER) {
+            this.setFill(Color.INDIANRED);
+        } else if (type == OBJECTIVE_TYPE.BOSS) {
+            this.setFill(Color.CHOCOLATE);
+        }
     }
 
     public AreaNode getParentNode() {
