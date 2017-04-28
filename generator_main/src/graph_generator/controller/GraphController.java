@@ -72,7 +72,7 @@ public class GraphController {
             DrawablePattern p = new DrawablePattern();
             DrawablePattern p2 = new DrawablePattern();
             Pair<DrawablePattern, DrawablePattern> pair = new Pair<>(p, p2);
-            boolean result = insertValidSubPatternFromRule(node, new ArrayList<>(), pair, r);
+            boolean result = insertValidSubPatternFromRule(graph.drawableAreaNodes, node, new ArrayList<>(), pair, r);
 
             if (result) {
                 Log.print("A pattern was found which returns a match!", Log.LEVEL.INFO);
@@ -104,20 +104,59 @@ public class GraphController {
         }
     }
 
+    public void applyRulesLocally(List<Rule> rules, Rule seed, DrawablePattern graph) {
+        ArrayList<Pair<Rule, Pair<DrawablePattern, DrawablePattern>>> rulePatternList = ruleMatchingPattern(seed, graph);
+
+        if (!rulePatternList.isEmpty()) {
+            Pair<Rule, Pair<DrawablePattern, DrawablePattern>> pair = rulePatternList.get(random.nextInt(rulePatternList.size()));
+            Rule r = pair.getKey();
+            Pair<DrawablePattern, DrawablePattern> p = pair.getValue();
+
+            DrawablePattern translation = applyRule(graph, p, r);
+            DrawablePattern match = translation;
+
+            // Run remaining rules on the pattern produced by the initial
+            for (Rule rule : rules) {
+                for (DrawableAreaNode translationNode : translation.drawableAreaNodes) {
+                    DrawableAreaNode matchingNode = null;
+                    for (DrawableAreaNode node : match.drawableAreaNodes) {
+                        if (translationNode.getNodeId() == node.getNodeId()) {
+                            matchingNode = translationNode;
+                        }
+                    }
+
+                    if (matchingNode == null) {
+                        match.drawableAreaNodes.add(translationNode);
+                    }
+                }
+
+                Log.tmpPrint(match);
+
+                rulePatternList = ruleMatchingPattern(rule, match);
+                if (!rulePatternList.isEmpty()) {
+                    pair = rulePatternList.get(random.nextInt(rulePatternList.size()));
+                    p = pair.getValue();
+                    translation = applyRule(graph, p, rule);
+                }
+            }
+
+            Log.tmpPrint(translation);
+            Log.tmpPrint(graph);
+        }
+    }
+
 
     /**
      * Inserts a random translation into the graph through the match.
      * match    = graph nodes which match the matching pattern for the rule.
      * matching = matching pattern of rule.
-     *
-     *  @param graph
+     *   @param graph
      * The graph to insert the random translation into.
      * @param match
      * Pair of (match, matching).
      * @param rule
-     * Rule to apply some translation from.
      */
-    public void insertAndReplace(DrawablePattern graph, Pair<DrawablePattern, DrawablePattern> match, Rule rule) {
+    public DrawablePattern insertAndReplace(DrawablePattern graph, Pair<DrawablePattern, DrawablePattern> match, Rule rule) {
         Log.print("Before...", Log.LEVEL.DEBUG);
         Log.print("Graph: "+graph, Log.LEVEL.DEBUG);
         Log.print("Matched: "+match.getKey(), Log.LEVEL.DEBUG);
@@ -164,6 +203,8 @@ public class GraphController {
         Log.print("After...", Log.LEVEL.DEBUG);
         Log.print("Graph: "+graph, Log.LEVEL.DEBUG);
         Log.print("Matched: "+match.getKey(), Log.LEVEL.DEBUG);
+
+        return translation;
     }
 
     /**
@@ -190,6 +231,9 @@ public class GraphController {
         int maxSubCount = getMaxSubID(graph);
 
         // For each node in the translation either update it or set a unique ID and add it to the graph.
+        List<DrawableAreaNode> toBeDeleted = new ArrayList<>();
+        List<DrawableAreaNode> toBeAdded = new ArrayList<>();
+
         for (DrawableAreaNode translationNode : translation) {
             // Nodes with updated ID should have same ID.
             if (updatedNodes.contains(translationNode)) {
@@ -210,6 +254,10 @@ public class GraphController {
                         // This only works since we removed the matching edges before.
                         // Else we would get duplicate edges.
                         matchedNode.addAllEdges(translationNode.getDrawableEdges());
+
+                        // Update the translation to use the graph node instead.
+                        toBeDeleted.add(translationNode);
+                        toBeAdded.add(matchedNode);
 
                         // Either the subnode has been update (should keep same ID) or its a
                         // new subnode and should be assigned a unique ID.
@@ -241,6 +289,12 @@ public class GraphController {
 
                 graph.addNode(translationNode);
             }
+        }
+        for (DrawableAreaNode node : toBeDeleted) {
+            translation.remove(node);
+        }
+        for (DrawableAreaNode node : toBeAdded) {
+            translation.add(node);
         }
     }
 
@@ -560,8 +614,12 @@ public class GraphController {
      * @return
      * True if we have found a valid subpattern, otherwise false.
      */
-    private boolean insertValidSubPatternFromRule(DrawableAreaNode target, ArrayList<DrawableAreaNode> checkedNodes, Pair<DrawablePattern, DrawablePattern> currentMatch, Rule rule) {
+    private boolean insertValidSubPatternFromRule(List<DrawableAreaNode> graph, DrawableAreaNode target, ArrayList<DrawableAreaNode> checkedNodes, Pair<DrawablePattern, DrawablePattern> currentMatch, Rule rule) {
         boolean inserted = false;
+
+        if (!graph.contains(target)) {
+            return false;
+        }
 
         if (checkedNodes.contains(target)) {
             return true;
@@ -590,7 +648,7 @@ public class GraphController {
                 Log.print("Valid subnodes: "+inserted, Log.LEVEL.DEBUG);
                 Log.print("Checking if valid edges...", Log.LEVEL.INFO);
                 if (inserted) {
-                    inserted = allEdgeAreContainedIn(match, target, checkedNodes, currentMatch, rule);
+                    inserted = allEdgeAreContainedIn(graph, match, target, checkedNodes, currentMatch, rule);
                 }
                 Log.print("Valid subnodes & edges: "+inserted, Log.LEVEL.INFO);
 
@@ -640,7 +698,7 @@ public class GraphController {
      * @param rule
      * @return
      */
-    private boolean allEdgeAreContainedIn(DrawableAreaNode match, DrawableAreaNode target, ArrayList<DrawableAreaNode> checkedNodes, Pair<DrawablePattern, DrawablePattern> currentMatch, Rule rule){
+    private boolean allEdgeAreContainedIn(List<DrawableAreaNode> graph, DrawableAreaNode match, DrawableAreaNode target, ArrayList<DrawableAreaNode> checkedNodes, Pair<DrawablePattern, DrawablePattern> currentMatch, Rule rule){
         boolean returnBool = true;
         boolean nooneChecked = false;
 
@@ -667,7 +725,7 @@ public class GraphController {
                             // Matching target-matchingEdge pair we check this subnode for subpattern.
 
                             Log.print("allEdgeAreContainedIn: found true case, checking subNode", Log.LEVEL.INFO);
-                            returnBool = insertValidSubPatternFromRule(targetEdge.getEndDrawableAreaNode(), checkedNodes, currentMatch, rule);
+                            returnBool = insertValidSubPatternFromRule(graph, targetEdge.getEndDrawableAreaNode(), checkedNodes, currentMatch, rule);
                             break;
                         } else {
                             // If they are not the same we need to continue to look, but we set flag to false to keep track.
@@ -681,7 +739,7 @@ public class GraphController {
 
                         if (targetEdge.getStartDrawableAreaNode().getType().equals(matchingEdge.getStartDrawableAreaNode().getType()) || matchingEdge.getStartDrawableAreaNode().getType().equals("ANY")) {
                             Log.print("allEdgeAreContainedIn: found true case, checking subNode", Log.LEVEL.INFO);
-                            returnBool = insertValidSubPatternFromRule(targetEdge.getStartDrawableAreaNode(), checkedNodes, currentMatch, rule);
+                            returnBool = insertValidSubPatternFromRule(graph, targetEdge.getStartDrawableAreaNode(), checkedNodes, currentMatch, rule);
                             break;
                         } else {
                             Log.print("allEdgeAreContainedIn: found matchingEdge where start drawableAreaNodes were not the same", Log.LEVEL.INFO);
@@ -702,16 +760,16 @@ public class GraphController {
 
     /**
      * Applies rule to subpattern in graph.
-     *
-     * @param graph
+     *  @param graph
      * The graph to which we apply the given rule.
      * @param p
      * The subpattern inside the graph which we apply the rule to.
      * @param rule
-     * The rule which we apply to the subpattern in the graph.
+     * @return
+     * Returns the translation used.
      */
-    public void applyRule(DrawablePattern graph, Pair<DrawablePattern, DrawablePattern> p, Rule rule) {
+    public DrawablePattern applyRule(DrawablePattern graph, Pair<DrawablePattern, DrawablePattern> p, Rule rule) {
         //graph.resetIds();
-        insertAndReplace(graph, p, rule);
+        return insertAndReplace(graph, p, rule);
     }
 }

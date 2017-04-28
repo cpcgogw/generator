@@ -65,6 +65,8 @@ public class Controller {
     private Button update_button;
     @FXML
     private Button quest_button;
+    @FXML
+    private Button local_rules_button;
 
     @FXML
     private Button subedge_button;
@@ -151,7 +153,7 @@ public class Controller {
         EDGE, NODE, SUBNODE, DELETE, SELECT, SUBEDGE, LOCKED_EDGE
     }
 
-    public void initialize(){
+    public void initialize() {
 
         fileChooser = new FileChooser();
         graphController = GraphController.getInstance();
@@ -173,6 +175,7 @@ public class Controller {
         print_canvas_button.setOnMouseClicked(event -> printCanvas());
         update_button.setOnMouseClicked(event -> updateDisplayedGraph());
         quest_button.setOnMouseClicked(event -> placeQuests());
+        local_rules_button.setOnMouseClicked(event -> generateLocal());
 
         // init choiceboxes
         sub_node_choice.getItems().addAll(OBJECT_TYPE.values());
@@ -213,11 +216,29 @@ public class Controller {
         showLevel();
 
         // Temporary for easier debug
-        File file = new File("saves/levels/level");
+        File file = new File("saves/levels/init");
         prepareLoadLevel(file);
-        placeQuests();
-        saveQuests();
+        generateLocal();
         //System.exit(0);
+    }
+
+    private void generateLocal() {
+        Rule rule2 = FileHandler.loadRule("rule2");
+        Rule rule3 = FileHandler.loadRule("rule2");
+        Rule rule5 = FileHandler.loadRule("init");
+        Rule rule4 = FileHandler.loadRule("init");
+        Rule rule6 = FileHandler.loadRule("newrule");
+        List<Rule> rules = new ArrayList<>();
+        rules.add(rule2);
+        rules.add(rule3);
+        rules.add(rule4);
+        rules.add(rule5);
+        rules.add(rule6);
+        Rule seed = FileHandler.loadRule("init");
+        graphController.applyRulesLocally(rules, seed, currentLevel);
+        Log.tmpPrint("CurrentLevel: ");
+        Log.tmpPrint(currentLevel);
+        updateDisplayedGraph();
     }
 
     private void saveQuests() {
