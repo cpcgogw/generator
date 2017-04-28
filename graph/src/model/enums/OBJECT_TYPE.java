@@ -22,4 +22,10 @@ public enum OBJECT_TYPE implements TYPE {
                 return TILE_TYPE.UNKOWN;
         }
     }
+
+    @Override
+    public String toString() {
+        return super.toString().substring(0,1) +
+                super.toString().toLowerCase().substring(1, super.toString().toCharArray().length);
+    }
 }

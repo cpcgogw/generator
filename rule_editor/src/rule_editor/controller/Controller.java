@@ -6,15 +6,10 @@ import graph_generator.parser.CookbookParser;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Pair;
@@ -31,7 +26,6 @@ import utils.Log;
 import javax.swing.*;
 import java.io.File;
 import java.util.*;
-import java.util.List;
 
 import static rule_editor.controller.Controller.tools.*;
 
@@ -216,9 +210,9 @@ public class Controller {
         showLevel();
 
         // Temporary for easier debug
-        File file = new File("saves/levels/init");
-        prepareLoadLevel(file);
-        generateLocal();
+        //File file = new File("saves/levels/init");
+        //prepareLoadLevel(file);
+        //generateLocal();
         //System.exit(0);
     }
 

@@ -86,20 +86,7 @@ public class DrawableAreaNode extends Circle implements AreaNode, Tile {
     }
 
     private void setColor() {
-        switch (type){
-            case GRASSFIELD:
-                this.setFill(Color.FORESTGREEN);
-                break;
-            case TOWN:
-                this.setFill(Color.GRAY);
-                break;
-            case DESERT:
-                this.setFill(Color.DARKKHAKI);
-                break;
-            default:
-                this.setFill(Color.BLACK);
-                break;
-        }
+        setFill(type.toColor());
     }
 
     public void setPos(double x, double y) {
