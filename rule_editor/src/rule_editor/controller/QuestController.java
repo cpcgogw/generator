@@ -5,7 +5,6 @@ import javafx.scene.shape.Line;
 import model.implementations.DrawableAreaNode;
 import model.implementations.Objective;
 import model.implementations.Quest;
-import utils.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;

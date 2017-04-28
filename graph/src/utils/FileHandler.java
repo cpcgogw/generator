@@ -128,6 +128,16 @@ public class FileHandler {
         return rules;
     }
 
+    public static Rule loadRule(String ruleName) {
+        File file = new File("saves/rules/"+ruleName);
+        DrawablePattern match = new DrawablePattern((ArrayList<DrawableAreaNode>) FileHandler.loadMatch(file));
+        List<DrawablePattern> translations = new ArrayList<>();
+        for (List<DrawableAreaNode> list : FileHandler.loadTranslations(file)) {
+            translations.add(new DrawablePattern((ArrayList<DrawableAreaNode>) list));
+        }
+        return new Rule(match, translations);
+    }
+
     public static List<DrawableAreaNode> loadLevel(File file) {
         List<DrawableAreaNode> nodes = null;
 
