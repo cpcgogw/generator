@@ -1,6 +1,7 @@
 package graph_generator.controller;
 
 import graph_generator.parser.Command;
+import graph_generator.parser.DoLocal;
 import graph_generator.parser.DoNTimes;
 import graph_generator.parser.DoOnce;
 import utils.Log;
@@ -29,6 +30,7 @@ public class CommandController {
     private CommandController() {
         commands.add(new DoOnce());
         commands.add(new DoNTimes());
+        commands.add(new DoLocal());
     }
 
     /**

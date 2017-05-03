@@ -272,7 +272,7 @@ public class FileHandler {
         int id = Integer.parseInt(element.getAttribute("ID"));
         int x = Integer.parseInt(element.getAttribute("X"));
         int y = Integer.parseInt(element.getAttribute("Y"));
-        AREA_TYPE type = AREA_TYPE.valueOf(element.getAttribute("Type"));
+        AREA_TYPE type = AREA_TYPE.valueOf(element.getAttribute("Type").toUpperCase());
 
         Element subnodes = (Element) element.getElementsByTagName("SubNodes").item(0);
 

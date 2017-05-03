@@ -2,10 +2,12 @@ package graph_generator.parser;
 
 import graph_generator.controller.CommandController;
 import model.implementations.DrawablePattern;
+import model.implementations.Rule;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import utils.FileHandler;
 import utils.Log;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -63,7 +65,18 @@ public class RecipeParser {
                 }
 
                 Log.print("Parsed command: " + command.getName(), Log.LEVEL.DEBUG);
-
+                if(command instanceof DoLocal){
+                    NodeList rules = commandElement.getElementsByTagName("r");
+                    Log.print(rules.getLength(), Log.LEVEL.INFO);
+                    List<Rule> ruleList = new ArrayList<>();
+                    for (int i = 0;i<rules.getLength();i++) {
+                        Element ruleElem = (Element) rules.item(i);
+                        Rule r = FileHandler.loadRule(ruleElem.getTextContent());
+                        ruleList.add(r);
+                    }
+                    Log.print(ruleList, Log.LEVEL.INFO);
+                    ((DoLocal) command).setRules(ruleList);
+                }
                 NodeList params = commandElement.getElementsByTagName("params");
                 Element e4 = ((Element) params.item(0));
                 NodeList e3 = e4.getChildNodes();

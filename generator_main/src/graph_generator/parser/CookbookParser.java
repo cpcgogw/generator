@@ -1,13 +1,16 @@
 package graph_generator.parser;
 
-import java.io.File;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.DocumentBuilder;
-
+import model.enums.AREA_TYPE;
+import model.implementations.DrawableAreaNode;
 import model.implementations.DrawablePattern;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
+import utils.FileHandler;
 import utils.Log;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.File;
 
 
 /**
@@ -18,7 +21,16 @@ import utils.Log;
 public class CookbookParser {
     private Document document = null;
     private RecipeParser recipeParser = new RecipeParser();
-
+    public static void main(String[] args){
+        String file = "testbook.xml";
+        Log.level = Log.LEVEL.INFO;
+        DrawablePattern graph = new DrawablePattern();
+        graph.addNode(new DrawableAreaNode(0,0, AREA_TYPE.INIT));
+        CookbookParser parser = new CookbookParser();
+        parser.parseCookbook(file, graph);
+        FileHandler.saveNodes(graph.getNodes(), "saves/levels/testCookbookLevel.xml");
+        Log.print(graph, Log.LEVEL.INFO);
+    }
     public boolean parseCookbook(String file, DrawablePattern graph) {
         String tmp = Log.prefix;
         Log.prefix = "CookbookParser: ";

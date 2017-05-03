@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<cookbook>
+    <name>Test</name>
+    <recipes>
+        <recipe>multipleInits.xml</recipe>
+        <recipe>multipleInits.xml</recipe>
+        <recipe>largeRingRecipe.xml</recipe>
+        <recipe>largeRingRecipe.xml</recipe>
+        <recipe>largeRingRecipe.xml</recipe>
+        <recipe>largeRingRecipe.xml</recipe>
+        <recipe>largeRingRecipe.xml</recipe>
+        <recipe>largeRingRecipe.xml</recipe>
+    </recipes>
+</cookbook>

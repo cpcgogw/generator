@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Rule>
+    <MatchingPattern>
+        <Pattern>
+            <AreaNode ID="0" Type="Town" X="95" Y="233">
+                <SubNodes/>
+                <Edges>
+                    <Edge EndID="1" StartID="0"/>
+                </Edges>
+            </AreaNode>
+            <AreaNode ID="1" Type="Grassfield" X="445" Y="295">
+                <SubNodes/>
+                <Edges>
+                    <Edge EndID="1" StartID="0"/>
+                </Edges>
+            </AreaNode>
+        </Pattern>
+    </MatchingPattern>
+    <PossibleTranslations>
+        <Pattern>
+            <AreaNode ID="0" Type="Town" X="147" Y="138">
+                <SubNodes/>
+                <Edges>
+                    <Edge EndID="3" StartID="0"/>
+                </Edges>
+            </AreaNode>
+            <AreaNode ID="3" Type="Grassfield" X="454" Y="241">
+                <SubNodes/>
+                <Edges>
+                    <Edge EndID="3" StartID="0"/>
+                    <Edge EndID="1" StartID="3"/>
+                </Edges>
+            </AreaNode>
+            <AreaNode ID="1" Type="Grassfield" X="775" Y="348">
+                <SubNodes/>
+                <Edges>
+                    <Edge EndID="1" StartID="3"/>
+                </Edges>
+            </AreaNode>
+        </Pattern>
+        <Pattern>
+            <AreaNode ID="0" Type="Town" X="74" Y="109">
+                <SubNodes/>
+                <Edges>
+                    <Edge EndID="6" StartID="0"/>
+                </Edges>
+            </AreaNode>
+            <AreaNode ID="6" Type="Graveyard" X="336" Y="290">
+                <SubNodes/>
+                <Edges>
+                    <Edge EndID="6" StartID="0"/>
+                    <Edge EndID="1" StartID="6"/>
+                </Edges>
+            </AreaNode>
+            <AreaNode ID="1" Type="Grassfield" X="589" Y="597">
+                <SubNodes/>
+                <Edges>
+                    <Edge EndID="1" StartID="6"/>
+                </Edges>
+            </AreaNode>
+        </Pattern>
+    </PossibleTranslations>
+</Rule>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Rule>
+    <MatchingPattern>
+        <Pattern>
+            <AreaNode ID="0" Type="Town" X="68" Y="81">
+                <SubNodes/>
+                <Edges>
+                    <Edge EndID="1" StartID="0"/>
+                </Edges>
+            </AreaNode>
+            <AreaNode ID="1" Type="Graveyard" X="326" Y="253">
+                <SubNodes/>
+                <Edges>
+                    <Edge EndID="1" StartID="0"/>
+                </Edges>
+            </AreaNode>
+        </Pattern>
+    </MatchingPattern>
+    <PossibleTranslations>
+        <Pattern>
+            <AreaNode ID="0" Type="Town" X="131" Y="97">
+                <SubNodes/>
+                <Edges>
+                    <Edge EndID="3" StartID="0"/>
+                </Edges>
+            </AreaNode>
+            <AreaNode ID="3" Type="Graveyard" X="318" Y="191">
+                <SubNodes/>
+                <Edges>
+                    <Edge EndID="3" StartID="0"/>
+                    <Edge EndID="1" StartID="3"/>
+                </Edges>
+            </AreaNode>
+            <AreaNode ID="1" Type="Graveyard" X="507" Y="317">
+                <SubNodes/>
+                <Edges>
+                    <Edge EndID="1" StartID="3"/>
+                </Edges>
+            </AreaNode>
+        </Pattern>
+    </PossibleTranslations>
+</Rule>

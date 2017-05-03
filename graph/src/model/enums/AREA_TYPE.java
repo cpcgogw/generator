@@ -7,7 +7,7 @@ import model.interfaces.TYPE;
  * Created by vilddjur on 3/23/17.
  */
 public enum AREA_TYPE implements TYPE {
-    TOWN, GRASSFIELD, DESERT, GRAVEYARD, CAVE, ISLAND;
+    INIT, TOWN, GRASSFIELD, DESERT, GRAVEYARD, CAVE, ISLAND;
 
     public Color toColor(){
         switch (this) {

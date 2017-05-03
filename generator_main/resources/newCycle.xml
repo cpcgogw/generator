@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Rule>
+    <MatchingPattern>
+        <Pattern>
+            <AreaNode ID="0" Type="Grassfield" X="307" Y="150">
+                <SubNodes/>
+                <Edges/>
+            </AreaNode>
+        </Pattern>
+    </MatchingPattern>
+    <PossibleTranslations>
+        <Pattern>
+            <AreaNode ID="0" Type="Init" X="254" Y="183">
+                <SubNodes/>
+                <Edges/>
+            </AreaNode>
+        </Pattern>
+    </PossibleTranslations>
+</Rule>
